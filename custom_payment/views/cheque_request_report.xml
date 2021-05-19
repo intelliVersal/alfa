@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<report id="report_cheque_request"
+			model="account.payment" string="Print Cheque Request"
+			report_type="qweb-pdf"
+			name="custom_payment.cheque_request_view"
+			file="custom_payment.cheque_request_view" />
+
+		<template id="cheque_request_view">
+				<t t-call="web.html_container">
+				<t t-call="web.external_layout">
+			<t t-foreach="docs" t-as="doc">
+
+					<div class="page">
+						<div class="text-center">
+							<h4>
+								<strong>
+									<p style="font-size:38px;">Cheque Request</p>
+								</strong>
+							</h4>
+						</div><br />
+							<div class="text-left">
+							<h4>
+								<strong>
+									<p style="font-size:28px;font-family:Calibri;font-weight:bold;text-decoration: underline;">RECIPIENT DETAILS</p>
+								</strong>
+							</h4>
+						</div>
+						<div>
+							<h3>
+								<p style="font-size:34px;font-weight:bold;font-family:Calibri;"><span t-field="doc.partner_id.name" /></p>
+							</h3>
+						</div>
+						 <style>
+                         .table1{
+                       	table-layout: fixed;
+                       	width:540px; height:180px;}
+                    </style>
+						<br />
+						<div class="clearfix">
+                        	<div id="total" class="row">
+                        <div style="position:relative; left:20px" align="center">
+							<table class="table1">
+                      			<tr>
+									<td style="font-size:20px;text-align:left;"><strong>&#160;&#160;CR Number:</strong></td>
+                                        <td style="font-size:20px;text-align:left;">
+                                            <span t-field="doc.partner_id.cr_number"/>
+                                        </td>
+                                    </tr>
+								<tr class="border-black o_subtotal">
+									<td style="font-size:20px;text-align:left;"><strong>&#160;&#160;VAT Number:</strong></td>
+                                        <td style="font-size:20px;text-align:left;">
+                                            <span t-field="doc.partner_id.vat"/>
+                                        </td>
+                                    </tr>
+								<tr class="border-black o_subtotal">
+									<td style="font-size:20px;text-align:left;"><strong>&#160;&#160;Cheque Receiver:</strong></td>
+                                        <td style="font-size:20px;text-align:left;">
+                                            <span t-field="doc.partner_id.receiver_name"/>
+                                        </td>
+                                    </tr>
+								<tr class="border-black o_subtotal">
+									<td style="font-size:20px;text-align:left;"><strong>&#160;&#160;Receiver ID:</strong></td>
+                                        <td style="font-size:20px;text-align:left;">
+                                            <span t-esc="doc.partner_id.receiver_iden" />
+                                        </td>
+                                    </tr>
+                            </table>
+                        </div>
+                            <div style = "position:relative; left:120px" align="center">
+                                <table class="table1">
+                                      <tr>
+                                        <td style="font-size:20px;text-align:left;"><strong>&#160;&#160;Vendor Balance</strong></td>
+                                    </tr>
+									
+									  <tr class="border-black o_subtotal">
+                                        <td style="border:1px solid black;padding:8px;font-size:26px;text-align:center;">&#160;&#160;<strong>SAR&#160;<span t-esc="doc.partner_balance"/></strong></td>
+                                    </tr>
+									
+			
+                                   <tr class="border-black o_subtotal">
+                                        <td style="font-size:20px;text-align:left;"><strong>&#160;&#160;Receiving Date:</strong></td>
+                                    </tr>
+									   <tr class="border-black o_subtotal">
+                                        <td style="font-size:20px;text-align:left;"><strong>&#160;&#160;Signature:</strong></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="total1" class="row">
+                        	<div style="position:relative; left:20px" align="center">
+								<table class="table1">
+	                      			<tr class="border-black o_subtotal">
+	                                    <td style="font-size:20px;text-align:left;"><strong>&#160;&#160;Last Payment Date:&#160;&#160;<span t-esc="doc.last_payment.payment_date"/></strong></td>
+	                                </tr>
+
+	                            </table>
+	                        </div>
+	                        <div style = "position:relative; left:120px" align="center">
+                                <table class="table1">
+                                	<tr class="border-black o_subtotal">
+                                        <td style="font-size:20px;text-align:left;"><strong>&#160;&#160;Last Payment:&#160;&#160;<span t-esc="doc.last_payment.name"/></strong></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div><br /><br />
+							<div class="text-left">
+							<h4>
+								<strong>
+									<p style="font-size:28px;text-decoration:underline;">CHEQUE DETAILS</p>
+								</strong>
+							</h4>
+						</div>
+						<br />
+						 <style>
+                         .table3{
+                       	table-layout: fixed;
+                       	width:540px; height:140px;}
+                    </style>
+						<div class="clearfix">
+                        	<div id="total" class="row">
+                        <div style="position:relative; left:20px" align="center">
+							<table class="table3">
+                      			<tr>
+									<td style="font-size:20px;text-align:left;"><strong>&#160;&#160;Cheque Number:</strong></td>
+									 <td style="font-size:20px;text-align:left;">
+										 <span>.</span>
+                                        </td>
+								</tr>
+								<tr class="border-black o_subtotal">
+									<td style="font-size:20px;text-align:left;"><strong>&#160;&#160;Request Date:</strong></td>
+                                        <td style="font-size:20px;text-align:left;">
+                                    <span t-field="doc.payment_date"/>
+                                        </td>
+                                    </tr>
+								<tr class="border-black o_subtotal">
+									<td style="font-size:20px;text-align:left;"><strong>&#160;&#160;From Account #</strong></td>
+                                        <td style="font-size:20px;text-align:left;">
+											<strong><span t-field="doc.journal_id.default_debit_account_id.name"/></strong>
+                                        </td>
+                                    </tr>
+                            </table>
+                        </div>
+                            <div style = "position:relative; left:120px" align="center">
+                                <table class="table1">
+                                      <tr>
+                                        <td style="font-size:20px;text-align:left;"><strong>&#160;&#160;Cheque Date:</strong></td>
+                                    </tr>
+									  <tr class="border-black o_subtotal">
+                                        <td style="font-size:20px;text-align:left;"><strong>&#160;&#160;Cheque Amount</strong></td>
+                                    </tr>
+									<tr>
+										<td style="border:1px solid black;padding:8px;font-size:26px;text-align:center;">&#160;&#160;<strong>SAR&#160;<span t-esc="doc.amount"/></strong></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+						<br /><br />
+						<div class="text-center">
+							<h4>
+								<strong>
+									<p style="font-size:26px;">PURPOSE OF THE PAYMENT BY CHEQUE</p>
+								</strong>
+							</h4>
+						</div>
+						 <style>
+                         .table2{
+                       	table-layout: fixed;
+                       	width:1200px; height:120px;
+							 border:1px solid black;}
+                    </style>
+						<table class="table2">
+							<tr>
+								<td style="font-size:24px;padding:33px;text-align:center;"><strong><span t-field="doc.communication"/></strong></td>
+							</tr>
+						</table>
+				<br /><br />
+						<table class="table table-responsive">
+							<tr>
+								<td class="text-left">
+									<strong>PREPARED BY:</strong>
+								</td>
+							</tr>
+						</table>
+							<div style="border-bottom: 1px solid black;"/>
+						<table class="table table-responsive">
+								<tr>
+								<td class="text-left">
+									<strong>REVIEWED BY:</strong>
+								</td>
+							</tr>
+						</table>
+						<div style="border-bottom: 1px solid black;"/>
+						<table class="table table-responsive">
+							<tr>
+								<td class="text-left">
+									<strong>APPROVED BY:</strong>
+								</td>
+							</tr>
+						</table>
+						<div style="border-bottom: 1px solid black;"/>
+					</div>
+				</t>
+			</t>
+			</t>
+		</template>
+	</data>
+</odoo>
+

@@ -1,0 +1,41 @@
+<odoo>
+  <record id="account_balance_payment_from_inherit" model="ir.ui.view">
+    <field name="name">account.payment.form.inherit</field>
+    <field name="model">account.payment</field>
+    <field name="inherit_id" ref="account.view_account_payment_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='partner_id']" position="replace">
+
+        <label for="partner_id" string="Partner" attrs="{'invisible': [('payment_type', 'not in', ('inbound', 'outbound'))]}" />
+        <div class="address_format" style="position:relative">
+          <field name="partner_id" style="width:70%" attrs="{'required': [('state', '=', 'draft'), ('payment_type', 'in', ('inbound', 'outbound'))], 'invisible': [('payment_type', 'not in', ('inbound', 'outbound'))], 'readonly': [('state', '!=', 'draft')]}" context="{'default_is_company': True, 'default_supplier': payment_type == 'outbound', 'default_customer': payment_type == 'inbound'}"/>
+             <field name="partner_balance" attrs="{'invisible': [('partner_id', '=', False)]}" style="position: absolute; left: 279px; font-weight: bold;width: 118px;"/>
+        </div>
+      </xpath>
+
+      <xpath expr="//field[@name='journal_id']" position="replace">
+        <label for="journal_id" string="Payment Journal" />
+        <div class="address_format" style="position:relative">
+             <field name="journal_id" widget="selection" attrs="{'readonly': [('state', '!=', 'draft')]}" style="width: 70%" />
+             <field name="account_balance" attrs="{'invisible': [('journal_id', '=', False)]}" style="position: absolute; left: 279px; font-weight: bold;width: 118px;" />
+        </div>
+      </xpath>
+    </field>
+  </record>
+
+  <record id="account_register_payments_from_inherit" model="ir.ui.view">
+      <field name="name">account.payment</field>
+      <field name="model">account.payment</field>
+      <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
+    <field name="arch" type="xml">
+
+      <xpath expr="//field[@name='journal_id']" position="replace">
+        <label for="journal_id" string="Payment Journal" />
+        <div class="address_format" style="position:relative">
+             <field name="journal_id" widget="selection" style="width: 70%" />
+             <field name="account_balance" attrs="{'invisible': [('journal_id', '=', False)]}" style="position: absolute; left: 195px; font-weight: bold;width: 118px;" />
+        </div>
+      </xpath>
+    </field>
+  </record>
+</odoo>

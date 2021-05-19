@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+ <template id="general_header_diff">
+		<t t-if="o and 'company_id' in o">
+			<t t-set="company" t-value="o.company_id" />
+		</t>
+		<t t-if="not o or not 'company_id' in o">
+			<t t-set="company" t-value="res_company" />
+		</t>
+    		<t t-call="expense_payments.packing_header_diff" />
+		<t t-raw="0" />
+     <div class="footer">
+     <div>
+            <div class="text-center" style="border-top: 1px solid black;">
+                <ul>
+                    <!-- using the list-inline-item class from bootstrap causes weird behaviours in pdf report
+                         adding d-inline class fixes the problem-->
+                    <li t-if="company.phone" class="list-inline-item d-inline"><span t-field="company.phone"/></li>
+                    <li t-if="company.vat" class="list-inline-item d-inline"><span t-field="company.vat"/></li>
+                    <li t-if="company.email" class="list-inline-item d-inline"><span t-field="company.email"/></li>
+                </ul>
+            </div>
+     </div>
+     </div>
+
+	</template>
+        <template id="expense_report_template">
+            <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-as="o" t-foreach="docs">
+                    <t t-call="expense_payments.general_header_diff">
+                <div class="page">
+                      <style>
+                         .table1{
+                         width:540px;
+                          height:90px;
+                          }
+
+                            .table3{
+                         width:450px;
+                          height:130px;
+                          }
+                    </style>
+                      <div style = "position:relative; left:1px" align="center">
+			<h3>
+                           <b>طلب<br/>Request</b>
+					</h3>
+                          <br/>
+					</div>
+                            <div style = "position:relative; left:1px" align="center">
+			<h3>
+                           <b>  مواد / عهدة/ تعديل <br/>Adjustment / Financial Custody / Material</b>
+					</h3>
+					</div>
+
+					<br/>
+					<br/>
+
+                    <div class="clearfix">
+                        <div id="total" class="row">
+                        <div style="position:relative; left:20px" align="center">
+                            <table class="table1">
+                                <t t-if="o.request_type != 'material'">
+                             <tr t-if="o.employee_id" class="border-black o_employee">
+                                        <td><strong>&#160;Employee / اسم موظف&#160;&#160;</strong></td>
+                                        <td class="text-left">
+                                            <span t-field="o.employee_id.name"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="o.request_type == 'material'">
+                                <tr t-if="o.partner_id" class="border-black o_partner">
+                                        <td><strong>&#160;Partner / اسم شريك&#160;&#160;</strong></td>
+                                        <td class="text-left">
+                                            <span t-field="o.partner_id.name"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                    <tr t-if="o.branch" class="border-black o_branch">
+                                        <td><strong>&#160;Branch / فرع &#160;&#160;</strong></td>
+                                        <td class="text-left">
+                                            <span t-field="o.branch"/>
+                                        </td>
+                                    </tr>
+
+                            </table>
+                        </div>
+
+                            <div style = "position:relative; left:120px" align="center">
+                                <table class="table1">
+                                     <tr t-if="o.name" class="border-black o_name">
+                                        <td><strong>&#160;Request No. / رقم الطلب:&#160;&#160;</strong></td>
+                                        <td class="text-left">
+                                            <span t-field="o.name"/>
+                                        </td>
+                                    </tr>
+                                 <tr t-if="o.request_date" class="border-black o_date">
+                                        <td><strong>&#160;Request Date / تاريخ الطلب&#160;&#160;</strong></td>
+                                        <td class="text-left">
+                                            <span t-esc="o.request_date"/>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="o.reference" class="border-black o_reference">
+                                        <td><strong>&#160;Reference / المرجع&#160;&#160;</strong></td>
+                                        <td class="text-left">
+                                            <span t-esc="o.reference" />
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+               <br /><br />
+
+                    <table class="table table-bordered">
+                        <thead style="background-color: gray; border-style: solid;">
+                            <tr>
+                                <th width="8%" style="color:white" class="text-center">S No.<br/>التسلسل</th>
+                                <th width="12%" style="color:white" class="text-center">Invoice No.<br/>رقم الفاتورة</th>
+                                <th width="15%" style="color:white" class="text-center">Description<br/>التفاصيل</th>
+                                <th width="15%" style="color:white" class="text-center">Analytical Account<br/>حساب تحليلي</th>
+                                <th width="13%" style="color:white" class="text-center">Analytical Tag<br/>علامة تحليلية</th>
+                                <th width="5%" style="color:white" class="text-center">Quantity<br/>الكمية</th>
+                                <th width="15%" style="color:white" class="text-center">Unit Price<br/>سعر الوحدة</th>
+                                <th width="6%" style="color:white" class="text-center">Tax<br/>ضريبة</th>
+                                <th width="8%" style="color:white" class="text-center">Subtotal<br/>المجموع</th>
+                                <th width="10%" style="color:white" class="text-center">Remarks<br/>ملاحظات</th>
+
+                            </tr>
+                        </thead>
+                        <tbody class="invoice_tbody">
+						<t t-set="i" t-value="1"/>
+                            <tr t-foreach="o.invoice_lines" t-as="l">
+                                <td class="text-center"><span t-esc="i"/></td>
+                                <td class="text-center"><span t-field="l.invoice_no"/></td>
+		                        <td class="text-center"><span t-field="l.name"/></td>
+                                <td class="text-center"><span t-field="l.analytic_account"/></td>
+                                <td class="text-center"><span t-field="l.analytical_tags"/></td>
+                                <td class="text-center"><span t-field="l.quantity"/></td>
+                                <td class="text-center"><span t-field="l.unit_price"/></td>
+                                <td class="text-center"><span t-field="l.taxes_id"/></td>
+                                <td class="text-center"><span t-field="l.price_subtotal"/></td>
+                                <td class="text-center"><span t-field="l.remarks"/></td>
+
+					    <t t-set="i" t-value="i+1"/>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <br />
+
+                    <div class="clearfix">
+                        <div id="total" class="row">
+                            <div style="position:relative; left:880px" align="center">
+                                <table class="table3">
+
+                                       <tr class="border-black o_due_payment">
+                                           <td class="text-left"><strong>Amount Untaxed / المبلغ غير خاضع للضريبة</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="o.amount_untaxed"/>&#160;<span t-field="o.company_id.currency_id"/>
+                                        </td>
+                                           <tr class="border-black o_amount_tax">
+                                           <td class="text-left"><strong>Amount Tax / مبلغ الضريبة</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="o.amount_tax"/>&#160;<span t-field="o.company_id.currency_id"/>
+                                        </td>
+                                           </tr>
+                                           <tr class="border-black o_amount_total">
+                                           <td class="text-left"><strong>Total / المجموع</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="o.amount_total"/>&#160;<span t-field="o.company_id.currency_id"/>
+                                        </td>
+                                           </tr>
+
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <p t-if="o.notes">
+                        <b><span t-field="o.notes"/></b>
+                    </p>
+                     <table class="table table-condensed">
+                    <tbody>
+	                    <tr>
+                            <td class="text-center" name="1" align="right" valign="baseline">
+		                    <br/>
+		                    <strong>______________________</strong>
+		                    <br/>
+		                    <strong>موافقة الإدارة العليا<br/>Top Management Approval</strong>
+		                    </td>
+
+						 
+		                    <td class="text-center" name="1" align="right" valign="baseline">
+		                    <br/>
+		                    <strong>______________________</strong>
+		                    <br/>
+		                    <strong>المدير المالي<br/>Finance Manager</strong>
+		                    </td>
+							
+
+                            <td class="text-center" name="1" align="left" valign="baseline">
+		                    <br/>
+		                    <strong>___________________________</strong>
+		                    <br/>
+		                    <strong>طلب بواسطة<br/>Request By</strong>
+		                    </td>
+		                
+					
+	                    </tr>
+                    </tbody>
+	            </table>
+                </div>
+                    </t>
+                </t>
+            </t>
+            </t>
+        </template>
+
+          <!--Custom Header-->
+
+         <template id="packing_header_diff">
+	    <div class="header">
+            <div class="row">
+                <div class="col-3 mb4">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 75px;" alt="Logo"/>
+                </div>
+                <div class="col-9 text-right" style="margin-top:22px;" t-field="company.report_header" name="moto"/>
+            <div t-if="company.logo or company.report_header" class="row zero_min_height">
+                <div class="col-12">
+                    <div style="border-bottom: 1px solid black;"/>
+                </div>
+            </div>
+                <div class="col-6" style="position:relative; left:2px" name="company_address">
+                    <div style="font-weight:bold;" t-field="company.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}"/>
+                </div>
+
+            </div>
+            <div style="border-bottom: 1px solid black;"/>
+        </div>
+	</template>
+
+    </data>
+</odoo>
+

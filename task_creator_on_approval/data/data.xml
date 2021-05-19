@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Tasks categories -->
+        <!--Rental-->
+
+        <record id="project_sale_subscription_task" model="project.project">
+            <field name="name">Rental Tasks</field>
+            <field name="privacy_visibility">followers</field>
+        </record>
+
+        <!--Rental Stage -->
+        <record id="project_rental_stage_1" model="project.task.type">
+            <field name="name">New.</field>
+              <field name="task_sequence">18</field>
+        </record>
+         <record id="project_rental_stage_2" model="project.task.type">
+            <field name="name">Approved</field>
+              <field name="task_sequence">19</field>
+        </record>
+              <!--HR-->
+
+        <record id="project_hr_tasks" model="project.project">
+            <field name="name">HR Tasks</field>
+            <field name="privacy_visibility">followers</field>
+        </record>
+
+         <!--HR Stages -->
+        <record id="project_hr_stage" model="project.task.type">
+            <field name="name">New</field>
+              <field name="task_sequence">14</field>
+        </record>
+
+          <record id="project_hr_stage_1" model="project.task.type">
+            <field name="name">Under Review</field>
+              <field name="task_sequence">15</field>
+        </record>
+        <record id="project_hr_stage_2" model="project.task.type">
+            <field name="name">Waiting for Payment</field>
+              <field name="task_sequence">16</field>
+        </record>
+              <record id="project_hr_stage_3" model="project.task.type">
+            <field name="name">Done</field>
+              <field name="task_sequence">17</field>
+        </record>
+
+        <!--Payment -->
+
+        <record id="project_payment_task" model="project.project">
+            <field name="name">Payment Tasks</field>
+            <field name="privacy_visibility">followers</field>
+        </record>
+
+        <!--Payment Stages -->
+
+          <record id="project_payment_stage_1" model="project.task.type">
+            <field name="name">New</field>
+              <field name="task_sequence">10</field>
+        </record>
+        <record id="project_payment_stage_2" model="project.task.type">
+            <field name="name">Waiting Approval</field>
+              <field name="task_sequence">11</field>
+        </record>
+                  <record id="project_payment_stage_3" model="project.task.type">
+            <field name="name">Approved</field>
+              <field name="task_sequence">12</field>
+        </record>
+        <record id="project_payment_stage_4" model="project.task.type">
+            <field name="name">In the Bank</field>
+            <field name="task_sequence">13</field>
+        </record>
+        <record id="project_payment_stage_5" model="project.task.type">
+            <field name="name">Cheque Issued</field>
+            <field name="task_sequence">21</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_expense_payment_form" model="ir.ui.view">
+            <field name="name">payment.expense.form.view</field>
+            <field name="model">expense.payment</field>
+            <field name="arch" type="xml">
+                <form string="Expense Payment">
+                     <header>
+                        <button name="button_submit" type="object" string="Submit" class="oe_highlight" states="draft"/>
+                         <button name="button_create_vendor_bill" type="object" string="Create Bill" class="oe_highlight" attrs="{'invisible':['|',('is_bill','=',True),('state','!=','finance_approval')]}"/>
+                         <button name="button_management_approve" type="object" string="Management Approval" class="oe_highlight" states="management_approval"/>
+                         <button name="%(account.action_account_payments_payable)d" type="action" string="Create Payment" class="oe_highlight" states="finance_approval" />
+                         <button name="button_draft" type="object" string="Set to Draft" class="oe_highlight" states="cancel"/>
+                         <button name="button_cancel" type="object" string="Cancel" attrs="{'invisible':[('state','in',['approved','cancel'])]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submit,management_approval,finance_approval,'approved',cancel"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" name="action_task_view_pay" string="Task" attrs="{'invisible':[('is_task','=',False)]}" type="object" icon="fa-bars"/>
+                            <button class="oe_stat_button" name="action_bill_payment_view" string="Bill" attrs="{'invisible':[('is_bill','=',False)]}" type="object" icon="fa-bars"/>
+                        </div>
+
+                        <group colspan="2" col="2">
+                            <group>
+                         <h1 class="mt0">
+                                <field name="name" readonly="1"/>
+                             <field name="is_task" invisible="1" />
+                             <field name="is_bill" invisible="1" />
+                            </h1>
+                        </group>
+                            <group>
+                            </group>
+                        </group>
+                    <group colspan="2" col="2">
+		                 <group>
+                             <field name="request_type" string="Request Type"/>
+		                    <field name="employee_id" string="Employee" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                             <field name="partner_id" string="Partner" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" />
+                             <field name='reference' string="Reference" />
+		                </group>
+		                <group>
+		                    <field name='request_date' string="Request date"/>
+                            <field name='branch' string="Branch" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                            <field name="company_id" readonly="1"/>
+		                </group>
+                        </group>
+
+                      <group/>
+                            <field name="invoice_lines" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="invoice_no" string="Invoice No"/>
+                                        <field name="name" string="Description"/>
+                                        <field name="analytic_account" string="Analytical Account"/>
+                                        <field name="analytical_tags" string="Analytical Tag" widget="many2many_tags"/>
+                                        <field name="quantity" />
+                                        <field name="unit_price" />
+                                        <field name="taxes_id" widget="many2many_tags"/>
+                                        <field name="price_subtotal" />
+                                        <field name="remarks" />
+                                    </tree>
+                                </field>
+                        <group class="oe_subtotal_footer oe_right">
+                                <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="amount_total"/>
+                                </div>
+                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            </group>
+                            <field name="notes" class="oe_inline" placeholder="Define your terms and conditions ..."/>
+                            <div class="oe_clear"/>
+                    </sheet>
+                     <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+               </form>
+            </field>
+        </record>
+        <record id="view_payment_expense_tree" model="ir.ui.view">
+            <field name="name">payment.expense.view.tree</field>
+            <field name="model">expense.payment</field>
+            <field name="arch" type="xml">
+                    <tree string="Expense Payment">
+                        <field name="name"/>
+                        <field name="employee_id"/>
+                        <field name="branch"/>
+                        <field name="request_date" />
+                        <field name="state" />
+                        <field name="amount_untaxed" string="Untaxed Amount" sum="Total" />
+                        <field name="amount_tax" string="Tax Amount" sum="Total" />
+                        <field name="amount_total" string="Total Amount" sum="Total" />
+                    </tree>
+            </field>
+        </record>
+
+        <record id="action_expense_payment" model="ir.actions.act_window">
+            <field name="name">Expense Payment</field>
+            <field name="res_model">expense.payment</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    <menuitem
+        id="menu_payment_exp_parent_menu"
+        name="Expense"
+        parent="purchase.menu_procurement_management" sequence="25"
+        action="action_expense_payment"
+       />
+        <report
+            id="report_payment_expense"
+            string="Expense Payment Report"
+            model="expense.payment"
+            report_type="qweb-pdf"
+            file="expense_payments.expense_report_template"
+            name="expense_payments.expense_report_template"
+        />
+    </data>
+
+</odoo>

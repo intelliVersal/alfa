@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_account_payment_form_inherit">
+            <field name="name">account.payment inherit</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+			 <xpath expr="//button[1]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[2]" position="before">
+                    <button name="post" class="oe_highlight" states="approved" string="Confirm" type="object" groups="custom_payment.group_payments_jv"/>
+                </xpath>
+                <xpath expr="//field[@name='payment_date']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state','not in',['draft','submit','to_approve','approved'])]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='communication']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('state', '!=', 'draft'), ('communication', '=', False)], 'readonly': [('state', 'not in',['draft','submit','to_approve','approved'])]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='communication']" position="after">
+                    <field name="analytical_account" string="Analytical Account" attrs="{'readonly':[('state','not in',['draft','submit','to_approve','approved'])]}"/>
+                    <field name="analytical_tag" string="Analytical Tag" widget="many2many_tags" attrs="{'readonly':[('state','not in',['draft','submit','to_approve','approved'])]}"/>
+                    <field name="employee" string="Employee" attrs="{'readonly':[('state','not in',['draft','submit','to_approve','approved'])]}" options="{'no_create':True}"/>
+                    <field name="bank_fees_id" invisible="1"/>
+                </xpath>
+                 <xpath expr="//div[@name='button_box']" position="inside">
+                    <button class="oe_stat_button" name="button_bank_entries" string="Bank Fee Entries" attrs="{'invisible':[('bank_fees_id','=',False)]}" type="object" icon="fa-bars"/>
+                </xpath>
+            </field>
+        </record>
+
+                <record model="ir.ui.view" id="view_account_payment_form_sit">
+            <field name="name">account.payment inherit</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="payment.view_account_payment_form_inherit_payment"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//header" position="inside">
+                        <button name="create_bank_je" class="oe_highlight" attrs="{'invisible':[('has_bank_payment','=',False)]}" string="Post Bank Fees" type="object"/>
+                </xpath>
+                <xpath expr="//field[@name='payment_transaction_id']" position="after">
+                    <field name="have_bank_fees" string="Bank Fees" attrs="{'invisible':[('partner_type','=','customer')],'readonly':[('state','not in',['draft','submit','to_approve','approved'])]}"/>
+                    <field name="has_bank_payment" invisible="1" />
+                    <field name="bank_fees" attrs="{'invisible':[('have_bank_fees','=','nf')],'required':[('have_bank_fees','=','wf')]}"/>
+                    <field name="bank_fees_account" string="Fees Account" attrs="{'invisible':[('have_bank_fees','=','nf')],'required':[('have_bank_fees','=','wf')]}"/>
+                    <field name="vat_fees" attrs="{'invisible':[('have_bank_fees','=','nf')],'required':[('have_bank_fees','=','wf')]}"/>
+                    <field name="vat_fees_account" string="VAT Account" attrs="{'invisible':[('have_bank_fees','=','nf')],'required':[('have_bank_fees','=','wf')]}"/>
+
+                </xpath>
+            </field>
+        </record>
+
+         <record model="ir.ui.view" id="view_account_payment_form_inherit_ga">
+            <field name="name">account.payment inherit.1</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='communication']" position="after">
+                    <field name="analytical_account" string="Analytical Account"/>
+                    <field name="analytical_tag" string="Analytical Tag" widget="many2many_tags"/>
+                    <field name="employee" string="Employee" options="{'no_create':True}"/>
+                </xpath>
+                 <xpath expr="//field[@name='journal_id']" position="after">
+                   <field name="have_bank_fees" string="Bank Fees" />
+                    <field name="bank_fees" attrs="{'invisible':[('have_bank_fees','=','nf')],'required':[('have_bank_fees','=','wf')]}"/>
+                    <field name="bank_fees_account" string="Fees Account" attrs="{'invisible':[('have_bank_fees','=','nf')],'required':[('have_bank_fees','=','wf')]}"/>
+                     <field name="vat_fees" attrs="{'invisible':[('have_bank_fees','=','nf')],'required':[('have_bank_fees','=','wf')]}"/>
+                    <field name="vat_fees_account" string="VAT Account" attrs="{'invisible':[('have_bank_fees','=','nf')],'required':[('have_bank_fees','=','wf')]}"/>
+
+                </xpath>
+            </field>
+        </record>
+       <record model="ir.ui.view" id="view_account_invoice_inherit">
+            <field name="name">invoice.account.view</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+			 <xpath expr="//button[@name='action_invoice_open']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[2]" position="before">
+                    <button name="action_invoice_open" type="object" states="draft" string="Validate" class="oe_highlight" groups="custom_payment.group_payments_jv"/>
+                </xpath>
+                <xpath expr="//field[@name='reference']" position="after">
+                    <field name="recording_rule" attrs="{'readonly':[('state','!=','draft')]}"/>
+                    <field name="account_analytics" attrs="{'readonly':[('state','!=','draft')]}"/>
+                </xpath>
+                <xpath expr="//field[@name='date_invoice']" position="attributes">
+                    <attribute name="attrs">{'required':[('recording_rule','=','jv_each_line')]}</attribute>
+                </xpath>
+				<xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_analytic_id']" position="after">
+                    <field name="empl_name" string="Employee" options="{'no_create':True}"/>
+                </xpath>
+                <xpath expr="//field[@name='tax_line_ids']/tree/field[@name='analytic_tag_ids']" position="after">
+                        <field name="employee" string="Employee" options="{'no_create':True}"/>
+                </xpath>
+            </field>
+        </record>
+		        <record model="ir.ui.view" id="view_partner_inherit_sit_one">
+            <field name="name">partner.inherit.view.sit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='vat']" position="after">
+                        <field name="cr_number" string="CR No." />
+                        <field name="receiver_name" />
+                        <field name="receiver_iden" />
+                </xpath>
+            </field>
+              </record>
+    </data>
+</odoo>
