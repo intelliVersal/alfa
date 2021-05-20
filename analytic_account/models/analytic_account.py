@@ -28,7 +28,6 @@ class AnalyticAccount(models.Model):
     currency_id = m2o_field(string="Accounting Currency")
     distribute_percentage = float_field('Distribution percentage')
     parent_ids_str = fields.Char('Parent ids (,) joined', compute='get_parent_ids_str', store=True)
-    account_type = fields.Selection([('operational', 'Operational'), ('administrative', 'Administrative')], string='account type')
 
     @api.one
     @api.depends('parent_id', 'parent_id.parent_ids_str')
@@ -191,7 +190,6 @@ class AnalyticAccount(models.Model):
 class Move(models.Model):
     _inherit = "account.move"
     payment_id = m2o_field('account.payment')
-
 
 class account_move_line(models.Model):
     _inherit = "account.move.line"

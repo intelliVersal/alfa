@@ -20,29 +20,4 @@
             </xpath>
         </field>
     </record>
-
-    <record id="account_invoice_view_form_customer_inherit" model="ir.ui.view">
-        <field name="name">account.invoice.form.customer.inherit</field>
-        <field name="model">account.invoice</field>
-        <field name="inherit_id" ref="account.invoice_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//page[@name='other_info']//field[@name='move_id']" position="attributes">
-                <attribute name="groups">account.group_account_user</attribute>
-            </xpath>
-        </field>
-    </record>
-
-    <record id="account_invoice_view_form_customer_inherit1" model="ir.ui.view">
-        <field name="name">account.invoice.form.customer.inherit1</field>
-        <field name="model">account.invoice</field>
-        <field name="inherit_id" ref="account.invoice_supplier_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//page[@name='other_info']//field[@name='move_id']" position="attributes">
-                <attribute name="groups">account.group_account_user</attribute>
-                <attribute name="invisible">False</attribute>
-            </xpath>
-        </field>
-    </record>
-
-
 </odoo>

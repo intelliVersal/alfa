@@ -40,7 +40,6 @@
                         <group col="2">
                             <group>
                                 <field name="date_from"/>
-								<field name="account_types" string="Account Type" widget="radio" />
                             </group>
                             <group>
                                 <field name="date_to"/>
@@ -58,9 +57,6 @@
                                 <field name="analytic_account_select_ids" widget="many2many_tags" options="{'no_create': True}" />
                                 <field name="analytic_recursive"/>
                             </group>
-                          <!--    <group>
-                                <field name="taxes_select_ids" widget="many2many_tags" options="{'no_create': True}" />
-                            </group>-->
                             <group>
                                 <field name="analytic_ids" widget="many2many_tags" options="{'no_create': True}" string="Analytic tags"/>
                             </group>

@@ -144,7 +144,6 @@ class AccountMoveLine(models.Model):
 
     analytic_id = fields.Many2one('account.analytic.tag', 'Analytic tag')
     tags_str = fields.Char('Tags ids str', compute='get_tag_ids_str', store=True)
-    taxs_str = fields.Char('Tax ids str', compute='get_tax_ids_str', store=True)
 
     # @api.one
     # def write(self, vals):
@@ -161,13 +160,3 @@ class AccountMoveLine(models.Model):
             tags_str = ';'.join([str(i) for i in self.analytic_tag_ids.ids])
             tags_str = ";%s;" % tags_str
         self.tags_str = tags_str
-
-    @api.one
-    @api.depends('tax_ids')
-    def get_tax_ids_str(self):
-        taxs_str = ''
-        if self.tax_ids:
-            taxs_str = ';'.join([str(i) for i in self.tax_ids.ids])
-            taxs_str = ";%s;" % taxs_str
-        self.taxs_str = taxs_str
-

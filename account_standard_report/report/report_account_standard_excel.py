@@ -373,8 +373,8 @@ class AccountStandardExcel(models.AbstractModel):
                             continue
 
                         i += 1
-                        # if line.get('level', '') > wizard.level:
-                        #     sheet.set_row(i, None, None, {'hidden': True})
+                        if line.get('level', '') > wizard.level:
+                            sheet.set_row(i, None, None, {'hidden': True})
                         sheet.write(i, 0, line.get('code', ''))
                         sheet.write(i, 1, line.get('name', ''))
                         sheet.write(i, 2, line.get('level', ''))
@@ -454,12 +454,6 @@ class AccountStandardExcel(models.AbstractModel):
                     {'name': _('Document type'),
                      'larg': 20,
                      'col': {}},
-                    {'name': _('Analytical tag'),
-                     'larg': 15,
-                     'col': {}},
-                    {'name': _('Taxes'),
-                     'larg': 15,
-                     'col': {}},
                     {'name': _('Partner'),
                      'larg': 20,
                      'col': {}},
@@ -509,13 +503,11 @@ class AccountStandardExcel(models.AbstractModel):
                     sheet.write(i, 6, line.get('label', ''))
                     sheet.write(i, 7, line.get('displayed_name', ''))
                     sheet.write(i, 8, doctype)
-                    sheet.write(i, 9, line.get('tags', ''))
-                    sheet.write(i, 10, line.get('tax', ''))
-                    sheet.write(i, 11, line.get('partner_name', ''))
-                    sheet.write(i, 12, get_date_format(__(line.get('date_maturity', ''))))
-                    sheet.write(i, 13, _get_data_float(line.get('debit', '')), currency_format)
-                    sheet.write(i, 14, _get_data_float(line.get('credit', '')), currency_format)
-                    sheet.write(i, 15, _get_data_float(line.get('cumul_balance', '')), currency_format)
+                    sheet.write(i, 9, line.get('partner_name', ''))
+                    sheet.write(i, 10, get_date_format(__(line.get('date_maturity', ''))))
+                    sheet.write(i, 11, _get_data_float(line.get('debit', '')), currency_format)
+                    sheet.write(i, 12, _get_data_float(line.get('credit', '')), currency_format)
+                    sheet.write(i, 13, _get_data_float(line.get('cumul_balance', '')), currency_format)
                     # if line.get('amount_currency', ''):
                     #     sheet.write(i, 12, _get_data_float(line.get('amount_currency', '')), workbook.add_format({'num_format': line.get('currency')}))
                     # sheet.write(i, 13, line.get('matching_number', ''))

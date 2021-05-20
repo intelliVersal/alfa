@@ -8,9 +8,6 @@ from .base_tech import *
 datetime_stamp = "2020-03-30"
 
 from datetime import datetime
-
-
-
 def localize_dt(date, to_tz):
     from dateutil import tz
     from_zone = tz.gettz('UTC')
@@ -41,10 +38,6 @@ def __(date, is_datetime=False, localize=False,to_tz=False):
 tools.__ = __
 tools.localize_dt = localize_dt
 
-class AccountInvoice(models.Model):
-    _inherit = "account.invoice.line"
-
-    empl_name = fields.Many2one('hr.employee')
 
 
 class AccountInvoice(models.Model):
@@ -63,7 +56,6 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self).invoice_line_move_line_get()
         for line in res:
             line['name'] = self.env['account.invoice.line'].browse(line['invl_id']).name
-            line['employee_id'] = self.env['account.invoice.line'].browse(line['invl_id']).empl_name.id
         return res
 
     @api.model
@@ -189,13 +181,6 @@ class Move(models.Model):
         # def _init(self):
         #     for move in self.search([('line_data', '=', False)]):
         #         move.get_line_data()
-
-
-class AccountMoveLine(models.Model):
-    _inherit = "account.move.line"
-
-    balanced = fields.Boolean('Balanced', default=True)
-    employee_id = m2o_field('hr.employee', 'Employee')
 
 
 class Employee(models.Model):
@@ -329,31 +314,14 @@ class Bank(models.Model):
     _inherit = "res.bank"
     po_box = char_field('P.O Box')
 
+class InheritMoveLine(models.Model):
+    _inherit = "account.move.line"
 
-class ProductProduct(models.Model):
-    _inherit = "product.product"
+    balanced = fields.Boolean('Balanced', default=True)
+    employee_id = m2o_field('hr.employee', 'Employee')
 
-    @api.model
-    def _convert_prepared_anglosaxon_line(self, line, partner):
-        return {
-            'date_maturity': line.get('date_maturity', False),
-            'partner_id': partner,
-            'name': line['name'],
-            'debit': line['price'] > 0 and line['price'],
-            'credit': line['price'] < 0 and -line['price'],
-            'account_id': line['account_id'],
-            'analytic_line_ids': line.get('analytic_line_ids', []),
-            'amount_currency': line['price'] > 0 and abs(line.get('amount_currency', False)) or -abs(line.get('amount_currency', False)),
-            'currency_id': line.get('currency_id', False),
-            'quantity': line.get('quantity', 1.00),
-            'product_id': line.get('product_id', False),
-            'employee_id':line.get('employee_id', False),
-            'product_uom_id': line.get('uom_id', False),
-            'analytic_account_id': line.get('account_analytic_id', False),
-            'invoice_id': line.get('invoice_id', False),
-            'tax_ids': line.get('tax_ids', False),
-            'tax_line_id': line.get('tax_line_id', False),
-            'analytic_tag_ids': line.get('analytic_tag_ids', False),
-        }
+class InheritInvoiceLine(models.Model):
+    _inherit = "account.invoice.line"
 
+    empl_name = fields.Many2one('hr.employee', 'Employee')
 

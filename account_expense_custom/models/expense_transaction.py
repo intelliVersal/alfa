@@ -43,7 +43,8 @@ class ExpenseTransaction(models.Model):
                                          states={'draft': [('readonly', False)]})
     # When payment_type is credit
     journal_id = fields.Many2one("account.journal", string="Amortization Journal",
-                                 domain="[('type', 'in', ['purchase', 'general']),('company_id','=',company_id)]", required=True)
+                                 domain="[('type', 'in', ['purchase', 'general']),('company_id','=',company_id)]", readonly=True, required=True,
+                                 states={'draft': [('readonly', False)]})
     vendor_id = fields.Many2one("res.partner", string="Vendor",
                                  domain="[('supplier', '=', True)]", readonly=True,
                                  states={'draft': [('readonly', False)]})

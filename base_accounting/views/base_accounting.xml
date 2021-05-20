@@ -32,9 +32,9 @@
                 <xpath expr="//field[@name='account_analytic_id']" position="attributes">
                     <attribute name="domain">[('company_id', '=', parent.company_id),('type','!=','view')]</attribute>
                 </xpath>
-                <!--<xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_analytic_id']" position="after">
-                    <field name="empl_name" string="Employee" options="{'no_create':True}"/>
-                </xpath>-->
+				 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_analytic_id']" position="after">
+                    <field name="empl_name" string="Employee" />
+                </xpath>
             </field>
         </record>
 
@@ -130,7 +130,7 @@
             </field>
         </record>
 
-      <record model="ir.ui.view" id="view_employee_form_inherit">
+        <record model="ir.ui.view" id="view_employee_form_inherit">
             <field name="name">view_employee_form_inherit</field>
             <field name="model">hr.employee</field>
             <field name="inherit_id" ref="hr.view_employee_form"/>
@@ -139,7 +139,7 @@
                     <field name="related_partner"/>
                 </field>
             </field>
-        </record> 
+        </record>
 
         <record model="ir.ui.view" id="view_account_invoice_filter_inherit">
             <field name="name">view_account_invoice_filter_inherit</field>
