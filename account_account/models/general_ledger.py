@@ -123,8 +123,7 @@ class AccountCommonReport(models.TransientModel):
     _inherit = "account.common.report"
 
     target_move = fields.Selection(default='all')
-    
-    @api.model
+
     def default_get(self, fields_list):
         res = super(AccountCommonReport, self).default_get(fields_list)
         res['target_move'] = 'all'
