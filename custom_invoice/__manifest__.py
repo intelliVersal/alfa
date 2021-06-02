@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': "Custom Invoice",
-    'summary': """Custom invoice in English/Arabic format""",
+    'summary': """Custom invoice in English/Arabic format.""",
     'author': "SIT & think digital",
     'website': "http://sitco.odoo.com/",
     'category': 'Custom',
