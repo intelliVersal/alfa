@@ -53,9 +53,9 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem id="menu_hr_branch" parent="hr_recruitment.menu_hr_recruitment_configuration"
+        <!--<menuitem id="menu_hr_branch" parent="hr_recruitment.menu_hr_recruitment_configuration"
                   action="hr_branch_action" groups="hr.group_hr_user,hr.group_hr_manager,basic_hr.group_hr_ceo"/>
-
+-->
         <record id="hr_employee_branch_action" model="ir.actions.act_window">
             <field name="name">Branches</field>
             <field name="res_model">hr.branch</field>

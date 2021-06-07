@@ -16,18 +16,25 @@ class res_company(models.Model):
     arabic_name = fields.Char(string='Company Arabic Name')
 
 
-class applicant_qualification(models.Model):
-    _inherit = 'applicant.qualification'
+class Jobs(models.Model):
+    _inherit = "hr.job"
 
-    employee_id = fields.Many2one('hr.employee', string='Employee')
-
-
-class applicant_employment(models.Model):
-    _inherit = 'applicant.employment'
-
-    employee_id = fields.Many2one('hr.employee', string='Employee')
+    arabic_name = fields.Char('Arabic name')
 
 
+# class applicant_qualification(models.Model):
+#     _inherit = 'applicant.qualification'
+# 
+#     employee_id = fields.Many2one('hr.employee', string='Employee')
+# 
+#
+# class applicant_employment(models.Model):
+#     _inherit = 'applicant.employment'
+#
+#     employee_id = fields.Many2one('hr.employee', string='Employee')
+#
+#
+#
 class hr_employee(models.Model):
     _inherit = "hr.employee"
 
@@ -97,9 +104,9 @@ class hr_employee(models.Model):
     street_name = fields.Char('Street Name')
     building_number = fields.Char('Building Number')
     postal_code = fields.Char('Postal Code')
-    qualification_ids = fields.One2many('applicant.qualification', 'employee_id', string='Qualifications')
-    course_ids = fields.One2many('applicant.course', 'employee_id', string='Courses')
-    employment_ids = fields.One2many('applicant.employment', 'employee_id', string='Employment History')
+    # qualification_ids = fields.One2many('applicant.qualification', 'employee_id', string='Qualifications')
+    # course_ids = fields.One2many('applicant.course', 'employee_id', string='Courses')
+    # employment_ids = fields.One2many('applicant.employment', 'employee_id', string='Employment History')
     locked = fields.Boolean('Locked')
     leave_address = fields.Char('Leave Address')
     leave_phone = fields.Char('Leave Phone No')
