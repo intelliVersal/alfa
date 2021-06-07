@@ -7,6 +7,15 @@ from odoo.exceptions import ValidationError
 from dateutil.relativedelta import relativedelta
 from odoo.tools import __
 
+class ContractPaidViolation(models.Model):
+    _name = "contract.paid.violation"
+
+    contract_id = m2o_field('hr.contract', 'Contract')
+    reference_id = m2o_field('hr.payslip', 'Payment reference')
+    date = char_field('Payment date')
+    amount = float_field('Payment amount')
+    note = char_field('Notes')
+
 
 class DeductionViolationCategory(models.Model):
     _name = "deduction.violation.category"
@@ -497,16 +506,6 @@ class Contract(models.Model):
     @api.depends('paid_amount_ids')
     def get_total_paid_amount(self):
         self.total_paid_amount = round(sum([float(l.amount) for l in self.paid_amount_ids]), 2)
-
-
-class ContractPaidViolation(models.Model):
-    _name = "contract.paid.violation"
-
-    contract_id = m2o_field('hr.contract', 'Contract')
-    reference_id = m2o_field('hr.payslip', 'Payment reference')
-    date = char_field('Payment date')
-    amount = float_field('Payment amount')
-    note = char_field('Notes')
 
 
 class Payroll(models.Model):
