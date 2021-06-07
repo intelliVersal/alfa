@@ -14,7 +14,7 @@
         'hr_contract',
         'hr_payroll',
         'saudi_hr_employee',
-        'hr_recruitment',
+        # 'hr_recruitment',
     ],
     'data': [
         'data/hr_payroll_data.xml',

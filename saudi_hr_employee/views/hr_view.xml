@@ -216,7 +216,7 @@
                             <field name="loan_bank_note" attrs="{'invisible': [('has_bank_loan', '=', False)]}"/>
                         </group>
                     </group>
-                    <group string="Qualifications">
+                 <!--   <group string="Qualifications">
                         <field name="qualification_ids" nolabel="1">
                             <tree editable="bottom">
                                 <field name="name" required="1"/>
@@ -265,7 +265,7 @@
                             </tree>
                         </field>
                     </group>
-                </xpath>
+                --></xpath>
                 <xpath expr="//page[@name='personal_information']" position="after">
                     <page string="Personal Information">
                         <group>
@@ -526,9 +526,9 @@
         <menuitem id="menu_config_department" name="Departments" groups="hr.group_hr_user"
                   parent="hr.menu_human_resources_configuration" sequence="10" action="action_department_list"/>
 
-        <menuitem id="menu_config_jobs" name="Jobs" groups="hr.group_hr_user"
+ <!--       <menuitem id="menu_config_jobs" name="Jobs" groups="hr.group_hr_user"
                   parent="hr.menu_human_resources_configuration" sequence="12" action="hr_recruitment.action_hr_job"/>
-
+-->
         <menuitem id="menu_config_courses" name="Courses" groups="hr.group_hr_user"
                   parent="hr.menu_human_resources_configuration" sequence="12" action="action_hr_course"/>
 

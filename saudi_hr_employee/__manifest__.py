@@ -13,7 +13,7 @@
         'base',
         'hr','basic_hr',
         'hr_contract',
-        'saudi_hr_recruitment',
+        # 'saudi_hr_recruitment',
         'custom_confirmation_box',
         ],
     'data': [
