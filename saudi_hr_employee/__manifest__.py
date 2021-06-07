@@ -23,6 +23,7 @@
         'wizard/wizard_view.xml',
         'views/hr_view.xml',
         'views/departments.xml',
+		'views/hr_branch_job_view.xml',
         'views/effective_notice.xml',
         'views/employee_history.xml',
     ],

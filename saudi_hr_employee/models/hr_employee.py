@@ -16,16 +16,23 @@ class res_company(models.Model):
     arabic_name = fields.Char(string='Company Arabic Name')
 
 
-class applicant_qualification(models.Model):
-    _inherit = 'applicant.qualification'
+class Jobs(models.Model):
+    _inherit = "hr.job"
 
-    employee_id = fields.Many2one('hr.employee', string='Employee')
+    arabic_name = fields.Char('Arabic name')
 
+
+# class applicant_qualification(models.Model):
+#     _inherit = 'applicant.qualification'
+# 
+#     employee_id = fields.Many2one('hr.employee', string='Employee')
+# 
 #
 # class applicant_employment(models.Model):
 #     _inherit = 'applicant.employment'
 #
 #     employee_id = fields.Many2one('hr.employee', string='Employee')
+#
 #
 #
 class hr_employee(models.Model):
