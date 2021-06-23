@@ -126,82 +126,82 @@ class InheritEmployee(models.Model):
     responsible_emp = fields.Many2one('res.users')
     overtime_allow = fields.Boolean(default=False)
 
-    def check_mail_expiry_dates(self):
+    # def check_mail_expiry_dates(self):
+    #
+    #     date_now = datetime.date.today() + timedelta(days=30)
+    #     iqama_records = self.env['hr.employee'].search(
+    #         [('iqama_expiry_date', '<=', date_now), ('iqama_expiry_date', '>=', datetime.date.today())])
+    #     for rec in iqama_records:
+    #         mail_content = "The Iqama of " + rec.name + "is going to expire on " + str(
+    #             rec.iqama_expiry_date) + ".<br> Please renew it before expiry date"
+    #         main_content = {
+    #             'subject': _('Iqama Expiry'),
+    #             'author_id': self.env.user.partner_id.id,
+    #             'body_html': mail_content,
+    #             'email_to': 'barrak@musaidalsayyarco.com,hradmin@musaidalsayyarco.com,a.aziz@musaidalsayyarco.com',
+    #         }
+    #         self.env['mail.mail'].create(main_content).send()
+    #
+    #     passport_records = self.env['hr.employee'].search(
+    #         [('passport_expiry_date', '<=', date_now), ('passport_expiry_date', '>=', datetime.date.today())])
+    #     for rec in passport_records:
+    #         mail_content = "The Passport of " + rec.name + "is going to expire on " + str(
+    #             rec.passport_expiry_date) + ".<br> Please renew it before expiry date"
+    #         main_content = {
+    #             'subject': _('Passport Expiry'),
+    #             'author_id': self.env.user.partner_id.id,
+    #             'body_html': mail_content,
+    #             'email_to': 'barrak@musaidalsayyarco.com,hradmin@musaidalsayyarco.com,a.aziz@musaidalsayyarco.com',
+    #         }
+    #         self.env['mail.mail'].create(main_content).send()
+    #
+    #     insurance_records = self.env['hr.employee'].search(
+    #         [('med_ins_expiry_date', '<=', date_now), ('med_ins_expiry_date', '>=', datetime.date.today())])
+    #     for rec in insurance_records:
+    #         mail_content = "The Medical Insurance of " + rec.name + "is going to expire on " + str(
+    #             rec.med_ins_expiry_date) + ".<br> Please renew it before expiry date"
+    #         main_content = {
+    #             'subject': _('Insurance Expiry'),
+    #             'author_id': self.env.user.partner_id.id,
+    #             'body_html': mail_content,
+    #             'email_to': 'barrak@musaidalsayyarco.com,hradmin@musaidalsayyarco.com,a.aziz@musaidalsayyarco.com',
+    #         }
+    #         self.env['mail.mail'].create(main_content).send()
+    #
+    #     health_records = self.env['hr.employee'].search(
+    #         [('health_expiry_date', '<=', date_now), ('health_expiry_date', '>=', datetime.date.today())])
+    #     for rec in insurance_records:
+    #         mail_content = "The Health Certificate of " + rec.name + "is going to expire on " + str(
+    #             rec.health_expiry_date) + ".<br> Please renew it before expiry date"
+    #         main_content = {
+    #             'subject': _('Health Certificate Expiry'),
+    #             'author_id': self.env.user.partner_id.id,
+    #             'body_html': mail_content,
+    #             'email_to': 'barrak@musaidalsayyarco.com,hradmin@musaidalsayyarco.com,a.aziz@musaidalsayyarco.com',
+    #         }
+    #         self.env['mail.mail'].create(main_content).send()
+    #
 
-        date_now = datetime.date.today() + timedelta(days=30)
-        iqama_records = self.env['hr.employee'].search(
-            [('iqama_expiry_date', '<=', date_now), ('iqama_expiry_date', '>=', datetime.date.today())])
-        for rec in iqama_records:
-            mail_content = "The Iqama of " + rec.name + "is going to expire on " + str(
-                rec.iqama_expiry_date) + ".<br> Please renew it before expiry date"
-            main_content = {
-                'subject': _('Iqama Expiry'),
-                'author_id': self.env.user.partner_id.id,
-                'body_html': mail_content,
-                'email_to': 'barrak@musaidalsayyarco.com,hradmin@musaidalsayyarco.com,a.aziz@musaidalsayyarco.com',
-            }
-            self.env['mail.mail'].create(main_content).send()
-
-        passport_records = self.env['hr.employee'].search(
-            [('passport_expiry_date', '<=', date_now), ('passport_expiry_date', '>=', datetime.date.today())])
-        for rec in passport_records:
-            mail_content = "The Passport of " + rec.name + "is going to expire on " + str(
-                rec.passport_expiry_date) + ".<br> Please renew it before expiry date"
-            main_content = {
-                'subject': _('Passport Expiry'),
-                'author_id': self.env.user.partner_id.id,
-                'body_html': mail_content,
-                'email_to': 'barrak@musaidalsayyarco.com,hradmin@musaidalsayyarco.com,a.aziz@musaidalsayyarco.com',
-            }
-            self.env['mail.mail'].create(main_content).send()
-
-        insurance_records = self.env['hr.employee'].search(
-            [('med_ins_expiry_date', '<=', date_now), ('med_ins_expiry_date', '>=', datetime.date.today())])
-        for rec in insurance_records:
-            mail_content = "The Medical Insurance of " + rec.name + "is going to expire on " + str(
-                rec.med_ins_expiry_date) + ".<br> Please renew it before expiry date"
-            main_content = {
-                'subject': _('Insurance Expiry'),
-                'author_id': self.env.user.partner_id.id,
-                'body_html': mail_content,
-                'email_to': 'barrak@musaidalsayyarco.com,hradmin@musaidalsayyarco.com,a.aziz@musaidalsayyarco.com',
-            }
-            self.env['mail.mail'].create(main_content).send()
-
-        health_records = self.env['hr.employee'].search(
-            [('health_expiry_date', '<=', date_now), ('health_expiry_date', '>=', datetime.date.today())])
-        for rec in insurance_records:
-            mail_content = "The Health Certificate of " + rec.name + "is going to expire on " + str(
-                rec.health_expiry_date) + ".<br> Please renew it before expiry date"
-            main_content = {
-                'subject': _('Health Certificate Expiry'),
-                'author_id': self.env.user.partner_id.id,
-                'body_html': mail_content,
-                'email_to': 'barrak@musaidalsayyarco.com,hradmin@musaidalsayyarco.com,a.aziz@musaidalsayyarco.com',
-            }
-            self.env['mail.mail'].create(main_content).send()
-
-
-class InheritSubscription(models.Model):
-    _inherit = 'sale.subscription'
-
-    def check_subscription(self):
-        date_now = datetime.date.today() + timedelta(days=15)
-        stages = self.env['sale.subscription.stage'].search([('name', '=', 'In Progress')])
-        subs_record = self.env['sale.subscription'].search(
-            [('recurring_next_date', '<=', date_now), ('recurring_next_date', '>=', datetime.date.today()),
-             ('stage_id', '=', stages.id)])
-        for rec in subs_record:
-            mail_content = "The Subscription of " + rec.display_name + "is going to expire on " + str(
-                rec.recurring_next_date) + ".<br> Please renew it before expiry date"
-            main_content = {
-                'subject': _('Subscription Expiry'),
-                'author_id': self.env.user.partner_id.id,
-                'body_html': mail_content,
-                'email_to': 'barrak@musaidalsayyarco.com,hradmin@musaidalsayyarco.com,m.gad@musaidalsayyarco.com,rawan@musaidalsayyarco.com,hessa.m@musaidalsayyarco.com',
-            }
-            self.env['mail.mail'].create(main_content).send()
-
+# class InheritSubscription(models.Model):
+#     _inherit = 'sale.subscription'
+#
+#     def check_subscription(self):
+#         date_now = datetime.date.today() + timedelta(days=15)
+#         stages = self.env['sale.subscription.stage'].search([('name', '=', 'In Progress')])
+#         subs_record = self.env['sale.subscription'].search(
+#             [('recurring_next_date', '<=', date_now), ('recurring_next_date', '>=', datetime.date.today()),
+#              ('stage_id', '=', stages.id)])
+#         for rec in subs_record:
+#             mail_content = "The Subscription of " + rec.display_name + "is going to expire on " + str(
+#                 rec.recurring_next_date) + ".<br> Please renew it before expiry date"
+#             main_content = {
+#                 'subject': _('Subscription Expiry'),
+#                 'author_id': self.env.user.partner_id.id,
+#                 'body_html': mail_content,
+#                 'email_to': 'barrak@musaidalsayyarco.com,hradmin@musaidalsayyarco.com,m.gad@musaidalsayyarco.com,rawan@musaidalsayyarco.com,hessa.m@musaidalsayyarco.com',
+#             }
+#             self.env['mail.mail'].create(main_content).send()
+#
 
 class InheritContract(models.Model):
     _inherit = 'hr.contract'
@@ -211,72 +211,60 @@ class InheritContract(models.Model):
     wh_effective_from = fields.Date('Working hours Effective from')
     wh_effective_to = fields.Date('Working hours Effective to')
 
-    def check_contract_date(self):
+    # def check_contract_date(self):
+    #
+    #     date_now = datetime.date.today()
+    #     contract_record_first = self.env['hr.contract'].search([('trial_duration', '<=', 90), ('state', '=', 'open')])
+    #     for rec in contract_record_first:
+    #         if rec.trial_date_end:
+    #             if date_now == rec.trial_date_end - timedelta(days=25):
+    #                 mail_content = "The trial duration of " + rec.name + " is " + str(
+    #                     rec.trial_duration) + ", and it is going to end on " + str(
+    #                     rec.trial_date_end) + ".<br> Please do needful before it ends"
+    #                 main_content = {
+    #                     'subject': _('Trial Period Expiry'),
+    #                     'author_id': self.env.user.partner_id.id,
+    #                     'body_html': mail_content,
+    #                     'email_to': 'barrak@musaidalsayyarco.com,hradmin@musaidalsayyarco.com',
+    #                 }
+    #                 self.env['mail.mail'].create(main_content).send()
+    #
+    #     contract_record_second = self.env['hr.contract'].search([('trial_duration', '>', 90), ('state', '=', 'open')])
+    #     for rec in contract_record_second:
+    #         if rec.trial_date_end:
+    #             if date_now == rec.trial_date_end - timedelta(days=25):
+    #                 mail_content = "The trial duration of " + rec.name + " is " + str(
+    #                     rec.trial_duration) + ", and it is going to end on " + str(
+    #                     rec.trial_date_end) + ".<br> Please do needful before it ends"
+    #                 main_content = {
+    #                     'subject': _('Trial Period Expiry'),
+    #                     'author_id': self.env.user.partner_id.id,
+    #                     'body_html': mail_content,
+    #                     'email_to': 'barrak@musaidalsayyarco.com,hradmin@musaidalsayyarco.com',
+    #                 }
+    #                 self.env['mail.mail'].create(main_content).send()
 
-        date_now = datetime.date.today()
-        contract_record_first = self.env['hr.contract'].search([('trial_duration', '<=', 90), ('state', '=', 'open')])
-        for rec in contract_record_first:
-            if rec.trial_date_end:
-                if date_now == rec.trial_date_end - timedelta(days=25):
-                    mail_content = "The trial duration of " + rec.name + " is " + str(
-                        rec.trial_duration) + ", and it is going to end on " + str(
-                        rec.trial_date_end) + ".<br> Please do needful before it ends"
-                    main_content = {
-                        'subject': _('Trial Period Expiry'),
-                        'author_id': self.env.user.partner_id.id,
-                        'body_html': mail_content,
-                        'email_to': 'barrak@musaidalsayyarco.com,hradmin@musaidalsayyarco.com',
-                    }
-                    self.env['mail.mail'].create(main_content).send()
-
-        contract_record_second = self.env['hr.contract'].search([('trial_duration', '>', 90), ('state', '=', 'open')])
-        for rec in contract_record_second:
-            if rec.trial_date_end:
-                if date_now == rec.trial_date_end - timedelta(days=25):
-                    mail_content = "The trial duration of " + rec.name + " is " + str(
-                        rec.trial_duration) + ", and it is going to end on " + str(
-                        rec.trial_date_end) + ".<br> Please do needful before it ends"
-                    main_content = {
-                        'subject': _('Trial Period Expiry'),
-                        'author_id': self.env.user.partner_id.id,
-                        'body_html': mail_content,
-                        'email_to': 'barrak@musaidalsayyarco.com,hradmin@musaidalsayyarco.com',
-                    }
-                    self.env['mail.mail'].create(main_content).send()
-
-    def check_contract_expiry(self):
-
-        date_now = datetime.date.today() + timedelta(days=30)
-        contract_records = self.env['hr.contract'].search(
-            [('date_end', '<=', date_now), ('date_end', '>=', datetime.date.today())])
-        for rec in contract_records:
-            if rec.date_end:
-                if rec.date_end <= date_now and rec.date_end >= datetime.date.today():
-                    mail_content = "The Contract of " + rec.name + "is going to expire on " + str(
-                        rec.date_end) + ".<br> Please renew it before expiry date"
-                    main_content = {
-                        'subject': _('Contract Expiry'),
-                        'author_id': self.env.user.partner_id.id,
-                        'body_html': mail_content,
-                        'email_to': 'barrak@musaidalsayyarco.com,hradmin@musaidalsayyarco.com',
-                    }
-                    self.env['mail.mail'].create(main_content).send()
-
+    # def check_contract_expiry(self):
+    #
+    #     date_now = datetime.date.today() + timedelta(days=30)
+    #     contract_records = self.env['hr.contract'].search(
+    #         [('date_end', '<=', date_now), ('date_end', '>=', datetime.date.today())])
+    #     for rec in contract_records:
+    #         if rec.date_end:
+    #             if rec.date_end <= date_now and rec.date_end >= datetime.date.today():
+    #                 mail_content = "The Contract of " + rec.name + "is going to expire on " + str(
+    #                     rec.date_end) + ".<br> Please renew it before expiry date"
+    #                 main_content = {
+    #                     'subject': _('Contract Expiry'),
+    #                     'author_id': self.env.user.partner_id.id,
+    #                     'body_html': mail_content,
+    #                     'email_to': 'barrak@musaidalsayyarco.com,hradmin@musaidalsayyarco.com',
+    #                 }
+    #                 self.env['mail.mail'].create(main_content).send()
+    #
 
 class PayslipInherit(models.Model):
     _inherit = 'hr.payslip'
-    ############  No use ##################
-    no_of_hours_legal = fields.Float(compute='get_working_hours_do', store=True)
-    no_of_hours_work = fields.Float(compute='get_working_hours_do', store=True)
-    no_of_overtime_hours = fields.Float(compute='get_working_hours_do', string='Total Overtime hours', store=True)
-    no_of_delay_hours = fields.Float(compute='get_working_hours_do', string='Total Delay hours', store=True)
-    amount_overtime_hours = fields.Float(compute='get_hours_rate', store=True)
-    amount_delay_hours = fields.Float(compute='get_hours_rate', store=True)
-    no_of_work_days = fields.Integer(compute='get_working_hours_do', store=True)
-    no_of_work_days_att = fields.Integer(compute='get_working_hours_do', store=True)
-    total_absent_days = fields.Integer(compute='get_working_hours_do', store=True)
-    total_absent_hours = fields.Float(compute='get_working_hours_do', store=True)
-    ########################################
     working_h = fields.Many2one(related='contract_id.resource_calendar_id')
     update_no = fields.Boolean(default=False)
     no_of_hours_legal_n = fields.Float(compute='get_working_hours_do', store=True, string='Total Legal Working Hours')

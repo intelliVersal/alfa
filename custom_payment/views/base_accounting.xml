@@ -6,22 +6,9 @@
             <field name="model">account.payment</field>
             <field name="inherit_id" ref="account.view_account_payment_form"/>
             <field name="arch" type="xml">
-			 <xpath expr="//button[1]" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
-                <xpath expr="//button[2]" position="before">
-                    <button name="post" class="oe_highlight" states="approved" string="Confirm" type="object" groups="custom_payment.group_payments_jv"/>
-                </xpath>
-                <xpath expr="//field[@name='payment_date']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('state','not in',['draft','submit','to_approve','approved'])]}</attribute>
-                </xpath>
-                <xpath expr="//field[@name='communication']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('state', '!=', 'draft'), ('communication', '=', False)], 'readonly': [('state', 'not in',['draft','submit','to_approve','approved'])]}</attribute>
-                </xpath>
+
                 <xpath expr="//field[@name='communication']" position="after">
-                    <field name="analytical_account" string="Analytical Account" attrs="{'readonly':[('state','not in',['draft','submit','to_approve','approved'])]}"/>
-                    <field name="analytical_tag" string="Analytical Tag" widget="many2many_tags" attrs="{'readonly':[('state','not in',['draft','submit','to_approve','approved'])]}"/>
-                    <field name="employee" string="Employee" attrs="{'readonly':[('state','not in',['draft','submit','to_approve','approved'])]}" options="{'no_create':True}"/>
+
                     <field name="bank_fees_id" invisible="1"/>
                 </xpath>
                  <xpath expr="//div[@name='button_box']" position="inside">
@@ -55,22 +42,22 @@
             <field name="model">account.payment</field>
             <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='journal_id']" position="after">
+                    <field name="have_bank_fees" string="Bank Fees" />
+                    <field name="bank_fees" attrs="{'invisible':[('have_bank_fees','=','nf')],'required':[('have_bank_fees','=','wf')]}"/>
+                    <field name="bank_fees_account" string="Fees Account" attrs="{'invisible':[('have_bank_fees','=','nf')],'required':[('have_bank_fees','=','wf')]}"/>
+                    <field name="vat_fees" attrs="{'invisible':[('have_bank_fees','=','nf')],'required':[('have_bank_fees','=','wf')]}"/>
+                    <field name="vat_fees_account" string="VAT Account" attrs="{'invisible':[('have_bank_fees','=','nf')],'required':[('have_bank_fees','=','wf')]}"/>
+                </xpath>
                 <xpath expr="//field[@name='communication']" position="after">
                     <field name="analytical_account" string="Analytical Account"/>
                     <field name="analytical_tag" string="Analytical Tag" widget="many2many_tags"/>
-                    <field name="employee" string="Employee" options="{'no_create':True}"/>
                 </xpath>
-                 <xpath expr="//field[@name='journal_id']" position="after">
-                   <field name="have_bank_fees" string="Bank Fees" />
-                    <field name="bank_fees" attrs="{'invisible':[('have_bank_fees','=','nf')],'required':[('have_bank_fees','=','wf')]}"/>
-                    <field name="bank_fees_account" string="Fees Account" attrs="{'invisible':[('have_bank_fees','=','nf')],'required':[('have_bank_fees','=','wf')]}"/>
-                     <field name="vat_fees" attrs="{'invisible':[('have_bank_fees','=','nf')],'required':[('have_bank_fees','=','wf')]}"/>
-                    <field name="vat_fees_account" string="VAT Account" attrs="{'invisible':[('have_bank_fees','=','nf')],'required':[('have_bank_fees','=','wf')]}"/>
 
-                </xpath>
             </field>
         </record>
-       <record model="ir.ui.view" id="view_account_invoice_inherit">
+
+      <record model="ir.ui.view" id="view_account_invoice_inherit">
             <field name="name">invoice.account.view</field>
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_supplier_form"/>

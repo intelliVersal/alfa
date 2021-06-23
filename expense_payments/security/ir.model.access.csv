@@ -1,3 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-view_expense_payment,expense.payment,model_expense_payment,base.group_user,1,1,1,1
-view_invoice_lines,invoice.lines,model_invoice_lines,base.group_user,1,1,1,1
