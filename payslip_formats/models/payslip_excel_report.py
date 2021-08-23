@@ -71,7 +71,7 @@ class BankTemplateReport(models.Model):
         self.payslip_report_line_id = False
         self.name = 'Payslip Bank Report ' + str(self.id)
         payslips_record = self.env['hr.payslip'].search(
-            [('date_from', '>=', (self.date_from-timedelta(days=10))), ('date_to', '<=', self.date_to),('state','in',['Final Reviewed','done']),('company_id','=',self.env.user.company_id.id)])
+            [('date_from', '>=', (self.date_from-timedelta(days=10))), ('date_to', '<=', self.date_to),('state','in',['Final Reviewed','done'])])
 
         for records in self.sponsor:
             sponsors.append(records.id)
