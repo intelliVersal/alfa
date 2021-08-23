@@ -48,7 +48,6 @@ class BankTemplateReport(models.Model):
     @api.model
     def create(self, vals):
         vals['name'] = 'Bank Report of ' + str(vals['year']) + '/' + str(vals['month']) + ' ('+ str(vals['report_type'])+')'
-        print(vals['name'])
         sequence = self.env['payslip.bank.report'].search([('name','=',vals['name'])])
         if len(sequence) == 1:
             raise ValidationError(_("Bank Template Report for this duration ia already created, kindly modify that."))
@@ -71,14 +70,12 @@ class BankTemplateReport(models.Model):
         self.payslip_report_line_id = False
         self.name = 'Payslip Bank Report ' + str(self.id)
         payslips_record = self.env['hr.payslip'].search(
-            [('date_from', '>=', (self.date_from-timedelta(days=10))), ('date_to', '<=', self.date_to),('state','in',['Final Reviewed','done'])])
-
+            [('date_from', '>=', (self.date_from-timedelta(days=10))), ('date_to', '<=', self.date_to),('state','in',['Final Reviewed','done']),('company_id','=',self.env.user.company_id.id)])
         for records in self.sponsor:
             sponsors.append(records.id)
-
         for rec in payslips_record:
-            for items in structure:
-                if rec.struct_id.id == items:
+            for items in sponsors:
+                if rec.employee_id.coach_id.id == items:
                     line +=1
                     total_allowance = ((rec.rule_other_llowance)+(rec.rule_transportation_allowance)+(rec.rule_food_allowance)+(rec.rule_phone_allowance))
                     total_extra = ((rec.rule_employee_rewards)+(rec.rule_overtime))
@@ -86,7 +83,7 @@ class BankTemplateReport(models.Model):
                     self.env['payslip.bank.report.line'].create({'payslip_report_id': self.id,
                                                                  'sno': line,
                                                                  'employee_no': rec.employee_id.identification_id,
-                                                                 'employee_id': rec.employee_id.name,
+                                                                 'employee_id': rec.employee_id.id,
                                                                  'employee_bank': rec.employee_id.iban_number,
                                                                  'employee_bank_code': rec.employee_id.Bank_name_id.bic,
                                                                  'total_amount': (((rec.rule_basic) + (rec.rule_house_allowance) + total_allowance) - (total_deduction)) if self.report_type == 'Salary Report' else total_extra,
@@ -105,7 +102,10 @@ class BankTemplateReport(models.Model):
         wb1 = xlwt.Workbook(encoding='utf-8')
         ws1 = wb1.add_sheet('Payslip Detail')
         fp = io.BytesIO()
-        sub_header_style = xlwt.easyxf("font: name Helvetica size 11 px, bold 1, height 200; align: horiz center")
+        sub_header_style = xlwt.easyxf("font: name Helvetica size 11 px, bold 1, height 200;"
+                                       "align: vertical center, horizontal center, wrap on;"
+                                       "borders: left thin, right thin, top thin, bottom thin;"
+                                       "pattern: pattern solid, pattern_fore_colour green, pattern_back_colour green")
         line_content_style = xlwt.easyxf("font: name Helvetica, height 170;align: horiz center")
         row = 1
         col = 0
@@ -127,20 +127,20 @@ class BankTemplateReport(models.Model):
 
         for rec in self.payslip_report_line_id:
             ws1.write(row, col, rec.sno, line_content_style)
-            ws1.write(row, col + 1, rec.employee_iqama, line_content_style)
-            ws1.write(row, col + 2, rec.employee_id.name, line_content_style)
-            ws1.write(row, col + 3, rec.employee_account_no, line_content_style)
-            ws1.write(row, col + 4, rec.employee_id.name, line_content_style)
+            ws1.write(row, col + 1, rec.employee_iqama if rec.employee_iqama else '', line_content_style)
+            ws1.write(row, col + 2, rec.employee_id.name if rec.employee_id else '', line_content_style)
+            ws1.write(row, col + 3, rec.employee_account_no if rec.employee_account_no else '', line_content_style)
+            ws1.write(row, col + 4, rec.bank_code if rec.bank_code else '', line_content_style)
             ws1.write(row, col + 5, rec.total_amount, line_content_style)
             ws1.write(row, col + 6, rec.basic_sal, line_content_style)
             ws1.write(row, col + 7, rec.house_allowance, line_content_style)
             ws1.write(row, col + 8, rec.other_allowance, line_content_style)
             ws1.write(row, col + 9, rec.deductions, line_content_style)
             ws1.write(row, col + 10, rec.address, line_content_style)
-            ws1.write(row, col + 11, rec.curency, line_content_style)
-            ws1.write(row, col + 12, rec.status, line_content_style)
-            ws1.write(row, col + 13, rec.payment_method, line_content_style)
-            ws1.write(row, col + 14, rec.payment_reference, line_content_style)
+            ws1.write(row, col + 11, rec.currency, line_content_style)
+            ws1.write(row, col + 12, rec.status if rec.status else '', line_content_style)
+            ws1.write(row, col + 13, rec.payment_method if rec.payment_method else '', line_content_style)
+            ws1.write(row, col + 14, rec.payment_reference if rec.payment_reference else '', line_content_style)
             row += 1
 
         wb1.save(fp)
