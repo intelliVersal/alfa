@@ -11,7 +11,7 @@
 			<field name="state">code</field>
 		</record>
 		
-				<record id="mail_remainder_view_sit" model="ir.cron">
+	<!--			<record id="mail_remainder_view_sit" model="ir.cron">
 			<field name="name">HR Mail Reminder</field>
 			<field name="interval_number">7</field>
 			<field name="interval_type">days</field>
@@ -54,6 +54,6 @@
 			<field name="code">model.check_contract_expiry()</field>
 			<field name="state">code</field>
 		</record>
-		
+	-->
 	</data>
 </odoo>

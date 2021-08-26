@@ -51,14 +51,6 @@ class InheritPayment(models.Model):
             If the payment is a transfer, a second journal entry is created in the destination journal to receive money from the transfer account.
         """
         for rec in self:
-            if not self.env.user.has_group('task_creator_on_approval.group_direct_payment'):
-                if self.is_task == True:
-                    if not self.payment_status:
-                        raise UserError(_("Please add the payment status before confirm."))
-            if self.is_task == True:
-                if rec.state != 'approved':
-                    raise UserError(_("Only a approved payment can be posted."))
-
             if any(inv.state != 'open' for inv in rec.invoice_ids):
                 raise ValidationError(_("The payment cannot be processed because the invoice is not open!"))
 
@@ -96,11 +88,6 @@ class InheritPayment(models.Model):
                 (transfer_credit_aml + transfer_debit_aml).reconcile()
             if self.have_bank_fees == 'wf':
                 self.has_bank_payment = True
-            if self.is_task == True:
-                if self.payment_status == 'in_bank':
-                    self.task_id.stage_id = self.env['project.task.type'].search([('task_sequence','=',13)]).id
-                if self.payment_status == 'in_cheque':
-                    self.task_id.stage_id = self.env['project.task.type'].search([('task_sequence', '=', 21)]).id
             rec.write({'state': 'posted', 'move_name': move.name})
         return True
 

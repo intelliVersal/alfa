@@ -14,7 +14,7 @@
         'hr_payroll',
         # 'hr_payroll_account',
         'saudi_hr_employee',
-        'saudi_hr_recruitment',
+        # 'saudi_hr_recruitment',
         'saudi_hr_contract',
     ],
     'data': [

@@ -13,7 +13,7 @@
         'base',
         'hr','basic_hr',
         'hr_contract',
-        'saudi_hr_recruitment',
+        # 'saudi_hr_recruitment',
         'custom_confirmation_box',
         ],
     'data': [
@@ -23,6 +23,7 @@
         'wizard/wizard_view.xml',
         'views/hr_view.xml',
         'views/departments.xml',
+		'views/hr_branch_job_view.xml',
         'views/effective_notice.xml',
         'views/employee_history.xml',
     ],
