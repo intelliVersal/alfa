@@ -101,6 +101,8 @@ class inherit_stock_picking(models.Model):
     _inherit = 'stock.picking'
 
     purchase_request_done = fields.Boolean(default=False)
+    have_mo_request = fields.Boolean(default=False)
+    mo_count = fields.Integer(default=0)
 
     def procure_requisition(self):
         msg = ''
@@ -113,11 +115,13 @@ class inherit_stock_picking(models.Model):
 
             for rec in self.move_lines.filtered(lambda r: r.product_uom_qty != r.reserved_availability):
                 diff = rec.product_uom_qty - rec.reserved_availability
-
                 if diff:
-                    self.env['requisition.procurement'].create(
-                        {'remarks': rec.remarks, 'product_id': rec.product_id.id, 'product_qty': diff,
-                         'date': datetime.date.today(), 'requisition_id': self.inter_requi_id.id})
+                    if rec.product_id.route_ids.id == 5:
+                        self.env['requisition.procurement'].create(
+                            {'remarks': rec.remarks, 'product_id': rec.product_id.id, 'product_qty': diff,
+                             'date': datetime.date.today(), 'requisition_id': self.inter_requi_id.id})
+                    if rec.product_id.route_ids.id == 6:
+                        self.have_mo_request = True
                     self.purchase_request_done = True
             if diff:
                 msg = msg + "Procurement Created ! \n"
@@ -192,3 +196,40 @@ class inherit_stock_picking(models.Model):
             self.purchase_request_done = False
 
         return super(inherit_stock_picking, self).do_unreserve()
+
+    @api.multi
+    def action_view_mo(self):
+        for rec in self.move_lines.filtered(lambda r: r.product_uom_qty != r.reserved_availability):
+            diff = rec.product_uom_qty - rec.reserved_availability
+            if diff:
+                if rec.product_id.route_ids.id == 6:
+                    self.mo_count = 1
+                    return {
+                        'res_model': 'mrp.production',
+                        'type': 'ir.actions.act_window',
+                        'context': {'default_product_id': rec.product_id.id, 'default_product_uom_qty':diff,
+                                    'default_origin':self.origin,
+                                    'default_product_uom_id':rec.product_uom.id,'default_requition_mo':self.id},
+                        'view_mode': 'form',
+                        'view_type': 'form',
+                        'view_id': self.env.ref("mrp.mrp_production_form_view").id,
+                        'target': 'new'
+                    }
+
+    @api.multi
+    def action_view_mo_picking(self):
+        return {
+            'name': _('Manufacturing Order'),
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'mrp.production',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'domain': [('requition_mo', '=', self.id)],
+        }
+
+
+class InheritMrp(models.Model):
+    _inherit = 'mrp.production'
+
+    requition_mo = fields.Integer()
