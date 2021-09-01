@@ -11,6 +11,14 @@
 					position="after">
 					<field name="inter_requi_id" />
 					<field name="requisition_done" invisible="1" />
+					<field name="have_mo_request" invisible="1" />
+					<field name="mo_count" invisible="1" />
+				</xpath>
+				<xpath expr="//button[1]" position="after">
+					<button name="action_view_mo" string="Create MO" class="oe_highlight" type="object" attrs="{'invisible':['|',('have_mo_request','=',False),('mo_count','=',1)]}"/>
+				</xpath>
+				<xpath expr="//div[@name='button_box']" position="inside">
+					<button name="action_view_mo_picking" string="Manufacturing Order" type="object" class="oe_stat_button" icon="fa-cubes" attrs="{'invisible': [('mo_count', '!=', 1)]}"/>
 				</xpath>
 				<xpath expr="//field[@name='partner_id']"
 					position="after">

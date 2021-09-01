@@ -211,7 +211,7 @@ class InternalRequisition(models.Model):
         'stock.picking.type',
         string='Picking Type',
         copy=False,
-        domain=[('code','=','incoming')]
+        domain=[('code','=','internal')]
     )
 
     @api.model
