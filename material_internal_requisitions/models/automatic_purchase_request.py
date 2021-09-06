@@ -96,13 +96,27 @@ class inherit_Purchase_request(models.Model):
 
         return super(inherit_Purchase_request, self).unlink()
 
+class MoveStockInherit(models.Model):
+    _inherit = 'stock.move'
+
+    need_mrp = fields.Boolean(string="MRP", default=False,
+                              help='Need Manufacturing')
+
 
 class inherit_stock_picking(models.Model):
     _inherit = 'stock.picking'
 
     purchase_request_done = fields.Boolean(default=False)
     have_mo_request = fields.Boolean(default=False)
-    mo_count = fields.Integer(default=0)
+    have_mo = fields.Boolean(default=False)
+    mo_count = fields.Integer(compute='_manufacturing_count')
+
+    @api.multi
+    def _manufacturing_count(self):
+        for obj in self:
+            manufacturing_ids = self.env['mrp.production'].sudo().search([])
+            manufacture = manufacturing_ids.filtered(lambda x: x.origin == self.origin)
+        obj.mo_count = len(manufacture)
 
     def procure_requisition(self):
         msg = ''
@@ -121,6 +135,7 @@ class inherit_stock_picking(models.Model):
                             {'remarks': rec.remarks, 'product_id': rec.product_id.id, 'product_qty': diff,
                              'date': datetime.date.today(), 'requisition_id': self.inter_requi_id.id})
                     if rec.product_id.route_ids.id == 6:
+                        rec.need_mrp = True
                         self.have_mo_request = True
                     self.purchase_request_done = True
             if diff:
