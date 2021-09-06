@@ -40,7 +40,7 @@ class CreateMrpWizard(models.TransientModel):
             line_wizard = line_wizard_pool. \
                 create({'name': line.name,
                         'product_id': line.product_id.id,
-                        'product_qty': line.product_uom_qty,
+                        'product_qty': (line.product_uom_qty - line.reserved_availability),
                         'product_uom': line.product_uom.id,
                         'product_bom_id': self.env['mrp.bom'].search([('product_tmpl_id','=',line.product_id.product_tmpl_id.id)],limit=1).id,
                         'stock_line_id': line.id,
