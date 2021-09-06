@@ -11,6 +11,7 @@
         'security/requisition_security.xml',
         'wizard/wizard_view.xml',
         'wizard/manufacturing_report_view.xml',
+        'wizard/create_mrp_wizard_views.xml',
         'data/requisition_sequence.xml',
         'data/employee_approval_template.xml',
         'data/confirm_template.xml',
