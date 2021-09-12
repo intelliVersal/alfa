@@ -59,7 +59,7 @@ class PrintProductLabel(models.TransientModel):
     )
     humanreadable = fields.Boolean(
         string='Print digital code of barcode',
-        default=True,
+        default=False,
     )
 
     @api.multi

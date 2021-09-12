@@ -2,7 +2,7 @@
 <odoo>
 
     <act_window id="action_print_label_from_template"
-        name="Custom Product Barcode"
+        name="Custom Product Labels"
         src_model="product.template"
         res_model="print.product.label"
         view_mode="form"
@@ -13,7 +13,7 @@
         key2="client_print_multi"/>
 
     <act_window id="action_print_label_from_product"
-        name="Custom Product Barcode"
+        name="Custom Product Labels"
         src_model="product.product"
         res_model="print.product.label"
         view_mode="form"
@@ -27,7 +27,7 @@
         <field name="name">print.product.label.view.form</field>
         <field name="model">print.product.label</field>
         <field name="arch" type="xml">
-            <form create="false" string="Print Product Barcode">
+            <form create="false" string="Print Product Labels">
                 <header>
                     <button name="action_print" string="Print"
                         help="Print product labels"

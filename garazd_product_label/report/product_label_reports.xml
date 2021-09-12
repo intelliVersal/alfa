@@ -19,7 +19,7 @@
 
     <report
         id="report_product_label_A4_57x35"
-        string="Product Barcode (Custom)"
+        string="Product labels 57x35mm"
         model="print.product.label.line"
         report_type="qweb-pdf"
         paperformat="garazd_product_label.paperformat_a4_clear"

@@ -2,39 +2,27 @@
 <odoo>
 
     <template id="label_57x35">
-          <style>
-                         .table1{
-                       table-layout: fixed;
-                       width:285px;
-                          height:170px;
-                          }
-          </style>
-        <table class="table1">
+        <table class="table table-bordered col-xs-4">
             <tr height="155px" style="border:0;margin:0;padding:0;">
                 <td class="col-xs-4 text-center" style="border:0;margin:0;padding:0;">
-                    <div style="text-align:center; font-weight:bold; height:40px !important; padding-top: 10px;padding-top: 5px; width: 252px !important; line-height: 1.0;">
+                    <div style="overflow:hidden; height:69px !important; width: 252px !important; padding: 5px 5px 0; line-height: 1.3;">
                         <span t-field="label.product_id.name"/>
+                        <span t-if="label.product_id.attribute_value_ids" t-esc="u', '.join(map(lambda x: x.attribute_id.name + u': ' + x.name, label.product_id.attribute_value_ids))"/>
                     </div>
-					  <div t-if="label.product_id.default_code" style="width: 100%; padding: 0; margin: 0; font-size:14px;text-align:center; font-weight:bold;">
+                    <div style="width: 100%; padding: 0; margin: 0; font-size: 25px; font-weight: bold;">
+                        <span t-field="label.product_id.currency_id.symbol"/>
+                        <span t-field="label.product_id.lst_price"/>
+                    </div>
+                    <div t-if="label.product_id.default_code" style="width: 100%; padding: 0; margin: 0; font-size: 12px;">
                         <span t-field="label.product_id.default_code"/>
                     </div>
-                      <div t-if="label.product_id.barcode" class="text-center align-middle" style="margin: 0; padding-top: 10px height: 50px;">
+                    <div t-if="label.product_id.barcode" class="text-center align-middle" style="margin: 0; padding: 0 3px; height: 20px;">
                         <t t-if="label.wizard_id.humanreadable" t-set="show_code" t-value="1"/>
                         <t t-else="" t-set="show_code" t-value="0" />
                         <img alt="Barcode"
-                             t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=%s' % ('Code128', label.product_id.barcode, 600,100, show_code)"
-                             style="overflow: hidden; width: 100%; height:70%;"/>
+                             t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=%s' % ('Code128', label.product_id.barcode, 600, 100, show_code)"
+                             style="overflow: hidden; width: 100%; height: 100%;"/>
                     </div>
-                    <div style="text-align:center; font-weight:bold; width: 100%; padding: 0; margin: 0; font-size: 15px;">
-                        <span t-field="label.product_id.cost_price_wt"/>
-                        <span t-field="label.product_id.currency_id.symbol"/>
-                    </div>
-                    <div style="text-align:left; font-weight:bold; width: 100%; padding: 0; margin: 0; font-size: 15px;">
-                        &#160;<span t-field="label.product_id.old_barcode"/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <span><strong>Cotton Home</strong></span>
-                    </div>
-
                 </td>
             </tr>
         </table>
