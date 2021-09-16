@@ -12,7 +12,7 @@
        <table class="table1">
             <tr height="155px" style="border:0;margin:0;padding:0;">
                 <td class="col-xs-4 text-center" style="border:0;margin:0;padding:0;">
-                    <div style="overflow:hidden; font-weight:bold; font-size:17px; height:79px !important; width: 225px !important; padding: 5px 5px 0; line-height: 1.3;">
+                    <div style="overflow:hidden; font-weight:bold; font-size:17px; height:79px !important; width: 250px !important; padding: 5px 5px 0; line-height: 1.3;">
                         <span t-field="label.product_id.name"/>
                         <span t-if="label.product_id.attribute_value_ids" t-esc="u', '.join(map(lambda x: x.attribute_id.name + u': ' + x.name, label.product_id.attribute_value_ids))"/>
                     </div>
@@ -20,10 +20,10 @@
                         <span t-field="label.product_id.currency_id.symbol"/>
                         <span t-field="label.product_id.lst_price"/>
                     </div>-->
-                    <div t-if="label.product_id.default_code" style="width: 100%; padding: 0; margin: 0; font-size: 16px;text-align:center;position:relative; left:-20px;">
+                    <div t-if="label.product_id.default_code" style="width: 100%; padding: 0; margin: 0; font-size: 16px;font-weight:bold;text-align:center;position:relative; left:-20px;">
                         <span t-field="label.product_id.default_code"/>
                     </div>
-                    <div t-if="label.product_id.barcode" class="text-center align-middle" style="margin: 0; padding: 0 3px; height: 45px;font-size: 16px;text-align:center;position:relative; left:-20px;">
+                    <div t-if="label.product_id.barcode" class="text-center align-middle" style="margin: 0; padding: 0 3px; height: 55px;width:320px;font-size: 16px;text-align:center;position:relative; left:-35px;">
                         <t t-if="label.wizard_id.humanreadable" t-set="show_code" t-value="1"/>
                         <t t-else="" t-set="show_code" t-value="0" />
                         <img alt="Barcode"
@@ -35,6 +35,7 @@
         </table>
     </template>
 
+	
     <template id="report_product_label_57x35_template">
         <t t-call="web.html_container">
             <t t-call="web.basic_layout">
