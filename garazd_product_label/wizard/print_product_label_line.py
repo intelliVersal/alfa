@@ -39,3 +39,40 @@ class PrintProductLabelLine(models.TransientModel):
                 record.update({'qty': record.qty - 1})
             if record.qty <= 0:
                 record.selected = False
+
+class PrintPackaeLabelLine(models.TransientModel):
+    _name = "print.package.label.line"
+    _description = 'Line with Product Label Data'
+
+    selected = fields.Boolean(
+        string='Print',
+        # compute='_compute_selected',
+        readonly=False,
+        default=True,
+    )
+    currency_id = fields.Many2one(
+        comodel_name='res.currency',
+        string='Currency',
+        required=True,
+        default=lambda self: self.env.user.company_id.currency_id,
+    )
+    wizard_package_id = fields.Many2one('print.package.label', 'Print Wizard')
+    package_id = fields.Many2one('stock.quant.package', 'Package', required=True)
+    # barcode = fields.Char('Barcode', related='product_id.barcode')
+    qty_initial = fields.Integer('Initial Qty', default=1)
+    qty = fields.Integer('Label Qty', default=1)
+
+    @api.multi
+    def action_plus_qty(self):
+        for record in self:
+            record.update({'qty': record.qty + 1})
+            if record.qty > 0:
+                record.selected = True
+
+    @api.multi
+    def action_minus_qty(self):
+        for record in self:
+            if record.qty > 0:
+                record.update({'qty': record.qty - 1})
+            if record.qty <= 0:
+                record.selected = False
