@@ -21,7 +21,7 @@
         id="report_product_label_A4_57x35"
         string="Product Barcode(custom)"
         model="print.product.label.line"
-        report_type="qweb-html"
+        report_type="qweb-pdf"
         paperformat="garazd_product_label.paperformat_custom_barcode"
         name="garazd_product_label.report_product_label_57x35_template"
         file="garazd_product_label.report_product_label_57x35_template"
