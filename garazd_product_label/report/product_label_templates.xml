@@ -106,7 +106,7 @@
                         <t t-foreach="list(range(qty))" t-as="index_qty">
                             <div t-if="count % 21 == 0" style="page-break-after:always;"/>
                             <div t-if="count % 3 == 0" style="clear:both;"/>
-                            <div style="width: 30%; float: left; height: 180px; margin: 0 10px;">
+                            <div>
                                 <t t-call="garazd_product_label.label_package_57x35"/>
                             </div>
                             <t t-set="count" t-value="count+1" />
