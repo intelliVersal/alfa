@@ -3,6 +3,21 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import Warning
 
+class InheritStockQuant(models.Model):
+    _inherit = 'stock.quant.package'
+
+    total_quantity = fields.Float(compute='quantity_total')
+
+    @api.depends('quant_ids.quantity')
+    def quantity_total(self):
+        for qty in self:
+            total_qty = 0.0
+            for line in qty.quant_ids:
+                    total_qty += line.quantity
+            qty.update({
+                'total_quantity': total_qty,
+                })
+
 
 class PrintProductLabel(models.TransientModel):
     _name = "print.product.label"
@@ -12,7 +27,7 @@ class PrintProductLabel(models.TransientModel):
 
     @api.model
     def _get_products(self):
-        print('Getttttttttttttt')
+        print('Enter Product')
         res = []
         if self._context.get('active_model') == 'product.template':
             products = self.env[self._context.get('active_model')].browse(self._context.get('default_product_ids'))
@@ -50,7 +65,7 @@ class PrintProductLabel(models.TransientModel):
         default=_get_products,
     )
     template = fields.Selection(
-        selection=[('garazd_product_label.report_product_label_A4_57x35', 'Label 57x35mm (A4: 21 pcs on sheet, 3x7)')],
+        selection=[('garazd_product_label.report_product_label_A4_57x35', 'Label 50x25mm')],
         string='Label template',
         default='garazd_product_label.report_product_label_A4_57x35',
     )
@@ -60,12 +75,13 @@ class PrintProductLabel(models.TransientModel):
     )
     humanreadable = fields.Boolean(
         string='Print digital code of barcode',
-        default=False,
+        default=True,
     )
 
     @api.multi
     def action_print(self):
         """ Print labels """
+        print('Action Print Product')
         self.ensure_one()
         labels = self.label_ids.filtered(lambda x: x.selected == True and x.qty > 0).mapped('id')
         if not labels:
@@ -93,11 +109,10 @@ class PrintPackageLabel(models.TransientModel):
 
     @api.model
     def _get_packages(self):
-        print('Getttttttttttttt Package')
+        print('Enter Package')
         res = []
         if self._context.get('active_model') == 'stock.quant.package':
             products = self.env[self._context.get('active_model')].browse(self._context.get('default_package_ids'))
-            print(products)
             for product in products:
                 label = self.env['print.package.label.line'].create({
                     'package_id': product.id,
@@ -124,10 +139,10 @@ class PrintPackageLabel(models.TransientModel):
         string='Labels for Package',
         default=_get_packages,
     )
-    template = fields.Selection(
-        selection=[('garazd_product_label.report_product_label_A4_57x35', 'Label 57x35mm (A4: 21 pcs on sheet, 3x7)')],
+    template_pac = fields.Selection(
+        selection=[('garazd_product_label.report_package_label_A4_57x35', 'Label 50x25mm')],
         string='Label template',
-        default='garazd_product_label.report_product_label_A4_57x35',
+        default='garazd_product_label.report_package_label_A4_57x35',
     )
     qty_per_product = fields.Integer(
         string='Label quantity per product',
@@ -135,17 +150,20 @@ class PrintPackageLabel(models.TransientModel):
     )
     humanreadable = fields.Boolean(
         string='Print digital code of barcode',
-        default=False,
+        default=True,
     )
 
     @api.multi
-    def action_print(self):
+    def action_print_package(self):
         """ Print labels """
+        print('Action Print Package')
         self.ensure_one()
         labels = self.package_label_ids.filtered(lambda x: x.selected == True and x.qty > 0).mapped('id')
+        print(labels)
         if not labels:
             raise Warning(_('Nothing to print, set the quantity of labels in the table.'))
-        return self.env.ref(self.template).with_context(discard_logo_check=True).report_action(labels)
+        print(self.template_pac)
+        return self.env.ref(self.template_pac).with_context(discard_logo_check=True).report_action(labels)
 
     @api.multi
     def action_set_qty(self):

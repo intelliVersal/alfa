@@ -66,9 +66,9 @@
                                 <field name="selected"/>
                                 <field name="product_id"/>
                                 <field name="barcode" readonly="True"/>
-                                <button name="action_minus_qty" type="object" string="" icon="fa-minus"/>
-                                <field name="qty" sum="Total" />
-                                <button name="action_plus_qty" type="object" string="" icon="fa-plus"/>
+                                <!--<button name="action_minus_qty" type="object" string="" icon="fa-minus"/>-->
+                                <field name="qty" sum="Total" invisible="1"/>
+                                <!--<button name="action_plus_qty" type="object" string="" icon="fa-plus"/>-->
                             </tree>
                         </field>
                     </page>
@@ -85,6 +85,17 @@
     </record>
 
     <!--Package -->
+    <record id="quant_package_stock_form_view"
+				model="ir.ui.view">
+			<field name="name">quant.packege.form.view</field>
+			<field name="model">stock.quant.package</field>
+			<field name="inherit_id" ref="stock.view_quant_package_form" />
+			<field name="arch" type="xml">
+                <xpath expr="//field[@name='location_id']" position="after">
+                    <field name="total_quantity" />
+                </xpath>
+            </field>
+    </record>
 
     <act_window id="action_print_label_from_package"
                 name="Custom Package Labels"
@@ -103,7 +114,7 @@
         <field name="arch" type="xml">
             <form create="false" string="Print Package Labels">
                 <header>
-                    <button name="action_print" string="Print"
+                    <button name="action_print_package" string="Print"
                             help="Print product labels"
                             type="object" icon="fa-print"
                             class="btn-primary mt8 mb8"/>
@@ -118,7 +129,7 @@
                         <field name="output" widget="radio" options="{'horizontal': true}"/>
                     </group>
                     <group name="pdf" attrs="{'invisible':[('output', '!=', 'pdf')]}">
-                        <field name="template" string="Label template" widget="radio"/>
+                        <field name="template_pac" string="Label template" widget="radio"/>
                     </group>
                 </group>
                 <notebook>
@@ -138,10 +149,9 @@
                             <tree editable="top" decoration-success="qty &gt; 0">
                                 <field name="selected"/>
                                 <field name="package_id"/>
-                                <!--<field name="barcode" readonly="True"/>-->
-                                <button name="action_minus_qty" type="object" string="" icon="fa-minus"/>
-                                <field name="qty" sum="Total" />
-                                <button name="action_plus_qty" type="object" string="" icon="fa-plus"/>
+                                <!--<button name="action_minus_qty" type="object" string="" icon="fa-minus"/>-->
+                                <field name="qty" sum="Total" invisible="1"/>
+                                <!--<button name="action_plus_qty" type="object" string="" icon="fa-plus"/>-->
                             </tree>
                         </field>
                     </page>
