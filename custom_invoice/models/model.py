@@ -14,19 +14,6 @@ class InheritAccount(models.Model):
             self.text_amount = num2words(self.amount_total, to='currency',
                                          lang=self.company_id.text_amount_language_currency)
 
-    def get_driver(self):
-        driver = ''
-        vehicle = ''
-        sale_obj = self.env['sale.order'].search([('name', '=', self.origin)])
-        driver = sale_obj.driver_name.name
-        vehicle = sale_obj.vehicle
-        return driver, vehicle
-
-class InheritSale(models.Model):
-    _inherit = 'sale.order'
-    driver_name = fields.Many2one('hr.employee', string='Driver name')
-    vehicle = fields.Char('Vehicle No.')
-
 
 class InheritPartner(models.Model):
     _inherit = 'res.company'

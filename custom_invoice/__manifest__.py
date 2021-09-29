@@ -13,8 +13,7 @@
     # always loaded
     'data': [
         'views/templates.xml',
-
-# reports
+        'views/account_config_setting_view.xml',
         'report/report_invoice.xml',
             ],
 
