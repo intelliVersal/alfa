@@ -33,6 +33,15 @@
                     <t t-as="o" t-foreach="docs">
                         <t t-call="custom_invoice.general_header_diff">
                             <div class="page">
+							<table class="table table-condensed">
+						<tr style="font-size:24px">
+						<td align="center" name="title" valign="middle">
+						<br></br>
+						<b t-if="o.type == 'out_invoice' and (o.state == 'open' or o.state == 'paid')">VAT INVOICE</b>
+						<b t-if="o.type == 'out_refund'">REFUND INVOICE</b>
+						</td>
+						</tr>
+					</table>
                                 <div class="clearfix">
                                     <div class="row">
                                         <style>
@@ -323,6 +332,15 @@
                     <t t-as="o" t-foreach="docs">
                         <t t-call="custom_invoice.general_header_diff">
                             <div class="page">
+							<table class="table table-condensed">
+						<tr style="font-size:24px">
+						<td align="center" name="title" valign="middle">
+						<br></br>
+						<b t-if="o.type == 'out_invoice' and (o.state == 'open' or o.state == 'paid')">VAT INVOICE</b>
+						<b t-if="o.type == 'out_refund'">REFUND INVOICE</b>
+						</td>
+						</tr>
+					</table>
                                 <div class="clearfix">
                                     <div class="row">
                                         <style>
