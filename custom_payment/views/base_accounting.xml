@@ -62,12 +62,12 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_supplier_form"/>
             <field name="arch" type="xml">
-			 <xpath expr="//button[@name='action_invoice_open']" position="attributes">
+			<!-- <xpath expr="//button[@name='action_invoice_open']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//button[2]" position="before">
                     <button name="action_invoice_open" type="object" states="draft" string="Validate" class="oe_highlight" groups="custom_payment.group_payments_jv"/>
-                </xpath>
+                </xpath>-->
                 <xpath expr="//field[@name='reference']" position="after">
                     <field name="recording_rule" attrs="{'readonly':[('state','!=','draft')]}"/>
                     <field name="account_analytics" attrs="{'readonly':[('state','!=','draft')]}"/>
@@ -83,7 +83,7 @@
                 </xpath>
             </field>
         </record>
-		        <record model="ir.ui.view" id="view_partner_inherit_sit_one">
+		      <!--  <record model="ir.ui.view" id="view_partner_inherit_sit_one">
             <field name="name">partner.inherit.view.sit</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
@@ -94,6 +94,6 @@
                         <field name="receiver_iden" />
                 </xpath>
             </field>
-              </record>
+              </record>-->
     </data>
 </odoo>

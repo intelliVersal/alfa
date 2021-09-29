@@ -396,12 +396,14 @@ class InheritPayment(models.Model):
 class InheritMoveLine(models.Model):
     _inherit = 'account.move.line'
     bank_payment_id = fields.Integer()
-	
+
+
 class InheritPartner(models.Model):
     _inherit = 'res.partner'
-    receiver_name = fields.Char('Partner Representative Name')
-    receiver_iden = fields.Char('Receiver ID')
-    cr_number = fields.Char('CR No.')
+
+    # receiver_name = fields.Char('Partner Representative Name')
+    # receiver_iden = fields.Char('Receiver ID')
+    # cr_number = fields.Char('CR No.')
     credit_new = fields.Float(compute='_credit_debit_get_new')
     debit_new = fields.Float(compute='_credit_debit_get_new')
 

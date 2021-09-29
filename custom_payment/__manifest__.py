@@ -15,7 +15,6 @@
     ],
     'data': ['security/security.xml',
         'views/base_accounting.xml',
-		'views/cheque_request_report.xml',
     ],
 	'application': True,
     'installable': True,
