@@ -491,7 +491,7 @@ class hr_employee(models.Model):
             'context': {'popup': True}
         }
 
-    @api.depends('country_id', 'country_id.is_saudi')
+    @api.onchange('country_id')
     def _compute_nationality_type(self):
         for rec in self:
             if rec.country_id.is_saudi:
