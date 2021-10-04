@@ -80,7 +80,7 @@ class CreateMrpWizard(models.TransientModel):
                 mrp_bom = self.env['mrp.bom'].create(bom_values)
             production_vals = {
                     'product_id': line.product_id.id,
-                    'bom_id': mrp_bom.id,
+                    'bom_id': mrp_bom[0].id,
                     'product_qty': line.product_qty,
                     'product_uom_id': line.product_uom.id,
                     'date_planned': datetime.now(),
