@@ -7,10 +7,11 @@
     'category': 'Custom',
     'version': '12.0.1',
 
-    'depends': ['stock','sale_stock'],
+    'depends': ['sale','stock','sale_stock'],
 
     'data': [
         'views/model_view.xml',
+        'views/sale_order_template.xml'
             ],
 
     'license': 'AGPL-3',
