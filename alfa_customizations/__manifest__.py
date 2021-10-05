@@ -12,7 +12,8 @@
     'data': [
         'views/model_view.xml',
         'views/sale_order_template.xml',
-        'views/manufacturing_template.xml'
+        'views/manufacturing_template.xml',
+        'views/delivery_slip_template.xml'
             ],
 
     'license': 'AGPL-3',
