@@ -17,7 +17,7 @@
 				<xpath expr="//button[1]" position="after">
 					<button name="%(material_internal_requisitions.action_create_mrp_order)d"
 							type="action" class="btn-primary"
-							attrs="{'invisible': [('have_mo_request', '=', False)]}"
+							attrs="{'invisible': ['|',('have_mo_request', '=', False),('inter_requi_id', '=', False)]}"
 							string="Create MO"/>
 				</xpath>
 
