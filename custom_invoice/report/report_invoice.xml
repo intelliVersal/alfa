@@ -129,7 +129,7 @@
                                                 </tr>
 
                                                 <tr t-if="o.partner_id">
-                                                    <td class="text-left"><strong>&#160;&#160;VAT Number/الظريبه الشراء:</strong></td>
+                                                    <td class="text-left"><strong>&#160;&#160;VAT Number/الرقم الضريبي:</strong></td>
                                                     <td class="text-right">
                                                         <span t-esc="o.partner_id.vat" />&#160;&#160;
                                                     </td>
