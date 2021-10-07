@@ -1358,12 +1358,12 @@ class AccountInvoice(models.Model):
 
     date_of_supply = fields.Date('Date of Supply',readonly=True, states={'draft': [('readonly', False)]})
     date_of_issue = fields.Date('Date of Issue',readonly=True, states={'draft': [('readonly', False)]})
-    trn = fields.Char('TRN', related='partner_id.vat', states={'draft': [('readonly', False)]})
+    trn = fields.Char('VAT', related='partner_id.vat', states={'draft': [('readonly', False)]})
     bill_of_entry = fields.One2many('reverse.charge', 'vendor_bill')
     reverse_charge_entry = fields.Many2one('reverse.charge.service', 'Reverse Charge Entry',readonly=True)
     import_charge = fields.Boolean('Import', readonly=True, states={'draft': [('readonly', False)]})
     reverse_charge = fields.Boolean('Reverse Charge', readonly=True, states={'draft': [('readonly', False)]})
-    domestic = fields.Boolean('Domestic Reverse Charge')
+    domestic = fields.Boolean('Reverse Charge Mechanism')
     export = fields.Boolean('Export')
 
     @api.multi
