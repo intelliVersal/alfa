@@ -1,37 +1,54 @@
 <odoo>
     <data>
+
+        <record id="view_manufacture_inh_sit" model="ir.ui.view">
+            <field name="name">order.manufacture.view.req</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page[3]/group/group" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="picking_type_id" domain="[('code', '=', 'mrp_operation')]" attrs="{'readonly': [('has_moves', '=', True)]}"/>
+                    <field name="location_src_id" domain="[('usage','=','internal')]" attrs="{'readonly': [('has_moves', '=', True)]}"/>
+                    <field name="location_dest_id" domain="[('usage','=','internal')]" attrs="{'readonly': [('has_moves', '=', True)]}"/>
+                </xpath>
+            </field>
+        </record>
+
         <record id="view_warehouse_stock_inherit" model="ir.ui.view">
             <field name="name">warehouse.stock.view.req</field>
             <field name="model">stock.warehouse</field>
             <field name="inherit_id" ref="stock.view_warehouse"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='code']" position="after">
-                     	<field name="is_raw_location" />
+                    <field name="is_raw_location" />
                 </xpath>
             </field>
         </record>
 
-         <record id="view_sale_stock_inherit" model="ir.ui.view">
+        <record id="view_sale_stock_inherit" model="ir.ui.view">
             <field name="name">sale.stock.view.req</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='warehouse_id']" position="attributes">
-                     	<attribute name="invisible">1</attribute>
+                    <attribute name="invisible">1</attribute>
                 </xpath>
             </field>
         </record>
-         <record id="view_sale_order_inherit_sit_alfa" model="ir.ui.view">
+        <record id="view_sale_order_inherit_sit_alfa" model="ir.ui.view">
             <field name="name">view.order.sale.sit</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='partner_shipping_id']" position="after">
-                     	<field name="warehouse_id" options="{'no_create': True}" groups="stock.group_stock_multi_locations" />
+                    <field name="warehouse_id" options="{'no_create': True}" groups="stock.group_stock_multi_locations" />
                 </xpath>
             </field>
         </record>
-		  <record id="view_picking_inherit_sit_alfa" model="ir.ui.view">
+        <record id="view_picking_inherit_sit_alfa" model="ir.ui.view">
             <field name="name">view.picking.stock.int</field>
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
@@ -56,6 +73,6 @@
             </field>
         </record>
 
-    
+
     </data>
 </odoo>
