@@ -7,7 +7,7 @@
     'category': 'Custom',
     'version': '12.0.1',
 
-    'depends': ['hr','sale','stock','sale_stock'],
+    'depends': ['hr','sale','stock','sale_stock','purchase','account'],
 
     'data': [
         'views/model_view.xml',
