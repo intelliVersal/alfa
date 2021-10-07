@@ -123,11 +123,11 @@
                                 <tr>
                                     <th class="text-left" style="color:#5178D0;font-size: 47px;" colspan="3">VAT Return Form</th>
                                     <th class="text-center" style="color:#5178D0;">Amount<br/>
-                                    (BHD)</th>
+                                    (SAR)</th>
                                     <th class="text-center" style="color:#5178D0;">Adjustment
-                                    <br/>(BHD)</th>
+                                    <br/>(SAR)</th>
                                     <th class="text-center" style="color:#5178D0;">VAT Amount
-                                        <br/>(BHD)</th>
+                                        <br/>(SAR)</th>
                                 </tr>
                             </thead>
                             <tbody class="invoice_tbody">
@@ -228,7 +228,7 @@
                                 </tr>
                                 <tr>
                                     <td class="text-right"><span style="background: #5178D0;border-radius: 0.8em;-moz-border-radius: 0.8em;-webkit-border-radius: 0.8em;color: #ffffff;display: inline-block;font-weight: bold;line-height: 1.6em;margin-right: 15px;text-align: center;width: 1.6em;">15</span></td>
-                                    <td>Corrections from previous period(between BHD+5000)</td>
+                                    <td>Corrections from previous period(between SAR+5000)</td>
                                     <td></td>
                                     <td></td>
                                     <td  style="border: 2px solid #b8a8a8;"></td>
@@ -253,5 +253,5 @@
                     </t>
                 </t>
             </t>
-        </template>
+    </template>
 </odoo>

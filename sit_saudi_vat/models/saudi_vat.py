@@ -306,6 +306,19 @@ class UaeVatReturn(models.Model):
     sales_in_form = fields.Float('Sales in Form', compute='compute_purchase_tax_charge')
     sales_tax_in_form = fields.Float('Sales Tax in Form', compute='compute_purchase_tax_charge')
 
+    @api.model
+    def create(self, vals):
+        start_date = vals['start_date']
+        vat_obj = self.env['uae.vat.return']
+        vats = vat_obj.search([])
+        if vats:
+            for vat in vats:
+                vat_end = datetime.datetime.strptime(str(vat.end_date), "%Y-%m-%d")
+                start = datetime.datetime.strptime(str(start_date), "%Y-%m-%d")
+                if start <= vat_end:
+                    raise UserError(_('The VAT return period which you have selected is already exist!'))
+        return super(UaeVatReturn, self).create(vals)
+
     @api.multi
     def compute_total_charge(self):
         for line in self:
@@ -327,12 +340,12 @@ class UaeVatReturn(models.Model):
                     purchase_tax += return_line.tax_amount
                     _logger.info(purchase_tax)
                 if return_line.name == 'Exempt' and return_line.scope == 'Sale' and return_line.reverse_charge == False:
-                    exempt_sales = return_line.base_amount
+                    exempt_sales += return_line.base_amount
                 if return_line.name == 'Zero-Rated' and return_line.scope == 'Sale' and return_line.reverse_charge == False:
-                    zero_rated_sales = return_line.base_amount
+                    zero_rated_sales += return_line.base_amount
                 if return_line.tax_amount and return_line.scope == 'Sale' and return_line.reverse_charge == False:
-                    total_taxable_sales = return_line.base_amount
-                    total_tax = return_line.tax_amount
+                    total_taxable_sales += return_line.base_amount
+                    total_tax += return_line.tax_amount
 
         _logger.info(exempt_sales)
         _logger.info(zero_rated_sales)
@@ -701,7 +714,7 @@ class UaeVatReturn(models.Model):
 
     @api.multi
     def tax_adjustment(self):
-        adjustment_form_id = self.env.ref('bahrain_vat.tax_adjustment_wizard').id
+        adjustment_form_id = self.env.ref('sit_saudi_vat.tax_adjustment_wizard').id
         return {
             'type': 'ir.actions.act_window',
             'view_type': 'form',
@@ -801,7 +814,7 @@ class UaeVatReturn(models.Model):
         for tax in self.env['account.tax'].search([('type_tax_use', '!=', 'none')]):
             if tax.amount < 0:
                 zero_rated = True
-            req = """select aml.tax_line_id, COALESCE(SUM(aml.debit-aml.credit), 0) FROM account_move_line aml 
+            req = """select aml.tax_line_id, COALESCE(SUM(aml.debit-aml.credit), 0) FROM account_move_line aml
                     INNER JOIN account_tax tax on (aml.tax_line_id = tax.id)
                     WHERE aml.tax_exigible AND aml.date >= %s AND aml.date <= %s AND aml.company_id = %s AND tax.type_tax_use = 'sale' GROUP BY aml.tax_line_id;"""
 
@@ -845,7 +858,7 @@ class UaeVatReturn(models.Model):
                                              'reverse_charge': tax.reverse_charge,
                                              'scope': 'Sale'})
 
-            purchase_taxs = """select aml.tax_line_id, COALESCE(SUM(aml.debit-aml.credit), 0) FROM account_move_line aml 
+            purchase_taxs = """select aml.tax_line_id, COALESCE(SUM(aml.debit-aml.credit), 0) FROM account_move_line aml
                     INNER JOIN account_tax tax on (aml.tax_line_id = tax.id)
                     WHERE aml.tax_exigible AND aml.date >= %s AND aml.date <= %s AND aml.company_id = %s AND tax.type_tax_use = 'purchase' GROUP BY tax.id, aml.tax_line_id;"""
 
@@ -1044,7 +1057,7 @@ class UaeVatReturn(models.Model):
             if amount > 0:
                 tax_return.tax_validate()
             else:
-                roll_form_id = self.env.ref('bahrain_vat.rollforward_wizard').id
+                roll_form_id = self.env.ref('sit_saudi_vat.rollforward_wizard').id
                 return {
                     'type': 'ir.actions.act_window',
                     'view_type': 'form',
@@ -1249,6 +1262,7 @@ class UaeVatReturnLine(models.Model):
     base_amount = fields.Float('Base Amount')
     zero_rated = fields.Boolean('Zero Rated Tax')
     reverse_charge = fields.Boolean('Reverse Charge')
+    remaing_vat_line = fields.Boolean('Remaining Vat',default=False)
 
     def get_balance_domain(self, state_list, type_list):
         tax_ids = self.env['account.tax'].search([('name', '=', self.name)])

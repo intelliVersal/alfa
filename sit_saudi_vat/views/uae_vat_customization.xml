@@ -134,12 +134,13 @@
                 <form string="Vat Return">
                     <header>
                         <field name="state" widget="statusbar"/>
-                        <button name="%(bahrain_vat.vat_return_payment_wizard_action)d" states="validate" type="action" string="Register Payment" class="oe_highlight o_expense_sheet_pay" context="{'default_amount': total_payable}" groups="account.group_account_manager"/>
+                        <button name="%(sit_saudi_vat.vat_return_payment_wizard_action)d" states="validate" type="action" string="Register Payment" class="oe_highlight o_expense_sheet_pay" context="{'default_amount': total_payable}" groups="account.group_account_manager"/>
                         <button name="tax_compute" type="object" states="new" string="Compute Tax" class="oe_highlight"/>
                         <button name="action_validate_new" type="object" states="new" string="Validate" class="oe_highlight"/>
                         <button name="tax_close" type="object" states="validate" string="Close" class="oe_highlight"/>
                         <button string="Export Report" class="oe_highlight" name="export_for_import" type="object" groups="base.group_user"/>
                         <button name="tax_adjustment" states="new" type="object" string="TAX Adjustment" class="oe_highlight o_expense_sheet_pay" context="{'default_amount': total_payable}" groups="account.group_account_manager"/>
+                        <button name="tax_calculate_remaining" type="object" states="new" string="Check Remaining Vat" class="oe_highlight"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -159,6 +160,22 @@
                             <div>
                                 <field name="partner_id" required="1" class="oe_inline"/>
                             </div>
+
+                            <label for="vat_company_logo"/>
+                            <div>
+                                <field name="vat_company_logo" required="1" class="oe_inline"/>
+                            </div>
+                            <label for="month_type"/>
+                            <div>
+                                <field name="month_type" required="1" class="oe_inline"/>
+                            </div>
+
+                            <label for="month_quarter" attrs="{'invisible': [('month_type', '!=', 'quarter')]}"/>
+                            <div>
+                                <field name="month_quarter" class="oe_inline" attrs="{'invisible': [('month_type', '!=', 'quarter')], 'required': [('month_type', '=', 'quarter')]}"/>
+                            </div>
+
+
                         </group>
                         <group>
                             <group string="Sales">
@@ -185,6 +202,7 @@
                                         <field name="tax_amount"/>
                                         <button type="object" name="view_tax_regular_lines"
                                                 string="View Tax regular lines" icon="fa-search-plus"/>
+                                        <field name="remaing_vat_line" attrs="{'invisible':[('remaing_vat_line','!=',True)]}"/>
                                     </tree>
                                 </field>
                             </page>
@@ -215,6 +233,7 @@
                             <page string="Account Details">
                                 <group>
                                     <group>
+                                        <field name="vat_payment" groups="account.group_account_user"/>
                                         <field name="journal_id"/>
                                         <field name="move_id"/>
                                     </group>
@@ -231,6 +250,15 @@
                                     </tree>
                                 </field>
                             </page>
+                            <page string="Report Details" >
+                                <group>
+                                    <group>
+                                        <field name="vat_report_14"/>
+                                        <field name="vat_report_15"/>
+                                    </group>
+                                </group>
+                            </page>
+
                         </notebook>
                         </sheet>
                         <div class="oe_chatter">
@@ -353,7 +381,7 @@
                     <field name="state" widget="statusbar"/>
                     <button name="tax_compute" type="object" states="draft" string="Compute reverse charge" class="oe_highlight"/>
                     <button name="action_move_create" states="draft" string="Post Journal Entries" type="object" groups="account.group_account_manager" class="oe_highlight o_expense_sheet_post"/>
-                    <button name="%(bahrain_vat.reverse_charge_payment_wizard_action)d" states="validate" type="action" string="Register Payment" class="oe_highlight o_expense_sheet_pay" context="{'default_amount': custom_amount_and_reverse}" groups="account.group_account_manager"/>
+                    <button name="%(sit_saudi_vat.reverse_charge_payment_wizard_action)d" states="validate" type="action" string="Register Payment" class="oe_highlight o_expense_sheet_pay" context="{'default_amount': custom_amount_and_reverse}" groups="account.group_account_manager"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
