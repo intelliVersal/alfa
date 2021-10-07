@@ -42,8 +42,8 @@ class AnalyticAccount(models.Model):
     _sql_constraints = [
         ('unique_name', "unique(name, company_id)", "Name must be unique."),
         ('unique_arabic_name', "unique(arabic_name, company_id)", "Arabic name must be unique."),
-        ('unique_final_code', "unique(final_code, company_id)", "Final code must be unique."),
-        ('unique_final_code_', "unique(parent_id,code, company_id)", "Final code must be unique."),
+        # ('unique_final_code', "unique(final_code, company_id)", "Final code must be unique."),
+        # ('unique_final_code_', "unique(parent_id,code, company_id)", "Final code must be unique."),
     ]
 
     @api.one
