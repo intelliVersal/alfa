@@ -20,7 +20,9 @@ class InheritManufacturing(models.Model):
                                    'description': items.product_id.name,
                                    'qty': difference,
                                    'uom':items.product_id.uom_id.id}))
-        employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1)
+        employee = self.env['hr.employee'].search([('request_user_id', '=', self.env.uid)],limit=1)
+        if not employee:
+            raise ValidationError(_('Please select the related user on your employee form.'))
         location = self.env['stock.location'].search([('name', '=', 'Stock'),('location_id.name', '=', 'RM-ML')])
         picking_type = self.env['stock.picking.type'].search([('warehouse_id.name', '=', 'Semi Production W/H - MALHAM'), ('name', '=', 'Receipts')])
         self.env['internal.requisition'].create({'request_emp':employee.id,

@@ -33,4 +33,9 @@ class InheritProduction(models.Model):
                 'remain_quantity': qty.product_qty - produce_qty,
             })
 
+class InheritEmployee(models.Model):
+    _inherit = 'hr.employee'
+
+    request_user_id = fields.Many2one('res.user')
+
 
