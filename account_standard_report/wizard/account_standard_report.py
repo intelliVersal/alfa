@@ -255,6 +255,7 @@ class AccountStandardLedger(models.TransientModel):
     summary = fields.Boolean('Trial Balance', default=False,
                              help=' * Check : generate a trial balance.\n'
                                   ' * Uncheck : detail report.\n')
+    account_types = fields.Selection([('expense','Expense'),('income','Income')],default='')
     amount_currency = fields.Boolean("With Currency", help="It adds the currency column on report if the currency differs from the company currency.")
     reconciled = fields.Boolean('With Reconciled Entries', default=True,
                                 help='Only for entrie with a payable/receivable account.\n'
@@ -266,6 +267,7 @@ class AccountStandardLedger(models.TransientModel):
     account_methode = fields.Selection([('include', 'Include'), ('exclude', 'Exclude')], string="Methode")
     account_in_ex_clude = fields.Many2many(comodel_name='account.account', string='Accounts', help='If empty, get all accounts')
     analytic_account_select_ids = fields.Many2many(comodel_name='account.analytic.account', string='Analytic Accounts')
+    taxes_select_ids = fields.Many2many(comodel_name='account.tax', string='Taxes')
     analytic_recursive = fields.Boolean('recursive', default=True)
     init_balance_history = fields.Boolean('Initial balance with history.', default=True,
                                           help=' * Check this box if you need to report all the debit and the credit sum before the Start Date.\n'
@@ -298,11 +300,27 @@ class AccountStandardLedger(models.TransientModel):
     account_ids = fields.Many2many('account.account', relation='table_standard_report_accounts')
     partner_ids = fields.Many2many('res.partner', relation='table_standard_report_partner')
     analytic_ids = fields.Many2many('account.analytic.tag', string='Tags', relation='table_standard_report_analytic')
-    employee_ids = fields.Many2many('hr.employee', string='Employees', relation='table_standard_report_employee')
+    # employee_ids = fields.Many2many('hr.employee', string='Employees', relation='table_standard_report_employee')
+    employee_ids = fields.Many2many('hr.employee', string='Employees', relation='table_standard_report_employee', domain=['|', ('active', '=', True), ('active', '=', False)])
+    
     type = fields.Selection([('account', 'Account'), ('partner', 'Partner'), ('journal', 'Journal'), ('analytic', 'Analytic'),
                              ('sub_account', 'Sub account'),
                              ('employees', 'Employees'), ])
-    level = fields.Integer('Level', default=5)
+    level = fields.Integer('Level', default=5)\
+
+    @api.onchange('account_types')
+    def required_accounts(self):
+        account_list = []
+        if self.account_types:
+            accounts = self.env['account.account'].search([])
+            if self.account_types == 'expense':
+                selected_accounts = accounts.filtered(lambda x:x.user_type_id.location == 'expense')
+            if self.account_types == 'income':
+                selected_accounts = accounts.filtered(lambda x:x.user_type_id.location == 'income')
+            for rec in selected_accounts:
+                account_list.append(rec.id)
+        return {'domain': {'account_in_ex_clude': [('id', 'in',account_list)]}}
+
 
     @api.multi
     def save_report(self):
@@ -316,10 +334,15 @@ class AccountStandardLedger(models.TransientModel):
 
     @api.onchange('account_in_ex_clude')
     def on_change_summary(self):
+        list=[]
         if self.account_in_ex_clude:
             self.account_methode = 'include'
         else:
             self.account_methode = False
+        accounts = self.env['account.account'].search([('company_id','=',self.company_id.id)])
+        for item in accounts:
+            list.append(item.id)
+        return {'domain': {'account_in_ex_clude': [('id', 'in', list)]}}
 
     @api.onchange('type_ledger')
     def on_change_type_ledger(self):
@@ -448,6 +471,12 @@ class AccountStandardLedger(models.TransientModel):
             res += "%s %s.tags_str is not null" % (and_(), aml)
         if self.analytic_ids:
             x = " or ".join(["%s.tags_str ilike  '%%%%;'|| %s || ';%%%%'" % (aml, tag.id) for tag in self.analytic_ids])
+            res += ' %s ( %s )' % (
+                and_(), x)
+
+        #Taxes
+        if self.taxes_select_ids:
+            x = " or ".join(["%s.tax_ids.name ilike  '%%%%;'|| %s || ';%%%%'" % (aml, tax.id) for tax in self.taxes_select_ids])
             res += ' %s ( %s )' % (
                 and_(), x)
         # Employees
@@ -1188,6 +1217,8 @@ class AccountStandardLedger(models.TransientModel):
                     aml.older AS older,
                     aml.credit AS credit,
                     aml.debit AS debit,
+                    antg.name AS tags,
+                    actg.name AS tax,
                     aml.cumul_balance AS cumul_balance,
                     aml.init_debit AS init_debit,
                     aml.init_credit AS init_credit,
@@ -1215,6 +1246,10 @@ class AccountStandardLedger(models.TransientModel):
                     LEFT JOIN account_analytic_account an_acc ON (aml.analytic_account_id = an_acc.id)
                     LEFT JOIN res_currency cr ON (aml.currency_id = cr.id)
                     LEFT JOIN hr_employee emp ON (aml.employee_id = emp.id)
+                    LEFT JOIN account_analytic_tag_account_move_line_rel aatm ON (aml.move_line_id = aatm.account_move_line_id)
+                    LEFT JOIN account_analytic_tag antg ON (aatm.account_analytic_tag_id = antg.id)
+                    LEFT JOIN account_move_line_account_tax_rel actm ON (aml.move_line_id = actm.account_move_line_id)
+                    LEFT JOIN account_tax actg ON (actm.account_tax_id = actg.id)
                     LEFT JOIN move_line_tags mlt ON (aml.analytic_id = mlt.id)
                 WHERE
                     aml.report_id = %s
