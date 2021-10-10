@@ -22,6 +22,7 @@ class InheritProduction(models.Model):
 
     produced_quantity = fields.Float(compute='calculate_quantities', store=True)
     remain_quantity = fields.Float(compute='calculate_quantities', store=True)
+    machine_number = fields.Char('Machine number')
 
     def calculate_quantities(self):
         for qty in self:

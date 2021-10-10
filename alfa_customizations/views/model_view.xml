@@ -14,6 +14,9 @@
                     <field name="location_src_id" domain="[('usage','=','internal')]" attrs="{'readonly': [('has_moves', '=', True)]}"/>
                     <field name="location_dest_id" domain="[('usage','=','internal')]" attrs="{'readonly': [('has_moves', '=', True)]}"/>
                 </xpath>
+                <xpath expr="//field[@name='bom_id']" position="after">
+                    <field name="machine_number" attrs="{'readonly': [('has_moves', '=', True)]}"/>
+                </xpath>
             </field>
         </record>
 
