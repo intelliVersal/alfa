@@ -92,6 +92,8 @@ class BankTemplateReport(models.Model):
                                                                  'other_allowance': total_allowance if self.report_type == 'Salary Report' else 0,
                                                                  'deductions': total_deduction if self.report_type == 'Salary Report' else 0,
                                                                  'address':'',
+                                                                 'status':'Active',
+                                                                 'payment_reference': 'Salary of '+ str(rec.month),
                                                                  'currency':'SAR'})
 
     @api.multi
@@ -171,9 +173,9 @@ class BankTemplateReport(models.Model):
             ws1.write(row, col + 9, rec.deductions, line_content_style)
             ws1.write(row, col + 10, rec.address, line_content_style)
             ws1.write(row, col + 11, rec.currency, line_content_style)
-            ws1.write(row, col + 12, rec.status if rec.status else '', line_content_style)
+            ws1.write(row, col + 12, rec.status, line_content_style)
             ws1.write(row, col + 13, rec.payment_method if rec.payment_method else '', line_content_style)
-            ws1.write(row, col + 14, rec.payment_reference if rec.payment_reference else '', line_content_style)
+            ws1.write(row, col + 14, rec.payment_reference, line_content_style)
             row += 1
 
         wb1.save(fp)
