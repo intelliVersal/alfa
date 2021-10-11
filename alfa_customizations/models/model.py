@@ -37,6 +37,6 @@ class InheritProduction(models.Model):
 class InheritEmployee(models.Model):
     _inherit = 'hr.employee'
 
-    request_user_id = fields.Many2one('res.user')
+    request_user_id = fields.Many2one('res.users')
 
 
