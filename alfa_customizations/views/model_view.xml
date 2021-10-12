@@ -79,6 +79,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="request_user_id" string="Related User" />
+                    <field name="overtime_eligible" string="Overtime Eligible" />
                 </xpath>
                 <xpath expr="//field[@name='user_id']" position="attributes">
                     <attribute name="invisible">1</attribute>

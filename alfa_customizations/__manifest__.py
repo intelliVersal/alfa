@@ -10,7 +10,9 @@
     'depends': ['hr','sale','stock','sale_stock','purchase','account'],
 
     'data': [
+        'security/security.xml',
         'views/model_view.xml',
+        'views/partner_view.xml',
         'views/sale_order_template.xml',
         'views/manufacturing_template.xml',
         'views/delivery_slip_template.xml'

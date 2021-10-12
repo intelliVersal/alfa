@@ -1,25 +1,23 @@
 <odoo>
 	<data>
-	
-	    <!-- Group for credit %age allow -->
+
+		<!-- Group for credit %age allow -->
 
 		<record model="ir.module.category" id="credit_allow">
-			<field name="name">Credit Amount Allowed</field>
-			<field name="description">Credit Approval Group</field>
+			<field name="name">Sale Approvals</field>
+			<field name="description">Sale Credit Amount Approvals</field>
 			<field name="sequence">21</field>
 		</record>
 
-		<record id="credit_allow_group_1" model="res.groups">
-			<field name="name">Credit Approval 1</field>
+		<record id="allow_maximum_discount" model="res.groups">
+			<field name="name">Allow Maximum Discount</field>
 			<field name="category_id" ref="sale_restrictions.credit_allow" />
 		</record>
-		<record id="credit_allow_group_2" model="res.groups">
-			<field name="name">Credit Approval 2</field>
+		<record id="allow_credit_sale" model="res.groups">
+			<field name="name">Allow Credit Sale</field>
 			<field name="category_id" ref="sale_restrictions.credit_allow" />
 		</record>
-		<record id="credit_allow_group_3" model="res.groups">
-			<field name="name">Credit Approval 3</field>
-			<field name="category_id" ref="sale_restrictions.credit_allow" />
-		</record>
+
+
 	</data>
 </odoo>

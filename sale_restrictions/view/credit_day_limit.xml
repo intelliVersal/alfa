@@ -1,20 +1,6 @@
 <odoo>
 	<data>
 
-		<record id='view_sale_order' model='ir.ui.view'>
-			<field name='name'>sale.order.inherit</field>
-			<field name='model'>sale.order</field>
-			<field name='inherit_id' ref='sale.view_order_form' />
-			<field name='arch' type='xml'>
-				<xpath expr="//group[@name='sale_shipping']" position='after'>
-					<group string="Approvals" name="sale_approvals">
-						<field name="credit_limit_status" string='Credit Limit Approval'
-							   groups="sale_restrictions.credit_allow_group_1,sale_restrictions.credit_allow_group_2,sale_restrictions.credit_allow_group_3" />
-					</group>
-				</xpath>
-			</field>
-		</record>
-
 		<record id='view_partner' model='ir.ui.view'>
 			<field name='name'>partner.inherit</field>
 			<field name='model'>res.partner</field>
@@ -23,46 +9,11 @@
 				<xpath
 						expr="//page[@name='sales_purchases']/group/group/field[@name='customer']"
 						position='after'>
-					<field name="credit_limit" />
+					<field name="credit_limit" attrs="{'readonly':[('state','=','approved')]}"/>
 				</xpath>
 			</field>
 		</record>
 
-		<record id='view_approval' model='ir.ui.view'>
-			<field name="name">credit.limit.view</field>
-			<field name="model">approval.lines</field>
-			<field name="arch" type="xml">
-				<form string="Credit Limit">
-					<sheet>
-						<group>
-							<group string="Credit Limit">
-								<field name="credit_range" nolabel="1">
-									<tree editable="bottom" class="new1_class">
-										<field name="amount_percent" string="Credit Amount"/>
-										<field name="group" />
-									</tree>
-								</field>
-							</group>
-							<group>
-							</group>
-						</group>
-					</sheet>
-				</form>
-			</field>
-		</record>
-
-
-		<record id="action_sale_approve" model="ir.actions.act_window">
-			<field name="name">Credit Limit</field>
-			<field name="res_model">approval.lines</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-			<field name="view_id" ref="view_approval"></field>
-			<field name="view_id" ref="approval_tree"></field>
-		</record>
-
-		<menuitem id="action_new_view" parent="sale.menu_sale_config"
-				  name="Sale Approvals" sequence="1" action="action_sale_approve" />
 	</data>
 </odoo>
 

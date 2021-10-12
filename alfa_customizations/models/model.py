@@ -38,5 +38,23 @@ class InheritEmployee(models.Model):
     _inherit = 'hr.employee'
 
     request_user_id = fields.Many2one('res.users')
+    overtime_eligible = fields.Boolean(default=False)
+
+
+class PartnerInherit(models.Model):
+    _inherit = 'res.partner'
+
+    state = fields.Selection([('draft', 'Draft'), ('submit', 'Submit'), ('approved', 'Approve')], default='draft')
+    english_name = fields.Char()
+
+    def to_submit(self):
+        return self.write({'state': 'submit'})
+
+    def to_approve(self):
+        return self.write({'state': 'approved'})
+
+    def to_draft(self):
+        return self.write({'state': 'draft'})
+
 
 
