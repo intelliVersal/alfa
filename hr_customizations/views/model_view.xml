@@ -49,11 +49,12 @@
 				</xpath>
 			</field>
 		</record>
-                  <menuitem id="menu_payroll_report_par"
+                <!--  <menuitem id="menu_payroll_report_par"
 			name="Reporting" parent="hr_payroll.menu_hr_payroll_root" groups='basic_hr.group_hr_ceo' />
                  <menuitem id="menu_payroll_report_child"
 			name="Payslip Report" parent="hr_customizations.menu_payroll_report_par" sequence='50'
-			action="action_report_wizard_payslips" />
+			action="action_report_wizard_payslips" />-->
+			
            <record id="view_eos_emp_form_sit_one" model="ir.ui.view">
             <field name="name">eos.employee.view.form.sit</field>
             <field name="model">employee.eos</field>
