@@ -579,7 +579,9 @@ class Payslip(models.Model):
         if self.employee_id.overtime_eligible == True:
             if self.overtime_h:
                 OVT = self.contract_id.basic_salary / 160 * self.overtime_h
-            return OVT
+        else:
+            OVT = 0
+        return OVT
 
     @api.multi
     def _get_delay_amounts(self):
