@@ -573,13 +573,13 @@ class Payslip(models.Model):
                 self.rule_overtime = line.total
             if line.code == 'ABS':
                 self.rule_absence = line.total
-
     @api.model
     def RULE_overtime(self):
         OVT = 0
-        if self.overtime_h:
-            OVT = self.contract_id.basic_salary / 160 * self.overtime_h
-        return OVT
+        if self.employee_id.overtime_eligible == True:
+            if self.overtime_h:
+                OVT = self.contract_id.basic_salary / 160 * self.overtime_h
+            return OVT
 
     @api.multi
     def _get_delay_amounts(self):
