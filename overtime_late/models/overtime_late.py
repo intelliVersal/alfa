@@ -573,12 +573,14 @@ class Payslip(models.Model):
                 self.rule_overtime = line.total
             if line.code == 'ABS':
                 self.rule_absence = line.total
-
     @api.model
     def RULE_overtime(self):
         OVT = 0
-        if self.overtime_h:
-            OVT = self.contract_id.basic_salary / 160 * self.overtime_h
+        if self.employee_id.overtime_eligible == True:
+            if self.overtime_h:
+                OVT = self.contract_id.basic_salary / 160 * self.overtime_h
+        else:
+            OVT = 0
         return OVT
 
     @api.multi
@@ -921,9 +923,13 @@ class Employee_report(models.Model):
                 ('date', '>=', __(self.overtime_date_from)),
                 ('date', '<=', __(self.overtime_date_to)),
             ])
-            self.total_overtime = sum([att.overtime_assigned_hours for att in overtime_days if att.overtime_assignment_id.state == 'confirmed'])
-            self.total_overtime_amount = sum(
-                [att.overtime_assignment_id.overtime_calc for att in overtime_days if att.overtime_assignment_id.state == 'confirmed'])
+            total_overtime = 0
+            for att_over in overtime_days:
+                total_overtime += att_over.overtime_minutes
+            self.total_overtime = total_overtime
+            # self.total_overtime = sum([att.overtime_assigned_hours for att in overtime_days if att.overtime_assignment_id.state == 'confirmed'])
+            # self.total_overtime_amount = sum(
+            #     [att.overtime_assignment_id.overtime_calc for att in overtime_days if att.overtime_assignment_id.state == 'confirmed'])
             self.overtime_day_ids = overtime_days.ids
         self.total_delay_round = round(self.total_delay, 2)
         self.total_overtime_round = round(self.total_overtime, 2)

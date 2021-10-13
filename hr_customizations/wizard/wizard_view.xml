@@ -35,6 +35,7 @@
 
      <!--Report wizard-->
 
+<!--
 		<record id="view_wiz_payslip_report" model="ir.ui.view">
 			<field name="name">requisition.report.view</field>
 			<field name="model">payslips.report</field>
@@ -60,7 +61,7 @@
 			</field>
 		</record>
 
-		<!-- Action for rejection of contract -->
+		&lt;!&ndash; Action for rejection of contract &ndash;&gt;
 
 		<record id="action_report_wizard_payslips"
 			model="ir.actions.act_window">
@@ -80,6 +81,7 @@
             name="hr_customizations.payslip_report_template"
             menu="False"
         />
+-->
 
 	</data>
 </odoo>

@@ -218,7 +218,7 @@
         </record>
 
         <!-- Inherit View -->
-   <!--     <record model="ir.ui.view" id="view_hr_payslip_inherit_form_inherit">
+        <record model="ir.ui.view" id="view_hr_payslip_inherit_form_inherit">
             <field name="name">hr.payslip inherit</field>
             <field name="model">hr.payslip</field>
             <field name="inherit_id" ref="saudi_hr_payroll.view_hr_payslip_inherit_form"/>
@@ -256,7 +256,7 @@
                     <field name="rule_absence" attrs="{'readonly':[('state', 'in', ['Final Reviewed','done'])]}"/>
                 </field>
             </field>
-        </record>-->
+        </record>
 
         <!--Excuse-->
         <record model="ir.ui.view" id="hr_excuse_form">

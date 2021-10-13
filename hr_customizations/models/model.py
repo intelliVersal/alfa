@@ -262,155 +262,155 @@ class InheritContract(models.Model):
     #                 }
     #                 self.env['mail.mail'].create(main_content).send()
     #
-
-class PayslipInherit(models.Model):
-    _inherit = 'hr.payslip'
-    working_h = fields.Many2one(related='contract_id.resource_calendar_id')
-    update_no = fields.Boolean(default=False)
-    no_of_hours_legal_n = fields.Float(compute='get_working_hours_do', store=True, string='Total Legal Working Hours')
-    no_of_hours_work_n = fields.Float(compute='get_working_hours_do', store=True)
-    no_of_overtime_hours_n = fields.Float(compute='get_working_hours_do', string='Total Overtime hours', store=True)
-    no_of_delay_hours_n = fields.Float(compute='get_working_hours_do', string='Total Delay hours', store=True)
-    amount_overtime_hours_n = fields.Float(compute='get_working_hours_do', store=True)
-    amount_delay_hours_n = fields.Float(compute='get_hours_rate', store=True)
-    no_of_work_days_n = fields.Integer(compute='get_working_hours_do', store=True)
-    no_of_work_days_att_n = fields.Integer(compute='get_working_hours_do', store=True)
-    total_absent_days_n = fields.Integer(compute='get_working_hours_do', store=True)
-    total_absent_hours_n = fields.Float(compute='get_working_hours_do', store=True)
-
-    @api.multi
-    @api.depends('date_from','date_to','employee_id.overtime_allow','contract_id.manual_working_hours','employee_id','name')
-    def get_working_hours_do(self):
-        for rec in self:
-            if rec.update_no == False:
-                attendances = self.env['working.days'].search(
-                    [('employee_id', '=', rec.employee_id.id), ('date', '>=', rec.date_from),
-                     ('date', '<=', rec.date_to)])
-                days_att = attendances.filtered(lambda x: x.att_count == 2 and x.is_manipulate == False)
-                rec.no_of_work_days_att_n = len(days_att)
-                if attendances:
-                    working = 0.0
-                    overtime = 0.0
-                    delay = 0.0
-                    for record in attendances:
-                        working += record.total_working_minutes
-                        overtime += record.overtime_minutes
-                        delay += record.delay_minutes
-                    rec.no_of_hours_work_n = working
-                    rec.no_of_delay_hours_n = delay
-                    if rec.employee_id.overtime_allow == True:
-                        rec.no_of_overtime_hours_n = overtime
-                    else:
-                        rec.no_of_overtime_hours_n = 0.0
-                    day_from = datetime.datetime.combine(fields.Date.from_string(rec.date_from), time.min)
-                    day_to = datetime.datetime.combine(
-                        fields.Date.from_string(attendances[-1].date), time.max)
-                    contract = rec.contract_id
-                    resource = contract.resource_calendar_id
-                    if resource:
-                        work_data = contract.employee_id.get_work_days_data(day_from, day_to, calendar=resource)
-                        rec.no_of_work_days_n = work_data['days']
-                        rec.total_absent_days_n = rec.no_of_work_days_n - rec.no_of_work_days_att_n
-                        if contract.manual_working_hours == False:
-                            rec.no_of_hours_legal_n = work_data['hours']
-                        else:
-                            if contract.wh_effective_from >= rec.date_from and contract.wh_effective_to > rec.date_to:
-                                day_from_x = datetime.datetime.combine(
-                                    fields.Date.from_string(contract.wh_effective_from),
-                                    time.min)
-                                day_to_x = datetime.datetime.combine(fields.Date.from_string(attendances[-1].date),
-                                                                     time.max)
-                                work_data = contract.employee_id.get_work_days_data(day_from_x, day_to_x,
-                                                                                    calendar=resource)
-                                wh_manual = work_data['days'] * contract.working_hours_per_day
-                                day_from_xx = datetime.datetime.combine(fields.Date.from_string(rec.date_from),
-                                                                        time.min)
-                                day_to_xx = datetime.datetime.combine(
-                                    fields.Date.from_string(contract.wh_effective_from - timedelta(days=1)), time.max)
-                                wh_actual = contract.employee_id.get_work_days_data(day_from_xx, day_to_xx,
-                                                                                    calendar=resource)
-                                rec.no_of_hours_legal_n = wh_actual['hours'] + wh_manual
-                            if contract.wh_effective_from <= rec.date_from and contract.wh_effective_to < rec.date_to:
-                                day_from_x = datetime.datetime.combine(fields.Date.from_string(rec.date_from), time.min)
-                                day_to_x = datetime.datetime.combine(fields.Date.from_string(contract.wh_effective_to),
-                                                                     time.max)
-                                work_data = contract.employee_id.get_work_days_data(day_from_x, day_to_x,
-                                                                                    calendar=resource)
-                                wh_manual = work_data['days'] * contract.working_hours_per_day
-                                day_from_xx = datetime.datetime.combine(
-                                    fields.Date.from_string(contract.wh_effective_to + timedelta(days=1)), time.min)
-                                day_to_xx = datetime.datetime.combine(fields.Date.from_string(attendances[-1].date),
-                                                                      time.max)
-                                wh_actual = contract.employee_id.get_work_days_data(day_from_xx, day_to_xx,
-                                                                                    calendar=resource)
-                                rec.no_of_hours_legal_n = wh_actual['hours'] + wh_manual
-                            if contract.wh_effective_from > rec.date_from and contract.wh_effective_to <= rec.date_to:
-                                day_from_x = datetime.datetime.combine(
-                                    fields.Date.from_string(contract.wh_effective_from),
-                                    time.min)
-                                day_to_x = datetime.datetime.combine(fields.Date.from_string(contract.wh_effective_to),
-                                                                     time.max)
-                                work_data = contract.employee_id.get_work_days_data(day_from_x, day_to_x,
-                                                                                    calendar=resource)
-                                wh_manual = work_data['days'] * contract.working_hours_per_day
-                                day_from_xx = datetime.datetime.combine(fields.Date.from_string(rec.date_from),
-                                                                        time.min)
-                                day_to_xx = datetime.datetime.combine(fields.Date.from_string(attendances[-1].date),
-                                                                      time.max)
-                                wh_actual = contract.employee_id.get_work_days_data(day_from_xx, day_to_xx,
-                                                                                    calendar=resource)
-                                per_day_actual = wh_actual['hours'] / wh_actual['days']
-                                diff_days = wh_actual['days'] - work_data['days']
-                                legal_wh = diff_days * per_day_actual
-                                rec.no_of_hours_legal_n = legal_wh + wh_manual
-                            if contract.wh_effective_from == rec.date_from and contract.wh_effective_to == rec.date_to:
-                                day_from_x = datetime.datetime.combine(
-                                    fields.Date.from_string(contract.wh_effective_from),
-                                    time.min)
-                                day_to_x = datetime.datetime.combine(fields.Date.from_string(attendances[-1].date),
-                                                                     time.max)
-                                work_data = contract.employee_id.get_work_days_data(day_from_x, day_to_x,
-                                                                                    calendar=resource)
-                                wh_manual = work_data['days'] * contract.working_hours_per_day
-                                rec.no_of_hours_legal_n = wh_manual
-                            if rec.date_to < contract.wh_effective_from:
-                                day_from_x = datetime.datetime.combine(
-                                    fields.Date.from_string(rec.date_from),
-                                    time.min)
-                                day_to_x = datetime.datetime.combine(fields.Date.from_string(attendances[-1].date),
-                                                                     time.max)
-                                work_data = contract.employee_id.get_work_days_data(day_from_x, day_to_x,
-                                                                                    calendar=resource)
-                                wh_manual = work_data['hours']
-                                rec.no_of_hours_legal_n = wh_manual
-                    ######### for overtime amount ############
-                    day_from = datetime.datetime.combine(fields.Date.from_string(rec.date_from), time.min)
-                    day_to = datetime.datetime.combine(fields.Date.from_string(rec.date_to), time.max)
-                    contract = rec.contract_id
-                    resource = contract.resource_calendar_id
-                    basic = contract.basic_salary
-                    if resource:
-                        work_data = contract.employee_id.get_work_days_data(day_from, day_to, calendar=resource)
-                        total_hours = rec.no_of_hours_legal_n
-                        if total_hours:
-                            per_hour = basic / total_hours
-                            if rec.employee_id.overtime_allow == True:
-                                rec.amount_overtime_hours_n = per_hour * rec.no_of_overtime_hours_n
-                            else:
-                                rec.amount_overtime_hours_n = 0.0
-
-    @api.multi
-    @api.depends('date_from', 'date_to', 'employee_id.overtime_allow', 'contract_id.manual_working_hours','employee_id', 'name')
-    def get_hours_rate(self):
-        for rec in self:
-            contract = rec.contract_id
-            basic = contract.basic_salary
-            day_from = datetime.datetime.combine(fields.Date.from_string(rec.date_from), time.min)
-            day_to = datetime.datetime.combine(fields.Date.from_string(rec.date_to), time.max)
-            resource = contract.resource_calendar_id
-            if resource:
-                work_data = contract.employee_id.get_work_days_data(day_from, day_to, calendar=resource)
-                total_hours = rec.no_of_hours_legal_n
-                if total_hours:
-                    per_hour = basic / total_hours
-                    rec.amount_delay_hours_n = per_hour * rec.no_of_delay_hours_n
+#
+# class PayslipInherit(models.Model):
+#     _inherit = 'hr.payslip'
+#     working_h = fields.Many2one(related='contract_id.resource_calendar_id')
+#     update_no = fields.Boolean(default=False)
+#     no_of_hours_legal_n = fields.Float(compute='get_working_hours_do', store=True, string='Total Legal Working Hours')
+#     no_of_hours_work_n = fields.Float(compute='get_working_hours_do', store=True)
+#     no_of_overtime_hours_n = fields.Float(compute='get_working_hours_do', string='Total Overtime hours', store=True)
+#     no_of_delay_hours_n = fields.Float(compute='get_working_hours_do', string='Total Delay hours', store=True)
+#     amount_overtime_hours_n = fields.Float(compute='get_working_hours_do', store=True)
+#     amount_delay_hours_n = fields.Float(compute='get_hours_rate', store=True)
+#     no_of_work_days_n = fields.Integer(compute='get_working_hours_do', store=True)
+#     no_of_work_days_att_n = fields.Integer(compute='get_working_hours_do', store=True)
+#     total_absent_days_n = fields.Integer(compute='get_working_hours_do', store=True)
+#     total_absent_hours_n = fields.Float(compute='get_working_hours_do', store=True)
+#
+#     @api.multi
+#     @api.depends('date_from','date_to','employee_id.overtime_allow','contract_id.manual_working_hours','employee_id','name')
+#     def get_working_hours_do(self):
+#         for rec in self:
+#             if rec.update_no == False:
+#                 attendances = self.env['working.days'].search(
+#                     [('employee_id', '=', rec.employee_id.id), ('date', '>=', rec.date_from),
+#                      ('date', '<=', rec.date_to)])
+#                 days_att = attendances.filtered(lambda x: x.att_count == 2 and x.is_manipulate == False)
+#                 rec.no_of_work_days_att_n = len(days_att)
+#                 if attendances:
+#                     working = 0.0
+#                     overtime = 0.0
+#                     delay = 0.0
+#                     for record in attendances:
+#                         working += record.total_working_minutes
+#                         overtime += record.overtime_minutes
+#                         delay += record.delay_minutes
+#                     rec.no_of_hours_work_n = working
+#                     rec.no_of_delay_hours_n = delay
+#                     if rec.employee_id.overtime_allow == True:
+#                         rec.no_of_overtime_hours_n = overtime
+#                     else:
+#                         rec.no_of_overtime_hours_n = 0.0
+#                     day_from = datetime.datetime.combine(fields.Date.from_string(rec.date_from), time.min)
+#                     day_to = datetime.datetime.combine(
+#                         fields.Date.from_string(attendances[-1].date), time.max)
+#                     contract = rec.contract_id
+#                     resource = contract.resource_calendar_id
+#                     if resource:
+#                         work_data = contract.employee_id.get_work_days_data(day_from, day_to, calendar=resource)
+#                         rec.no_of_work_days_n = work_data['days']
+#                         rec.total_absent_days_n = rec.no_of_work_days_n - rec.no_of_work_days_att_n
+#                         if contract.manual_working_hours == False:
+#                             rec.no_of_hours_legal_n = work_data['hours']
+#                         else:
+#                             if contract.wh_effective_from >= rec.date_from and contract.wh_effective_to > rec.date_to:
+#                                 day_from_x = datetime.datetime.combine(
+#                                     fields.Date.from_string(contract.wh_effective_from),
+#                                     time.min)
+#                                 day_to_x = datetime.datetime.combine(fields.Date.from_string(attendances[-1].date),
+#                                                                      time.max)
+#                                 work_data = contract.employee_id.get_work_days_data(day_from_x, day_to_x,
+#                                                                                     calendar=resource)
+#                                 wh_manual = work_data['days'] * contract.working_hours_per_day
+#                                 day_from_xx = datetime.datetime.combine(fields.Date.from_string(rec.date_from),
+#                                                                         time.min)
+#                                 day_to_xx = datetime.datetime.combine(
+#                                     fields.Date.from_string(contract.wh_effective_from - timedelta(days=1)), time.max)
+#                                 wh_actual = contract.employee_id.get_work_days_data(day_from_xx, day_to_xx,
+#                                                                                     calendar=resource)
+#                                 rec.no_of_hours_legal_n = wh_actual['hours'] + wh_manual
+#                             if contract.wh_effective_from <= rec.date_from and contract.wh_effective_to < rec.date_to:
+#                                 day_from_x = datetime.datetime.combine(fields.Date.from_string(rec.date_from), time.min)
+#                                 day_to_x = datetime.datetime.combine(fields.Date.from_string(contract.wh_effective_to),
+#                                                                      time.max)
+#                                 work_data = contract.employee_id.get_work_days_data(day_from_x, day_to_x,
+#                                                                                     calendar=resource)
+#                                 wh_manual = work_data['days'] * contract.working_hours_per_day
+#                                 day_from_xx = datetime.datetime.combine(
+#                                     fields.Date.from_string(contract.wh_effective_to + timedelta(days=1)), time.min)
+#                                 day_to_xx = datetime.datetime.combine(fields.Date.from_string(attendances[-1].date),
+#                                                                       time.max)
+#                                 wh_actual = contract.employee_id.get_work_days_data(day_from_xx, day_to_xx,
+#                                                                                     calendar=resource)
+#                                 rec.no_of_hours_legal_n = wh_actual['hours'] + wh_manual
+#                             if contract.wh_effective_from > rec.date_from and contract.wh_effective_to <= rec.date_to:
+#                                 day_from_x = datetime.datetime.combine(
+#                                     fields.Date.from_string(contract.wh_effective_from),
+#                                     time.min)
+#                                 day_to_x = datetime.datetime.combine(fields.Date.from_string(contract.wh_effective_to),
+#                                                                      time.max)
+#                                 work_data = contract.employee_id.get_work_days_data(day_from_x, day_to_x,
+#                                                                                     calendar=resource)
+#                                 wh_manual = work_data['days'] * contract.working_hours_per_day
+#                                 day_from_xx = datetime.datetime.combine(fields.Date.from_string(rec.date_from),
+#                                                                         time.min)
+#                                 day_to_xx = datetime.datetime.combine(fields.Date.from_string(attendances[-1].date),
+#                                                                       time.max)
+#                                 wh_actual = contract.employee_id.get_work_days_data(day_from_xx, day_to_xx,
+#                                                                                     calendar=resource)
+#                                 per_day_actual = wh_actual['hours'] / wh_actual['days']
+#                                 diff_days = wh_actual['days'] - work_data['days']
+#                                 legal_wh = diff_days * per_day_actual
+#                                 rec.no_of_hours_legal_n = legal_wh + wh_manual
+#                             if contract.wh_effective_from == rec.date_from and contract.wh_effective_to == rec.date_to:
+#                                 day_from_x = datetime.datetime.combine(
+#                                     fields.Date.from_string(contract.wh_effective_from),
+#                                     time.min)
+#                                 day_to_x = datetime.datetime.combine(fields.Date.from_string(attendances[-1].date),
+#                                                                      time.max)
+#                                 work_data = contract.employee_id.get_work_days_data(day_from_x, day_to_x,
+#                                                                                     calendar=resource)
+#                                 wh_manual = work_data['days'] * contract.working_hours_per_day
+#                                 rec.no_of_hours_legal_n = wh_manual
+#                             if rec.date_to < contract.wh_effective_from:
+#                                 day_from_x = datetime.datetime.combine(
+#                                     fields.Date.from_string(rec.date_from),
+#                                     time.min)
+#                                 day_to_x = datetime.datetime.combine(fields.Date.from_string(attendances[-1].date),
+#                                                                      time.max)
+#                                 work_data = contract.employee_id.get_work_days_data(day_from_x, day_to_x,
+#                                                                                     calendar=resource)
+#                                 wh_manual = work_data['hours']
+#                                 rec.no_of_hours_legal_n = wh_manual
+#                     ######### for overtime amount ############
+#                     day_from = datetime.datetime.combine(fields.Date.from_string(rec.date_from), time.min)
+#                     day_to = datetime.datetime.combine(fields.Date.from_string(rec.date_to), time.max)
+#                     contract = rec.contract_id
+#                     resource = contract.resource_calendar_id
+#                     basic = contract.basic_salary
+#                     if resource:
+#                         work_data = contract.employee_id.get_work_days_data(day_from, day_to, calendar=resource)
+#                         total_hours = rec.no_of_hours_legal_n
+#                         if total_hours:
+#                             per_hour = basic / total_hours
+#                             if rec.employee_id.overtime_allow == True:
+#                                 rec.amount_overtime_hours_n = per_hour * rec.no_of_overtime_hours_n
+#                             else:
+#                                 rec.amount_overtime_hours_n = 0.0
+#
+#     @api.multi
+#     @api.depends('date_from', 'date_to', 'employee_id.overtime_allow', 'contract_id.manual_working_hours','employee_id', 'name')
+#     def get_hours_rate(self):
+#         for rec in self:
+#             contract = rec.contract_id
+#             basic = contract.basic_salary
+#             day_from = datetime.datetime.combine(fields.Date.from_string(rec.date_from), time.min)
+#             day_to = datetime.datetime.combine(fields.Date.from_string(rec.date_to), time.max)
+#             resource = contract.resource_calendar_id
+#             if resource:
+#                 work_data = contract.employee_id.get_work_days_data(day_from, day_to, calendar=resource)
+#                 total_hours = rec.no_of_hours_legal_n
+#                 if total_hours:
+#                     per_hour = basic / total_hours
+#                     rec.amount_delay_hours_n = per_hour * rec.no_of_delay_hours_n
