@@ -81,12 +81,20 @@
                                             <span t-field="doc.confirmation_date"/>&#160;&#160;
                                         </td>
                                     </tr>
-                                    <tr t-if="doc.company_id">
+                               
+                                      <tr t-if="doc.user_id">
+                                        <td class="text-left"><strong>&#160;&#160;Salesperson:</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="doc.user_id.name"/>&#160;&#160;
+                                        </td>
+                                    </tr>
+                                  <!--  <tr t-if="doc.company_id">
                                         <td class="text-left"><strong>&#160;&#160;Payment Term:</strong></td>
                                         <td class="text-right">
                                             <span t-field="doc.payment_term_id.name"/>&#160;&#160;
                                         </td>
                                     </tr>
+-->
 
                                 </table>
                             </div>
