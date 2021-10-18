@@ -81,7 +81,7 @@
                                             <span t-field="doc.confirmation_date"/>&#160;&#160;
                                         </td>
                                     </tr>
-                               
+
                                       <tr t-if="doc.user_id">
                                         <td class="text-left"><strong>&#160;&#160;Salesperson:</strong></td>
                                         <td class="text-right">
@@ -95,7 +95,6 @@
                                         </td>
                                     </tr>
 -->
-
                                 </table>
                             </div>
 
