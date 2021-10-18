@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 {
-    'name': "Customization for payments",
+    'name': "Customization for payment.",
     'summary': " ",
     'sequence': 0,
     'description': " ",
@@ -9,14 +9,9 @@
     'website': "",
     'category': 'custom',
     'version': '0.1',
-    'depends': [
-        'base','hr',
-        'account','payment'
+    'depends': ['base','account','payment','stock'
     ],
-    'data': ['security/security.xml',
-        'views/base_accounting.xml',
+    'data': [
+        'views/model_view.xml',
     ],
-	'application': True,
-    'installable': True,
-    'auto_install': False,
 }
