@@ -578,7 +578,7 @@ class Payslip(models.Model):
         OVT = 0
         if self.employee_id.overtime_eligible == True:
             if self.overtime_h:
-                OVT = self.contract_id.basic_salary / 160 * self.overtime_h
+                OVT = self.contract_id.basic_salary / 240 * self.overtime_h
         else:
             OVT = 0
         return OVT
