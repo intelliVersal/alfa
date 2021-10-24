@@ -2,10 +2,10 @@
 <odoo>
     <data>
 
-        <template id="report_saleorder_customized" inherit_id="sale.report_saleorder_document">
-            <xpath expr="//span[@t-field='line.discount']" position="replace">
+      <template id="report_saleorder_customized" inherit_id="sale.report_saleorder_document">
+            <!--  <xpath expr="//span[@t-field='line.discount']" position="replace">
                  <span t-esc="'%.2f'%(l.discount)"/>
-            </xpath>
+            </xpath>-->
             <xpath expr="//tr[hasclass('border-black')]" position="after">
                 <tr>
                     <td>Total Discount</td>
