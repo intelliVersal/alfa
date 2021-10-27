@@ -78,7 +78,7 @@ class BankTemplateReport(models.Model):
                 if rec.employee_id.coach_id.id == items:
                     line +=1
                     total_allowance = ((rec.rule_other_llowance)+(rec.rule_transportation_allowance)+(rec.rule_food_allowance)+(rec.rule_phone_allowance)+(rec.rule_employee_rewards)+(rec.rule_overtime))
-                    total_deduction = ((abs(rec.rule_loan_deducted))+(abs(rec.rule_deductions_violations))+(abs(rec.rule_absence_deducted))+(abs(rec.rule_gosi_employee_share))+(abs(rec.rule_absence))+(abs(rec.rule_gosi_company_share)))
+                    total_deduction = ((abs(rec.rule_loan_deducted))+(abs(rec.rule_deductions_violations))+(abs(rec.rule_absence_deducted))+(abs(rec.rule_gosi_employee_share))+(abs(rec.rule_absence)))
                     self.env['payslip.bank.report.line'].create({'payslip_report_id': self.id,
                                                                  'sno': line,
                                                                  'employee_no': rec.employee_id.identification_id,
