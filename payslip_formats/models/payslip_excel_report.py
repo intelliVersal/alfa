@@ -41,13 +41,13 @@ class BankTemplateReport(models.Model):
     def name_get(self):
         result = []
         for record in self:
-            name = 'Bank Report of ' + str(record.year) + '/' + str(record.month) + ' ('+ str(record.report_type)+')'
+            name = 'Bank Report of ' + str(record.year) + '/' + str(record.month)
             result.append((record.id, name))
         return result
 
     @api.model
     def create(self, vals):
-        vals['name'] = 'Bank Report of ' + str(vals['year']) + '/' + str(vals['month']) + ' ('+ str(vals['report_type'])+')'
+        vals['name'] = 'Bank Report of ' + str(vals['year']) + '/' + str(vals['month'])
         sequence = self.env['payslip.bank.report'].search([('name','=',vals['name'])])
         if len(sequence) == 1:
             raise ValidationError(_("Bank Template Report for this duration ia already created, kindly modify that."))
@@ -77,8 +77,7 @@ class BankTemplateReport(models.Model):
             for items in sponsors:
                 if rec.employee_id.coach_id.id == items:
                     line +=1
-                    total_allowance = ((rec.rule_other_llowance)+(rec.rule_transportation_allowance)+(rec.rule_food_allowance)+(rec.rule_phone_allowance))
-                    total_extra = ((rec.rule_employee_rewards)+(rec.rule_overtime))
+                    total_allowance = ((rec.rule_other_llowance)+(rec.rule_transportation_allowance)+(rec.rule_food_allowance)+(rec.rule_phone_allowance)+(rec.rule_employee_rewards)+(rec.rule_overtime))
                     total_deduction = ((abs(rec.rule_loan_deducted))+(abs(rec.rule_deductions_violations))+(abs(rec.rule_absence_deducted))+(abs(rec.rule_gosi_employee_share)))
                     self.env['payslip.bank.report.line'].create({'payslip_report_id': self.id,
                                                                  'sno': line,
@@ -87,10 +86,10 @@ class BankTemplateReport(models.Model):
                                                                  'employee_bank': rec.employee_id.iban_number,
                                                                  'employee_bank_code': rec.employee_id.Bank_name_id.bic,
                                                                  'total_amount': (((rec.rule_basic) + (rec.rule_house_allowance) + total_allowance) - (total_deduction)) if self.report_type == 'Salary Report' else total_extra,
-                                                                 'basic_sal': rec.rule_basic if self.report_type == 'Salary Report' else total_extra,
-                                                                 'house_allowance': rec.rule_house_allowance if self.report_type == 'Salary Report' else 0,
-                                                                 'other_allowance': total_allowance if self.report_type == 'Salary Report' else 0,
-                                                                 'deductions': total_deduction if self.report_type == 'Salary Report' else 0,
+                                                                 'basic_sal': rec.rule_basic,
+                                                                 'house_allowance': rec.rule_house_allowance,
+                                                                 'other_allowance': total_allowance,
+                                                                 'deductions': total_deduction,
                                                                  'address':'',
                                                                  'status':'Active',
                                                                  'payment_reference': 'Salary of '+ str(rec.month),
