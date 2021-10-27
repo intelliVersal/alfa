@@ -20,7 +20,7 @@
 									&#160;&#160;-&#160;&#160;
 									<field name="date_to" class="oe_inline"/>
 								</div>
-								<field name='report_type' string="Report Type" />
+								<!--<field name='report_type' string="Report Type" />-->
 							</group>
 							<group>
 								<field name='year' string="Year" />
