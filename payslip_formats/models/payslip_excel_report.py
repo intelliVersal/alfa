@@ -78,14 +78,14 @@ class BankTemplateReport(models.Model):
                 if rec.employee_id.coach_id.id == items:
                     line +=1
                     total_allowance = ((rec.rule_other_llowance)+(rec.rule_transportation_allowance)+(rec.rule_food_allowance)+(rec.rule_phone_allowance)+(rec.rule_employee_rewards)+(rec.rule_overtime))
-                    total_deduction = ((abs(rec.rule_loan_deducted))+(abs(rec.rule_deductions_violations))+(abs(rec.rule_absence_deducted))+(abs(rec.rule_gosi_employee_share)))
+                    total_deduction = ((abs(rec.rule_loan_deducted))+(abs(rec.rule_deductions_violations))+(abs(rec.rule_absence_deducted))+(abs(rec.rule_gosi_employee_share))+(abs(rec.rule_absence))+(abs(rec.rule_gosi_company_share)))
                     self.env['payslip.bank.report.line'].create({'payslip_report_id': self.id,
                                                                  'sno': line,
                                                                  'employee_no': rec.employee_id.identification_id,
                                                                  'employee_id': rec.employee_id.id,
                                                                  'employee_bank': rec.employee_id.iban_number,
                                                                  'employee_bank_code': rec.employee_id.Bank_name_id.bic,
-                                                                 'total_amount': (((rec.rule_basic) + (rec.rule_house_allowance) + total_allowance) - (total_deduction)) if self.report_type == 'Salary Report' else total_extra,
+                                                                 'total_amount': (((rec.rule_basic) + (rec.rule_house_allowance) + total_allowance) - (total_deduction)),
                                                                  'basic_sal': rec.rule_basic,
                                                                  'house_allowance': rec.rule_house_allowance,
                                                                  'other_allowance': total_allowance,
