@@ -71,7 +71,7 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-			 <xpath expr="//notebook/page[@name='other_information']/field[@name='client_order_ref']" position="attributes">
+			 <xpath expr="//notebook/page[@name='other_information']/group/group[@name='sales_person']/field[@name='client_order_ref']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//button[@name='action_confirm'][1]" position="attributes">
