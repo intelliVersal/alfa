@@ -100,16 +100,17 @@
 
                             <div style = "position:relative; left:120px" align="center">
                                 <table class="table1">
-                                    <tr t-if="doc.name">
-                                        <td ><strong>&#160;&#160;Reference</strong></td>
-                                        <td class="text-right">
-                                            <span t-field="doc.name"/>&#160;&#160;
-                                        </td>
-                                    </tr>
+                                   
                                     <tr t-if="doc.partner_id">
                                         <td class="text-left"><strong>&#160;&#160;Name:</strong></td>
                                         <td class="text-right"><span t-esc="doc.partner_id.name"/>
                                             &#160;&#160;
+                                        </td>
+                                    </tr>
+									 <tr t-if="doc.name">
+                                        <td ><strong>&#160;&#160;Customer Reference:</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="doc.client_order_ref"/>&#160;&#160;
                                         </td>
                                     </tr>
                                     <tr t-if="doc.partner_id">
