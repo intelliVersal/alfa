@@ -35,7 +35,7 @@ class PayslipRun(models.Model):
         for rule in all_salary_rules:
             dic[rule.id] = 0
 
-        salary_rules_codes = ['BSC', 'HOUSEALL', 'TRANSALL', 'PHOALL', 'FODALL', 'OTHERALL', 'GOSIE', 'ABS', 'TRNS_DED', 'HOUS_DED', 'REWARD', 'DEDUCT', ]
+        salary_rules_codes = ['BSC', 'HOUSEALL', 'TRANSALL', 'PHOALL', 'FODALL', 'OTHERALL', 'GOSIE', 'ABS', 'TRNS_DED', 'HOUS_DED', 'REWARD', 'DEDUCT','OVT']
         rules = self.env['hr.salary.rule'].search(
             [('category_id', 'in', [self.env.ref('hr_payroll.BASIC').id, self.env.ref('saudi_hr_payroll.HOUSEALL').id, self.env.ref('saudi_hr_payroll.TRANSEALL').id])])
         salary_rules_codes += [r.code for r in rules]
