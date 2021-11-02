@@ -199,7 +199,7 @@
                                                 <span t-field="move_line.lot_id.name"/>
                                             </td>
                                             <td style="font-weight:bold;"><span t-field="move_line.product_id.barcode"/></td>
-                                            <tdstyle="font-weight:bold;"><span t-field="move_line.product_id.lst_price"/></td>
+                                            <td style="font-weight:bold;"><span t-field="move_line.product_id.lst_price"/></td>
                                             <td style="font-weight:bold;" class="text-center">
                                                 <span t-field="move_line.qty_done"/>
                                                 <span t-field="move_line.product_uom_id"/>
