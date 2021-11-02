@@ -55,25 +55,25 @@
                                             <table class="table1">
                                                 <tr t-if="o.company_id">
                                                     <td ><strong>&#160;&#160;Company Name:</strong></td>
-                                                    <td class="text-right">
+                                                    <td style="font-weight:bold;" class="text-right">
                                                         <span t-field="o.company_id.name"/>&#160;&#160;
                                                     </td>
                                                 </tr>
                                                 <tr t-if="o.company_id">
                                                     <td ><strong>&#160;&#160;Address/العنوان:</strong></td>
-                                                    <td class="text-right">
+                                                    <td style="font-weight:bold;" class="text-right">
                                                         <span t-field="o.company_id.street"/>, &#160;<span t-field="o.company_id.city"/>&#160;&#160;
                                                     </td>
                                                 </tr>
                                                 <tr t-if="o.company_id">
                                                     <td ><strong>&#160;&#160;Phone/الهاتف:</strong></td>
-                                                    <td class="text-right">
+                                                    <td style="font-weight:bold;" class="text-right">
                                                         <span t-field="o.company_id.phone"/>&#160;&#160;
                                                     </td>
                                                 </tr>
                                                 <tr t-if="o.company_id">
                                                     <td class="text-left"><strong>&#160;&#160;VAT Number/الظريبه الشراء:</strong></td>
-                                                    <td class="text-right">
+                                                    <td style="font-weight:bold;" class="text-right">
                                                         <span t-esc="o.company_id.vat" />&#160;&#160;
                                                     </td>
                                                 </tr>
@@ -81,13 +81,13 @@
 
                                                 <tr t-if="o.date_invoice">
                                                     <td class="text-left"><strong>&#160;&#160;Invoice Date/التاريخ فاتورة:</strong></td>
-                                                    <td class="text-right">
+                                                    <td style="font-weight:bold;" class="text-right">
                                                         <span t-field="o.date_invoice"/>&#160;&#160;
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="text-left"><strong>&#160;&#160;Due Date/تاريخ الاستحقاق:</strong></td>
-                                                    <td class="text-right">
+                                                    <td style="font-weight:bold;" class="text-right">
                                                         <span t-field="o.date_due"/>&#160;&#160;
                                                     </td>
                                                 </tr>
@@ -99,38 +99,38 @@
                                             <table class="table1">
                                                 <tr t-if="o.reference">
                                                     <td ><strong>&#160;&#160;Invoice/فاتورة:</strong></td>
-                                                    <td class="text-right">
+                                                    <td style="font-weight:bold; class="text-right">
                                                         <span t-field="o.number"/>&#160;&#160;
                                                     </td>
                                                 </tr>
                                                 <tr t-if="o.partner_id">
                                                     <td class="text-left"><strong>&#160;&#160;Name/اسم :</strong></td>
-                                                    <td class="text-right"><span t-esc="o.partner_id.name"/> &#160;<span t-esc="o.partner_id.ref"/>
+                                                    <td style="font-weight:bold;" class="text-right"><span t-esc="o.partner_id.name"/> &#160;<span t-esc="o.partner_id.ref"/>
                                                         &#160;&#160;
                                                     </td>
                                                 </tr>
                                                 <tr t-if="o.partner_id">
                                                     <td class="text-left"><strong>&#160;&#160;Address/العنوان:</strong></td>
-                                                    <td class="text-right">
+                                                    <td style="font-weight:bold;" class="text-right">
                                                         <span t-esc="o.partner_id.street"/>,&#160;<span t-esc="o.partner_id.city"/>&#160;&#160;
                                                     </td>
                                                 </tr>
                                                 <tr t-if="o.partner_id">
                                                     <td class="text-left"><strong>&#160;&#160;Country/بلد:</strong></td>
-                                                    <td class="text-right">
+                                                    <td style="font-weight:bold;" class="text-right">
                                                         <span t-esc="o.partner_id.country_id.name"/>&#160;&#160;
                                                     </td>
                                                 </tr>
                                                 <tr t-if="o.partner_id">
                                                     <td class="text-left"><strong>&#160;&#160;Phone/الهاتف:</strong></td>
-                                                    <td class="text-right">
+                                                    <td style="font-weight:bold;" class="text-right">
                                                         <span t-esc="o.partner_id.phone" />&#160;&#160;
                                                     </td>
                                                 </tr>
 
                                                 <tr t-if="o.partner_id">
                                                     <td class="text-left"><strong>&#160;&#160;VAT Number/الرقم الضريبي:</strong></td>
-                                                    <td class="text-right">
+                                                    <td style="font-weight:bold;" class="text-right">
                                                         <span t-esc="o.partner_id.vat" />&#160;&#160;
                                                     </td>
                                                 </tr>
@@ -158,24 +158,24 @@
                                     <tbody class="invoice_tbody">
                                         <t t-set="i" t-value="1"/>
                                         <tr t-foreach="o.invoice_line_ids" t-as="l">
-                                            <td class="text-center"><span t-esc="i"/></td>
-                                            <td class="text-center"><span t-field="l.product_id.code"/></td>
-                                            <td class="text-left"><span t-field="l.name"/></td>
-                                            <td class="text-left"><span t-field="l.origin"/></td>
-                                            <td class="text-center">
+                                            <td style="font-weight:bold;" class="text-center"><span t-esc="i"/></td>
+                                            <td style="font-weight:bold;" class="text-center"><span t-field="l.product_id.code"/></td>
+                                            <td style="font-weight:bold;" class="text-left"><span t-field="l.name"/></td>
+                                            <td style="font-weight:bold;" class="text-left"><span t-field="l.origin"/></td>
+                                            <td style="font-weight:bold;" class="text-center">
                                                 <span t-field="l.quantity"/>
                                                 <span t-field="l.uom_id" groups="product.group_uom"/>
                                             </td>
-                                            <td class="text-center {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                            <td style="font-weight:bold;" class="text-center {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
                                                 <span t-field="l.price_unit"/>
                                             </td>
-                                            <td t-if="display_discount" class="text-center {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                            <td t-if="display_discount" style="font-weight:bold;" class="text-center {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
                                                 <span t-field="l.discount" t-options='{"widget": "float", "precision": 2}'/>
                                             </td>
-                                            <td class="text-center {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                            <td style="font-weight:bold;" class="text-center {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
                                                 <span t-esc="', '.join(map(lambda x: (x.description or x.name), l.invoice_line_tax_ids))"/>
                                             </td>
-                                            <td class="text-right" id="subtotal">
+                                            <td style="font-weight:bold;" class="text-right" id="subtotal">
                                                 <span t-field="l.price_subtotal"
                                                       t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                             </td>
@@ -191,7 +191,7 @@
                                             <table class="table table-sm">
                                                 <tr class="border-black o_subtotal" style="">
                                                     <td><strong>Subtotal/حاصل الجمع</strong></td>
-                                                    <td class="text-right">
+                                                    <td style="font-weight:bold;" class="text-right">
                                                         <span t-field="o.amount_untaxed"/>
                                                     </td>
                                                 </tr>
@@ -218,7 +218,7 @@
                                                 </t>
                                                 <tr class="border-black o_total">
                                                     <td><strong>Grand Total/المبلغ الإجمالي</strong></td>
-                                                    <td class="text-right">
+                                                    <td style="font-weight:bold;" class="text-right">
                                                         <span t-field="o.amount_total"/>
                                                     </td>
                                                 </tr>
@@ -235,22 +235,22 @@
                                 </p>
 
                                 <br/>
-                                <div class="text-left" t-if="o.name" style="font-size:16px">
+                                <div class="text-left" t-if="o.name" style="font-size:16px;font-weight:bold;">
                                     <strong>Reference/مرجع:</strong>
                                     <span t-field="o.name"/>
                                 </div>
                                 <br/>
-                                <div class="text-left" t-if="o.comment" style="font-size:16px">
+                                <div class="text-left" t-if="o.comment" style="font-size:16px;font-weight:bold;">
                                     <strong>Comments/تعليقات:</strong>
                                     <span t-field="o.comment"/>
                                 </div>
                                 <br/>
-                                <div class="text-left" t-if="o.payment_term_id" style="font-size:16px">
+                                <div class="text-left" t-if="o.payment_term_id" style="font-size:16px;font-weight:bold;">
                                     <strong>Payment Terms/شروط الدفع:</strong>
                                     <span t-field="o.payment_term_id"/>
                                 </div>
                                 <br/>
-                                <div class="text-left" t-if="o.fiscal_position_id.note" style="font-size:16px">
+                                <div class="text-left" t-if="o.fiscal_position_id.note" style="font-size:16px;font-weight:bold;">
                                     <strong>Fiscal Position/الوضع المالي:</strong>
                                     <span t-field="o.fiscal_position_id.note"/>
                                 </div>
