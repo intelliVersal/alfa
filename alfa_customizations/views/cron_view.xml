@@ -1,0 +1,14 @@
+<odoo>
+	<data>
+		<record id="loan_status_update" model="ir.cron">
+			<field name="name">Loan Status</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<field name="numbercall">-1</field>
+			<field name="doall" eval="False" />
+			<field name="model_id" ref="model_loan_advance_request"/>
+			<field name="code">model.check_loan_status()</field>
+			<field name="state">code</field>
+		</record>
+	</data>
+</odoo>

@@ -19,6 +19,7 @@ class SaleInherit(models.Model):
     warehouse_id = fields.Many2one(
         'stock.warehouse', string='Warehouse',
         required=True, readonly=True, domain="[('is_raw_location','=',False)]", states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
+    order_type = fields.Selection([('local','Local'),('export','Export')], default='local')
 
 
 class InheritProduction(models.Model):
@@ -125,6 +126,21 @@ class InvoiceInherit(models.Model):
                 info['title'] = type_payment
                 self.outstanding_credits_debits_widget = json.dumps(info)
                 self.has_outstanding = True
+
+
+class LoanInherit(models.Model):
+    _inherit = 'loan.advance.request'
+
+    @api.multi
+    def check_loan_status(self):
+        loans = self.env['loan.advance.request'].search([('state','=','GM Approve')])
+        for rec in loans:
+            if rec.installment_ids:
+                remaining = 0.0
+                for line in rec.installment_ids:
+                    remaining += line.remaining
+                if remaining == 0.0:
+                    rec.write({'state': 'Loan Fully Paid'})
 
 
 
