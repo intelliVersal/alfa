@@ -1,6 +1,6 @@
 <odoo>
     <data>
-          <record id="view_payment_inh_sit" model="ir.ui.view">
+        <record id="view_payment_inh_sit" model="ir.ui.view">
             <field name="name">payment.account.view.req</field>
             <field name="model">account.payment</field>
             <field name="inherit_id" ref="account.view_account_payment_form"/>
@@ -9,7 +9,7 @@
                     <field name="sale_order_id" string="SO Reference" attrs="{'invisible':[('partner_type','!=','customer')]}" options="{&quot;no_create&quot;:True}" />
                 </xpath>
             </field>
-          </record>
+        </record>
 
         <record id="view_manufacture_inh_sit" model="ir.ui.view">
             <field name="name">order.manufacture.view.req</field>
@@ -21,7 +21,7 @@
                         alfa_customizations.group_validate_transfer_move
                     </attribute>
                 </xpath>
-				<xpath expr="//button[@name='action_assign']" position="attributes">
+                <xpath expr="//button[@name='action_assign']" position="attributes">
                     <attribute name="groups">
                         alfa_customizations.group_can_confirm_mo
                     </attribute>
@@ -71,12 +71,16 @@
                 </xpath>
             </field>
         </record>
+
         <record id="view_sale_order_inherit_sit_alfa" model="ir.ui.view">
             <field name="name">view.order.sale.sit</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-			 <xpath expr="//notebook/page[@name='other_information']/group/group[@name='sales_person']/field[@name='client_order_ref']" position="attributes">
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="domain">[('customer','=',True),('state','=','approved')]</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[@name='other_information']/group/group[@name='sales_person']/field[@name='client_order_ref']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//button[@name='action_confirm'][1]" position="attributes">
@@ -91,8 +95,9 @@
                     </attribute>
                 </xpath>
                 <xpath expr="//field[@name='partner_shipping_id']" position="after">
-                    <field name="warehouse_id" options="{'no_create': True}" groups="stock.group_stock_multi_locations" />
-					<field name="client_order_ref"/>
+                    <field name="warehouse_id" options="{'no_create': True}" groups="stock.group_stock_multi_locations" attrs="{'invisible':[('state','!=','draft')]}"/>
+                    <field name="client_order_ref" attrs="{'invisible':[('state','!=','draft')]}"/>
+                    <field name="order_type" attrs="{'invisible':[('state','!=','draft')]}"/>
                 </xpath>
                 <xpath expr="//notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
                     <attribute name="options">{&quot;no_open&quot;: True, &quot;no_create&quot;: True}</attribute>
@@ -108,6 +113,9 @@
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="domain">[('state','=','approved')]</attribute>
+                </xpath>
                 <xpath expr="//button[@name='button_validate'][1]" position="attributes">
                     <attribute name="groups">
                         alfa_customizations.group_validate_transfer_move
@@ -148,6 +156,9 @@
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="domain">[('supplier','=',True),('state','=','approved')]</attribute>
+                </xpath>
                 <xpath expr="//notebook/page[1]/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
                     <attribute name="options">{&quot;no_open&quot;: True, &quot;no_create&quot;: True}</attribute>
                 </xpath>
@@ -160,10 +171,44 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="domain">[('customer','=',True),('state','=','approved')]</attribute>
+                </xpath>
                 <xpath expr="//notebook/page[1]/field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="attributes">
                     <attribute name="options">{&quot;no_open&quot;: True, &quot;no_create&quot;: True}</attribute>
                 </xpath>
             </field>
         </record>
+
+        <record id="sale.action_orders" model="ir.actions.act_window">
+            <field name="context">{'default_picking_policy': 'one'}</field>
+        </record>
+
+        <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
+            <field name="context">{'default_picking_policy': 'one','search_default_my_quotation': 1}</field>
+        </record>
+
+        <record id="view_employee_inherit_sit_one" model="ir.ui.view">
+            <field name="name">employee.inherit.view</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="before">
+                    <field name="employee_english_name" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_vendor_form_sit_one" model="ir.ui.view">
+            <field name="name">vendor.invoice.view.1</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="domain">[('supplier','=',True),('state','=','approved')]</attribute>
+                </xpath>
+            </field>
+        </record>
+
     </data>
 </odoo>
