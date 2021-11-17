@@ -8,9 +8,9 @@
 
                 <xpath expr="/form/*" position="before">
                     <header>
-                        <button name="to_submit" type="object" class="oe_highlight" string="Submit" states="new" confirm="Are you sure you want to submit?" groups="alfa_customizations.group_contact_user,transaction_log.group_contact_manager"/>
-                        <button name="to_approve" type="object" class="oe_highlight" string="Approve" states="submitted" confirm="Are you sure you want to approve?" groups="alfa_customizations.group_contact_manager"/>
-                        <button name="to_draft" type="object" class="oe_highlight" string="Set to Draft" states="approve" confirm="Are you sure you want to set to draft?" groups="alfa_customizations.group_contact_manager"/>
+                        <button name="to_submit" type="object" class="oe_highlight" string="Submit" confirm="Are you sure you want to submit?" groups="alfa_customizations.group_contact_user,transaction_log.group_contact_manager"/>
+                        <button name="to_approve" type="object" class="oe_highlight" string="Approve" confirm="Are you sure you want to approve?" groups="alfa_customizations.group_contact_manager"/>
+                        <button name="to_draft" type="object" class="oe_highlight" string="Set to Draft" confirm="Are you sure you want to set to draft?" groups="alfa_customizations.group_contact_manager"/>
                         <field name="res_status" statusbar_visible="new,submitted,approve" widget="statusbar"/>
                     </header>
                 </xpath>
