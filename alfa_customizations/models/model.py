@@ -49,7 +49,8 @@ class InheritEmployee(models.Model):
 class PartnerInherit(models.Model):
     _inherit = 'res.partner'
 
-    state = fields.Selection([('draft', 'Draft'), ('submit', 'Submit'), ('approved', 'Approve')], default='draft')
+    # state = fields.Selection([('draft', 'Draft'), ('submit', 'Submit'), ('approved', 'Approve')], default='draft')
+    res_status = fields.Selection([('new', 'Draft'), ('submitted', 'Submit'), ('approve', 'Approve')], default='draft')
     english_name = fields.Char()
 
     def to_submit(self):
