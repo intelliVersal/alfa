@@ -54,13 +54,13 @@ class PartnerInherit(models.Model):
     english_name = fields.Char()
 
     def to_submit(self):
-        return self.write({'state': 'submit'})
+        return self.write({'res_status': 'submitted'})
 
     def to_approve(self):
-        return self.write({'state': 'approved'})
+        return self.write({'res_status': 'approve'})
 
     def to_draft(self):
-        return self.write({'state': 'draft'})
+        return self.write({'res_status': 'new'})
 
 
 class InheritPayment(models.Model):
