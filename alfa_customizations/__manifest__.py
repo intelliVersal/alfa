@@ -13,7 +13,7 @@
         'security/security.xml',
         'views/cron_view.xml',
         'views/model_view.xml',
-        # 'views/partner_view.xml',
+        'views/partner_view.xml',
         'views/sale_order_template.xml',
         'views/manufacturing_template.xml',
         'views/delivery_slip_template.xml'
