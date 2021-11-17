@@ -77,6 +77,9 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
+			<xpath expr="//field[@name='pricelist_id']" position="attributes">
+			<attribute name="readonly">1</attribute>
+			</xpath>
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                     <attribute name="domain">[('customer','=',True),('res_status','=','approve')]</attribute>
                 </xpath>
