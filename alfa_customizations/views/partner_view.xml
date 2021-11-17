@@ -11,7 +11,7 @@
                         <button name="to_submit" type="object" class="oe_highlight" string="Submit" states="draft" confirm="Are you sure you want to submit?" groups="alfa_customizations.group_contact_user,transaction_log.group_contact_manager"/>
                         <button name="to_approve" type="object" class="oe_highlight" string="Approve" states="submit" confirm="Are you sure you want to approve?" groups="alfa_customizations.group_contact_manager"/>
                         <button name="to_draft" type="object" class="oe_highlight" string="Set to draft" states="approved" confirm="Are you sure you want to set to draft?" groups="alfa_customizations.group_contact_manager"/>
-                        <field name="state" widget="statusbar"/>
+                        <field name="state" statusbar_visible="draft,submit,approved" widget="statusbar"/>
                     </header>
                 </xpath>
 
