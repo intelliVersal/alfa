@@ -50,17 +50,17 @@ class PartnerInherit(models.Model):
     _inherit = 'res.partner'
 
     # state = fields.Selection([('draft', 'Draft'), ('submit', 'Submit'), ('approved', 'Approve')], default='draft')
-    res_status = fields.Selection([('new', 'Draft'), ('submitted', 'Submit'), ('approve', 'Approve')], default='new')
+    res_status = fields.Selection([('new', 'Draft'), ('submitted', 'Submit'), ('approve', 'Approve')], default='draft')
     english_name = fields.Char()
 
     def to_submit(self):
-        return self.write({'state': 'submit'})
+        return self.write({'res_status': 'submitted'})
 
     def to_approve(self):
-        return self.write({'state': 'approved'})
+        return self.write({'res_status': 'approve'})
 
     def to_draft(self):
-        return self.write({'state': 'draft'})
+        return self.write({'res_status': 'new'})
 
 
 class InheritPayment(models.Model):
