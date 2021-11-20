@@ -48,3 +48,24 @@ class SaleOrderInherit(models.Model):
         self.get_payment_current_so()
         res = super(SaleOrderInherit, self).action_confirm()
         return res
+
+
+class PickingInherit(models.Model):
+    _inherit = 'stock.picking'
+
+    def check_so_payment(self):
+        if self.sale_id:
+            if self.partner_id.allow_credit_sale == False:
+                pay_obj = self.env['account.payment'].sudo().search([('partner_id', '=', self.partner_id.id), ('state', '=', 'posted'),('sale_order_id', '=', self.sale_id.id)])
+                amount_payment = 0.0
+                for records in pay_obj:
+                    amount_payment += records.amount
+                if amount_payment < self.sale_id.amount_total:
+                    raise ValidationError(_('You are not allowed to validate this delivery, as the payment is not fully received'))
+
+    @api.multi
+    def button_validate(self):
+        self.check_so_payment()
+        res = super(PickingInherit, self).action_confirm()
+        return res
+
