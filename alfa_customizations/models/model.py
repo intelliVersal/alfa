@@ -49,9 +49,22 @@ class InheritEmployee(models.Model):
 class PartnerInherit(models.Model):
     _inherit = 'res.partner'
 
-    # state = fields.Selection([('draft', 'Draft'), ('submit', 'Submit'), ('approved', 'Approve')], default='draft')
     res_status = fields.Selection([('new', 'Draft'), ('submitted', 'Submit'), ('approve', 'Approve')], default='new')
     english_name = fields.Char()
+    allow_credit_sale = fields.Boolean(default=False)
+
+    def get_payment_current_so(self):
+        print('Enterrrrr')
+        payment_obj = self.env['account.payment'].search([('partner_id','=',self.partner_id.id),('state','=','posted'),('sale_order_id','=',self.id)])
+        if self.partner_id.allow_credit_sale == False:
+            if not payment_obj:
+                raise ValidationError(_('Kindly, Enter the payment against this sale order, credit sale is not allowed to this customer'))
+        else:
+            payment_amount = 0.0
+            for rec in payment_obj:
+                payment_amount += rec.amount
+            if payment_amount < ((self.amount_total * 50)/100):
+                raise ValidationError(_('Payment amount should must be 50% of the total amount, kindly check the payment against this sale order'))
 
     def to_submit(self):
         return self.write({'res_status': 'submitted'})

@@ -9,7 +9,7 @@
 				<xpath
 						expr="//page[@name='sales_purchases']/group/group/field[@name='customer']"
 						position='after'>
-					<field name="credit_limit" attrs="{'readonly':[('res_status','=','approve')]}"/>
+					<field name="credit_limit" attrs="{'invisible':[('allow_credit_sale','=',False)],'readonly':[('res_status','=','approve')]}"/>
 				</xpath>
 			</field>
 		</record>

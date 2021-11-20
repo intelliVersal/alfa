@@ -16,37 +16,51 @@
                 </xpath>
 
                 <!-- Readonly condition on approved res_status -->
-				      <xpath expr="//field[@name='name']" position="after">
+
+                <xpath expr="//page[@name='sales_purchases']/group/group/field[@name='customer']" position='after'>
+					<field name="allow_credit_sale" attrs="{'readonly':[('res_status','=','approve')]}"/>
+                </xpath>
+
+                <xpath expr="//field[@name='name']" position="after">
                     <field name="english_name" placeholder="English name" attrs="{'readonly':[('res_status','=','approve')]}" />
                 </xpath>
 
                 <xpath expr="//field[@name='company_type']" position="attributes">
                     <attribute name="attrs">{'readonly':[('res_status','=','approve')]}</attribute>
                 </xpath>
+
                 <xpath expr="//field[@name='name']" position="attributes">
                     <attribute name="attrs">{'readonly':[('res_status','=','approve')]}</attribute>
                 </xpath>
+
                 <xpath expr="//field[@name='vat']" position="attributes">
                     <attribute name="attrs">{'readonly':[('res_status','=','approve')]}</attribute>
                 </xpath>
+
                 <xpath expr="//field[@name='street2']" position="attributes">
                     <attribute name="attrs">{'readonly':[('res_status','=','approve')]}</attribute>
                 </xpath>
+
                 <xpath expr="//field[@name='street']" position="attributes">
                     <attribute name="attrs">{'readonly':[('res_status','=','approve')]}</attribute>
                 </xpath>
+
                 <xpath expr="//field[@name='type']" position="attributes">
                     <attribute name="attrs">{'readonly':[('res_status','=','approve')]}</attribute>
                 </xpath>
+
                 <xpath expr="//field[@name='city']" position="attributes">
                     <attribute name="attrs">{'readonly':[('res_status','=','approve')]}</attribute>
                 </xpath>
+
                 <xpath expr="//field[@name='state_id']" position="attributes">
                     <attribute name="attrs">{'readonly':[('res_status','=','approve')]}</attribute>
                 </xpath>
+
                 <xpath expr="//field[@name='zip']" position="attributes">
                     <attribute name="attrs">{'readonly':[('res_status','=','approve')]}</attribute>
                 </xpath>
+
                 <xpath expr="//field[@name='country_id']" position="attributes">
                     <attribute name="attrs">{'readonly':[('res_status','=','approve')]}</attribute>
                 </xpath>
