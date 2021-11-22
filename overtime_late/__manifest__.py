@@ -12,7 +12,7 @@
         'hr_attendance',
         'resource',
         'saudi_hr_employee',
-        'saudi_hr_payroll',
+        
         'report_xlsx',
     ],
     'data': [

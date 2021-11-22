@@ -307,7 +307,7 @@
                         <field name="rule_gross" sum='Total gross'/>
                         <field name="rule_loan_deducted" sum='Total loan deduction'/>
                         <field name="rule_deductions_violations" sum='Total deduction violation'/>
-                        <field name="rule_absence_deducted" string="Absence" sum='Total absence deduction'/>
+                        <field name="rule_absence" string="Absence" sum='Total absence deduction'/>
                         <field name="rule_employee_rewards" string="Rewards" sum='Total rewards'/>
                         <field name="rule_total_deductions" sum='Total deducction'/>
                         <field name="rule_gosi_employee_share" sum='Total gosi employee'/>
