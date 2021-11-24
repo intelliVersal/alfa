@@ -16,7 +16,6 @@
         'saudi_hr_employee',
         # 'saudi_hr_recruitment',
         'saudi_hr_contract',
-		'overtime_late',
     ],
     'data': [
         'security/ir.model.access.csv',
