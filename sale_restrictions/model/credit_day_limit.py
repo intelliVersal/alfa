@@ -23,18 +23,19 @@ class SaleOrderInherit(models.Model):
                 raise ValidationError(_('Sale Order confirmation is not possible, because outstanding balance of this customer is %s, and credit limit of this customer is %s or sale orders of this customer are confirmed but not invoiced yet.') % (amount[0][0], self.partner_id.credit_limit))
 
     def get_payment_current_so(self):
-        if self.partner_id.allow_credit_sale == False:
-            payment_obj = self.env['account.payment'].sudo().search([('partner_id','=',self.partner_id.id),('state','=','posted'),('sale_order_id','=',self.id)])
-            if not payment_obj:
-                raise ValidationError(_('Kindly, Enter the payment against this sale order, credit sale is not allowed to this customer'))
+        if not self.env.user.has_group('sale_restrictions.allow_credit_sale'):
+            if self.partner_id.allow_credit_sale == False:
+                payment_obj = self.env['account.payment'].sudo().search([('partner_id','=',self.partner_id.id),('state','=','posted'),('sale_order_id','=',self.id)])
+                if not payment_obj:
+                    raise ValidationError(_('Kindly, Enter the payment against this sale order, credit sale is not allowed to this customer'))
+                else:
+                    payment_amount = 0.0
+                    for rec in payment_obj:
+                        payment_amount += rec.amount
+                    if payment_amount < ((self.amount_total * 50)/100):
+                        raise ValidationError(_('Payment amount should must be 50% of the total amount, kindly check the payment against this sale order'))
             else:
-                payment_amount = 0.0
-                for rec in payment_obj:
-                    payment_amount += rec.amount
-                if payment_amount < ((self.amount_total * 50)/100):
-                    raise ValidationError(_('Payment amount should must be 50% of the total amount, kindly check the payment against this sale order'))
-        else:
-            self.get_confirm_so_amount()
+                self.get_confirm_so_amount()
 
     def check_discount_rate(self):
         for rec in self.order_line:
