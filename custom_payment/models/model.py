@@ -303,13 +303,14 @@ class InheritPayment(models.Model):
         tags = 0
         for rec in self.analytical_tag:
             tags = [(4, rec.id,)]
+        so_str = ','.join([str(i.name) for i in self.so_reference_ids])
         return {
             'partner_id': self.payment_type in ('inbound', 'outbound') and self.env['res.partner']._find_accounting_partner(self.partner_id).id or False,
             'invoice_id': invoice_id and invoice_id.id or False,
             'move_id': move_id,
             'debit': debit,
             'credit': credit,
-            'sale_reference': self.sale_order_id.name,
+            'sale_reference': so_str,
             'analytic_account_id': self.analytical_account.id,
             'analytic_tag_ids':tags if self.analytical_tag else False,
             'amount_currency': amount_currency or False,

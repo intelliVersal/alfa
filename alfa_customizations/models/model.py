@@ -87,6 +87,7 @@ class InheritPayment(models.Model):
     _inherit = 'account.payment'
 
     sale_order_id = fields.Many2one('sale.order')
+    so_reference_ids = fields.Many2many('sale.order')
 
     @api.onchange('partner_id')
     def sale_domain(self):
@@ -95,7 +96,7 @@ class InheritPayment(models.Model):
             order_ids = self.env['sale.order'].search([('partner_id','=',self.partner_id.id),('state','!=','cancel')])
             for rec in order_ids:
                 orders.append(rec.id)
-        return {'domain': {'sale_order_id': [('id', 'in', orders)]}}
+        return {'domain': {'so_reference_ids': [('id', 'in', orders)]}}
 
 
 class InvoiceInherit(models.Model):
@@ -113,7 +114,7 @@ class InvoiceInherit(models.Model):
                         '&', ('amount_residual_currency', '!=', 0.0), ('currency_id','!=', None),
                         '&', ('amount_residual_currency', '=', 0.0), '&', ('currency_id','=', None), ('amount_residual', '!=', 0.0)]
             if self.type in ('out_invoice', 'in_refund'):
-                domain.extend([('credit', '>', 0), ('debit', '=', 0),('sale_reference','=',self.origin)])
+                domain.extend([('credit', '>', 0), ('debit', '=', 0),('sale_reference','like',self.origin)])
                 type_payment = _('Outstanding credits')
             else:
                 domain.extend([('credit', '=', 0), ('debit', '>', 0)])
