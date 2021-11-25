@@ -24,7 +24,7 @@ class AnalyticAccount(models.Model):
     final_code = char_field('Final code', compute="_final_code", store=True)
     active = bool_field('Active', default=True)
     note = html_field('Notes')
-    project_id = m2o_field('project.project', 'Project', ondelete="set null")
+    # project_id = m2o_field('project.project', 'Project', ondelete="set null")
     currency_id = m2o_field(string="Accounting Currency")
     distribute_percentage = float_field('Distribution percentage')
     parent_ids_str = fields.Char('Parent ids (,) joined', compute='get_parent_ids_str', store=True)

@@ -16,9 +16,16 @@ class InheritWarehouse(models.Model):
 class SaleInherit(models.Model):
     _inherit = 'sale.order'
 
+    @api.model
+    def _default_warehouse_id(self):
+        warehouse_ids = self.env['stock.warehouse'].search([('id', '=', 3)], limit=1)
+        return warehouse_ids
+
     warehouse_id = fields.Many2one(
         'stock.warehouse', string='Warehouse',
-        required=True, readonly=True, domain="[('is_raw_location','=',False)]", states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
+        required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, domain="[('is_raw_location','=',False)]",
+        default=_default_warehouse_id)
+
     order_type = fields.Selection([('local','Local'),('export','Export')], default='local')
 
 

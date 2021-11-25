@@ -67,7 +67,7 @@
             <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='warehouse_id']" position="attributes">
-                    <attribute name="invisible">1</attribute>
+                    <attribute name="options">{&quot;no_open&quot;: True, &quot;no_create&quot;: True}</attribute>
                 </xpath>
             </field>
         </record>
@@ -98,7 +98,7 @@
                     </attribute>
                 </xpath>
                 <xpath expr="//field[@name='partner_shipping_id']" position="after">
-                    <field name="warehouse_id" options="{'no_create': True}" groups="stock.group_stock_multi_locations" attrs="{'invisible':[('state','!=','draft')]}"/>
+                    <!--<field name="warehouse_id" options="{'no_create': True}" groups="stock.group_stock_multi_locations" attrs="{'invisible':[('state','!=','draft')]}"/>-->
                     <field name="client_order_ref" attrs="{'invisible':[('state','!=','draft')]}"/>
                     <field name="order_type" attrs="{'invisible':[('state','!=','draft')]}"/>
                 </xpath>
@@ -209,6 +209,17 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                     <attribute name="domain">[('supplier','=',True),('res_status','=','approve')]</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_account_payment_form_extra_view">
+            <field name="name">account.payment inherit.second</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='communication']" position="before">
+                    <field name="sale_order_id" string="SO Reference" attrs="{'invisible':[('partner_type','!=','customer')]}" options="{&quot;no_create&quot;:True}"/>
                 </xpath>
             </field>
         </record>

@@ -13,7 +13,6 @@
         'base',
         'analytic',
         'account',
-        'project',
         'base_accounting',
         'account_account',
     ],
