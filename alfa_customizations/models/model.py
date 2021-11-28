@@ -22,7 +22,7 @@ class SaleInherit(models.Model):
             warehouse_ids = self.env['stock.warehouse'].search([('id', '=', 3)], limit=1)
         else:
             company = self.env.user.company_id.id
-            warehouse_ids = self.env['stock.warehouse'].search([('company_id', '=', company)], limit=1)
+            warehouse_ids = self.env['stock.warehouse'].search([('company_id','=', company)], limit=1)
         return warehouse_ids
 
     warehouse_id = fields.Many2one(
