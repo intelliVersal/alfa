@@ -18,8 +18,9 @@ class SaleInherit(models.Model):
 
     @api.model
     def _default_warehouse_id(self):
-        warehouse_ids = self.env['stock.warehouse'].search([('id', '=', 3)], limit=1)
-        return warehouse_ids
+        if self.company_id.id == 1:
+            warehouse_ids = self.env['stock.warehouse'].search([('id', '=', 3)], limit=1)
+            return warehouse_ids
 
     warehouse_id = fields.Many2one(
         'stock.warehouse', string='Warehouse',
