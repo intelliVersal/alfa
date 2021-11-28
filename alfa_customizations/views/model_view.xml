@@ -12,6 +12,17 @@
             </field>
         </record>
 
+         <record id="view_sale_stock_inherit" model="ir.ui.view">
+            <field name="name">sale.stock.view.req</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='warehouse_id']" position="attributes">
+                    <attribute name="domain">[('is_raw_location','=',False)]</attribute>
+                </xpath>
+            </field>
+        </record>
+        
         <record id="view_manufacture_inh_sit" model="ir.ui.view">
             <field name="name">order.manufacture.view.req</field>
             <field name="model">mrp.production</field>
