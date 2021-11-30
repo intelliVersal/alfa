@@ -26,7 +26,7 @@ class SaleOrderInherit(models.Model):
     def get_payment_current_so(self):
         if not self.env.user.has_group('sale_restrictions.allow_credit_sale'):
             if self.partner_id.allow_credit_sale == False:
-                payment_obj = self.env['account.payment'].sudo().search([('partner_id','=',self.partner_id.id),('state','=','posted'),('sale_order_id','=',self.id)])
+                payment_obj = self.env['account.payment'].sudo().search([('partner_id','=',self.partner_id.id),('state','=','posted'),('so_reference_ids','=',self.id)])
                 if not payment_obj:
                     raise ValidationError(_('Kindly, Enter the payment against this sale order, credit sale is not allowed to this customer'))
                 else:
@@ -60,7 +60,7 @@ class PickingInherit(models.Model):
         if not self.env.user.has_group('sale_restrictions.allow_credit_sale'):
             if self.sale_id:
                 if self.partner_id.allow_credit_sale == False:
-                    pay_obj = self.env['account.payment'].sudo().search([('partner_id', '=', self.partner_id.id), ('state', '=', 'posted'),('sale_order_id', '=', self.sale_id.id)])
+                    pay_obj = self.env['account.payment'].sudo().search([('partner_id', '=', self.partner_id.id), ('state', '=', 'posted'),('so_reference_ids', '=', self.sale_id.id)])
                     amount_payment = 0.0
                     for records in pay_obj:
                         amount_payment += records.amount
