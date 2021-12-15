@@ -162,7 +162,7 @@
 						 			<sapn t-esc="line_tax_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
 						 		</td>
 						 		<td style="border-right:1pt solid grey;text-align:right;padding:3pt" >
-			                        <span t-field="l.price_subtotal" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+			                        <span t-field="l.price_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
 			                    </td>
 						 	</tr>
 						 	<!-- <tr t-foreach="range(max(10-len(o.order_line),0))" t-as="l">
