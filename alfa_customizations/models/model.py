@@ -99,7 +99,7 @@ class InheritPayment(models.Model):
     def sale_domain(self):
         orders = []
         if self.partner_id:
-            order_ids = self.env['sale.order'].search([('partner_id','=',self.partner_id.id),('state','not in','cancel'),('invoice_status','!=','invoiced')])
+            order_ids = self.env['sale.order'].search([('partner_id','=',self.partner_id.id),('state','!=','cancel'),('invoice_status','!=','invoiced')])
             for rec in order_ids:
                 orders.append(rec.id)
         return {'domain': {'so_reference_ids': [('id', 'in', orders)]}}
