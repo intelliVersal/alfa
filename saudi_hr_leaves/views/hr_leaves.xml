@@ -10,8 +10,8 @@
                 'default_type': 'Return From Leave',}
             </field>
         </record>
-        <menuitem id="menu_effective_notice" name="Return from leave" groups="hr.group_hr_user"
-                  parent="hr_holidays.menu_hr_holidays_my_leaves" sequence="18" action="action_effective_notice"/>
+       <!-- <menuitem id="menu_effective_notice" name="Return from leave" groups="hr.group_hr_user"
+                  parent="hr_holidays.menu_hr_holidays_my_leaves" sequence="18" action="action_effective_notice"/>-->
 
         <record id="view_effective_notice_search" model="ir.ui.view">
             <field name="name">hr_leaves_search</field>
@@ -179,8 +179,8 @@
                                     <field name="can_request_air_ticket" required="1" groups="hr.group_hr_user"/>
                                     <field name="reconciliation_based_on" attrs="{'invisible':[['type','!=','Annual Leave']],
                                         'required':[['type','=','Annual Leave']]}" groups="hr.group_hr_user"/>
-                                    <field name="mandatory_return_from_leave"
-                                           attrs="{'readonly':[('state', '!=', 'New')]}"/>
+                                    <!--<field name="mandatory_return_from_leave"
+                                           attrs="{'readonly':[('state', '!=', 'New')]}"/>-->
                                 </group>
                                 <group name="second" groups="hr.group_hr_user">
                                     <field name="categ_id" attrs="{'readonly':[('state', '!=', 'New')]}"/>
