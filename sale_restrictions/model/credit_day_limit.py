@@ -47,7 +47,7 @@ class SaleOrderInherit(models.Model):
     def check_sale_price(self):
         for rec in self.order_line:
             if rec.order_id.allow_min_price == False:
-                if rec.unit_price < rec.product_id.lst_price:
+                if rec.price_unit < rec.product_id.lst_price:
                     raise ValidationError(_('You are not allowed to sale %s less than its sale price')%(rec.product_id.name))
 
 
