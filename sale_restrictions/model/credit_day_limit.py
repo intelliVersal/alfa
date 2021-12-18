@@ -44,9 +44,17 @@ class SaleOrderInherit(models.Model):
                 if rec.discount >= 5.0:
                     raise ValidationError(_('You are not allowed to give %s or more than %s discount')%(rec.discount,rec.discount))
 
+    def check_sale_price(self):
+        for rec in self.order_line:
+            if rec.order_id.allow_min_price == False:
+                if rec.price_unit < rec.product_id.lst_price:
+                    raise ValidationError(_('You are not allowed to sale %s less than its sale price')%(rec.product_id.name))
+
+
     @api.multi
     def action_confirm(self):
         self.check_discount_rate()
+        self.check_sale_price()
         self.get_payment_current_so()
         self.commitment_date = fields.datetime.now() + timedelta(days=25)
         res = super(SaleOrderInherit, self).action_confirm()

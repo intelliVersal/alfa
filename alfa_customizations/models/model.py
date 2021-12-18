@@ -16,6 +16,8 @@ class InheritWarehouse(models.Model):
 class SaleInherit(models.Model):
     _inherit = 'sale.order'
 
+    allow_min_price = fields.Boolean(default=False)
+
     @api.model
     def _default_warehouse_id(self):
         if self.env.user.company_id.id == 1:
@@ -65,7 +67,7 @@ class PartnerInherit(models.Model):
     allow_credit_sale = fields.Boolean(default=False)
 
     def get_payment_current_so(self):
-        print('Enterrrrr')
+
         payment_obj = self.env['account.payment'].search([('partner_id','=',self.partner_id.id),('state','=','posted'),('sale_order_id','=',self.id)])
         if self.partner_id.allow_credit_sale == False:
             if not payment_obj:
@@ -97,7 +99,7 @@ class InheritPayment(models.Model):
     def sale_domain(self):
         orders = []
         if self.partner_id:
-            order_ids = self.env['sale.order'].search([('partner_id','=',self.partner_id.id),('state','!=','cancel')])
+            order_ids = self.env['sale.order'].search([('partner_id','=',self.partner_id.id),('state','not in','cancel'),('invoice_status','!=','invoiced')])
             for rec in order_ids:
                 orders.append(rec.id)
         return {'domain': {'so_reference_ids': [('id', 'in', orders)]}}
