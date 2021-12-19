@@ -91,8 +91,17 @@
 					<div class="font">
 
 					<table style="border:1pt solid grey;width:100%;color:black; margin-top:-28pt;" class="table-condensed table-sm">
-							<tr>
+							<tr t-if="o.type == 'out_invoice'">
 								<td style="padding:4pt;margin:5pt;font-weight: bold;text-align:center;background-color:#DCDCDC;"><span class="text-right arabic">Tax Invoice / فاتورة ضريبية </span></td> 
+							</tr>
+							<tr t-if="o.type == 'out_refund'">
+								<td style="padding:4pt;margin:5pt;font-weight: bold;text-align:center;background-color:#DCDCDC;"><span class="text-right arabic">Customer Credit Note / مذكرة ائتمان العميل </span></td> 
+							</tr>
+							<tr t-if="o.type == 'in_invoice'">
+								<td style="padding:4pt;margin:5pt;font-weight: bold;text-align:center;background-color:#DCDCDC;"><span class="text-right arabic">Tax Invoice / فاتورة ضريبية </span></td> 
+							</tr>
+							<tr t-if="o.type == 'in_refund'">
+								<td style="padding:4pt;margin:5pt;font-weight: bold;text-align:center;background-color:#DCDCDC;"><span class="text-right arabic">Vendor Refund / رد أموال البائع </span></td> 
 							</tr>
 					</table>
 
