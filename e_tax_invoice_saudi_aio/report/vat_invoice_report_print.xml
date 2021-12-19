@@ -135,6 +135,13 @@
 									</td>
 									<td class="arabic" style="width:25%; text-align:right;">فترة الخدمة</td>
 								</tr>
+								<tr>
+									<td style="font-weight:bold; width:25%;">Source Document‬</td>
+									<td style="width:50%; text-align:center;">
+									<span t-field="o.origin"/>
+									</td>
+									<td class="arabic" style="width:25%; text-align:right;">مصدر وثائق</td>
+								</tr>
 							</table>
 							<br/>
 						</div>
