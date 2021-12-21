@@ -168,6 +168,11 @@
 		                <div class="col-6" style="margin-top:-32pt;">
 							<table style="border:1pt solid grey;width:100%; " class="table table-bordered table-sm" >
 								<tr>
+									<td style="font-weight:bold;">Reference No.</td>
+									<td class="text-center"><span t-field="o.partner_id.ref"/></td>
+									<td  class="text-right arabic">رقم المرجع</td>
+								</tr>
+								<tr>
 									<td style="font-weight:bold;">Name</td>
 									<td class="text-center"><span t-field="o.partner_id.name"/></td>
 									<td  class="text-right arabic">الاسم</td>
