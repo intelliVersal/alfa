@@ -480,7 +480,6 @@ class AccountStandardLedger(models.TransientModel):
                                     ('all', 'All Entries'),
                                     ], string='Target Moves', required=True, default='all')
     fiscal_year = fields.Many2one('fiscal.year', 'Fiscal Year')
-    project_ids = fields.Many2many('project.project', relation='table_standard_report_project')
     is_comparison = fields.Boolean('Comparison')
     number_of_periods = fields.Integer('Number Of Periods')
     same_period_last_year = fields.Integer('Same Period Last Year')

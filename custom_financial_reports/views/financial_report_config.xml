@@ -178,12 +178,12 @@
                     <field name="date_from" attrs="{'readonly': [('type_ledger', '=', 'custom'),('custom_report_type', '=', 'no_date_range')]}"
                            options="{'no_create': True}"/>
                 </field>
-                <xpath expr="//field[@name='analytic_account_select_ids']/.." position="after">
+                <!--<xpath expr="//field[@name='analytic_account_select_ids']/.." position="after">
                     <group>
                         <field name="project_ids" widget="many2many_tags" options="{'no_create': True}"
                                attrs="{'invisible': [('type_ledger', 'not in', ['custom'])]}"/>
                     </group>
-                </xpath>
+                </xpath>-->
                 <field name="month_selec" position="after">
                     <field name="fiscal_year" widget="selection"/>
                 </field>
