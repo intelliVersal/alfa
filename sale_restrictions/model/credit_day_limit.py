@@ -45,7 +45,7 @@ class SaleOrderInherit(models.Model):
                     raise ValidationError(_('You are not allowed to give %s or more than %s discount')%(rec.discount,rec.discount))
 
     def check_sale_price(self):
-        if self.priceliast_id.id == 1:
+        if self.pricelist_id.id == 1:
             for rec in self.order_line:
                 if rec.order_id.allow_min_price == False:
                     if rec.price_unit < rec.product_id.lst_price:
