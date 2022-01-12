@@ -620,7 +620,7 @@ class Payroll(models.Model):
     @api.model
     def total_deductions(self):
         res = super(Payroll, self).total_deductions()
-        return res + self.loan_deduction_rule() + self.violation_deduction_rule() + self.rewards_rule()
+        return res + self.loan_deduction_rule() + self.violation_deduction_rule() + self.rewards_rule() + self.RULE_overtime()
 
 
 class Employee(models.Model):
