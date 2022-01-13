@@ -352,7 +352,6 @@ class loan_advance_request(models.Model):
             'context': {"search_default_loan_request_loan":1}
         }
 
-
     @api.depends('employee_id')
     def _compute_contract(self):
         for rec in self:
@@ -433,6 +432,14 @@ class loan_advance_request(models.Model):
             body = "Document Approved By General Manager"
             self.message_post(body=body, message_type='email')
         return {}
+
+    @api.multi
+    def action_cancel_loan(self):
+        for record in self:
+            for lines in record.installment_ids:
+                if lines.remaining > 0:
+                    lines.state = 'Refused'
+            # record.state = 'cancelled'
 
     @api.multi
     def action_refuse(self):
@@ -1227,10 +1234,11 @@ class LoanInstallment(models.Model):
 
     @api.one
     def unlink(self):
-        if self.paid or self.state in ['Loan Fully Paid', 'GM Approve']:
-            raise ValidationError(_("Not allowed!! \n\
-                Not Allowed to delete Loan Installment witch had paid amount or in states (Loan Fully Paid,GM Approve) "))
-        return super(LoanInstallment, self).unlink()
+        if not self.env.user.has_group('saudi_hr_employee.group_loan_ceo_approval'):
+            if self.paid or self.state in ['Loan Fully Paid', 'GM Approve']:
+                raise ValidationError(_("Not allowed!! \n\
+                    Not Allowed to delete Loan Installment witch had paid amount or in states (Loan Fully Paid,GM Approve) "))
+            return super(LoanInstallment, self).unlink()
 
 
 class InstallmentPayment(models.Model):

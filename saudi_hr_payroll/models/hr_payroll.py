@@ -670,9 +670,14 @@ class hr_payslip(models.Model):
     def net_rule(self):
         if self.conflict_trial_period:
             net_gross = self.net_gross()
+            print('1',net_gross)
         else:
+            print(self.net_gross())
+            print(self.get_moth_percentage())
             net_gross = self.net_gross() * self.get_moth_percentage()
+            print('2',net_gross)
         total_deductions = self.total_deductions()
+        print('3',total_deductions)
         return net_gross + total_deductions  # * self.get_moth_percentage()
 
     @api.model

@@ -602,10 +602,10 @@ class Payslip(models.Model):
         ABS = self.absence_excuse_amount + self.absence_no_excuse_amount + self.delay_amount
         return ABS * -1
 
-    @api.model
-    def net_gross(self):
-        res = super(Payslip, self).net_gross()
-        return res + self.RULE_overtime()
+    # @api.model
+    # def net_gross(self):
+    #     res = super(Payslip, self).net_gross()
+    #     return res + self.RULE_overtime()
 
     @api.model
     def total_deductions(self):

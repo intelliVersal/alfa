@@ -106,6 +106,10 @@
                         <button name="action_refuse" states="GM Approve" string="Reverse loans – salary in advance" type="object"
                                 class="oe_highlight" groups="hr.group_hr_manager,account.group_account_manager,saudi_hr_employee.group_loan_reverse"
                                 confirm="Are you sure that you want to reverse this loan / salary in advance."/>
+                          <button name="action_cancel_loan" states="GM Approve" string="Cancel Loan" type="object"
+                                class="oe_highlight" groups="saudi_hr_employee.group_loan_ceo_approval"
+                                confirm="Are you sure that you want to cancel the loan."/>
+
                         <button name="action_refuse_confirm" states="New,Payroll Officer Approval,HR Manager Approve,Financial Manager Approve" string="Refuse" type="object"
                                 class="oe_highlight" groups="hr.group_hr_manager,account.group_account_manager,saudi_hr_employee.group_loan_refuse"
                                 confirm="Are you sure that you want to refuse this loan / salary in advance."/>
@@ -175,13 +179,14 @@
                                 </group>
                                 <group attrs="{'invisible':['|' ,('type', '!=', 'Loan'),('is_installment', '=', False)]}">
                                     <field name="installment_ids" nolabel="1" attrs="{'readonly':[('state', '=', 'GM Approve')]}" >
-                                        <tree editable="bottom" >
+                                        <tree editable="bottom" decoration-muted="state == 'Refused'">
                                             <field name="month" attrs="{'readonly':['|' ,('paid', '!=', 0)]}" />
                                             <field name="year" attrs="{'readonly':['|' ,('paid', '!=', 0)]}" />
                                             <field name="deduction_date" readonly="1" />
                                             <field name="monthly_installment" attrs="{'readonly':['|' ,('paid', '!=', 0)]}" />
                                             <field name="paid" readonly="1" />
                                             <field name="remaining" readonly="1" />
+                                            <field name="state" invisible="1" />
                                         </tree>
                                     </field>
                                 </group>
