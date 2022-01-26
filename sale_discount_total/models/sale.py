@@ -61,7 +61,7 @@ class SaleOrder(models.Model):
 
     @api.onchange('discount_type', 'discount_rate', 'order_line')
     def supply_rate(self):
-        if self.discount_type and self.discount_rate:
+        if self.discount_type:
             for order in self:
                 if order.discount_type == 'percent':
                     for line in order.order_line:
