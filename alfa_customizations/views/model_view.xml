@@ -114,7 +114,13 @@
                     <attribute name="attrs">{'readonly': [('state','in',['sale','done'])]}</attribute>
                 </xpath>
                 <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('qty_invoiced', '&gt;', 0),('state','in',['sale','done'])]}</attribute>
+                    <attribute name="attrs">{'readonly': ['|',('qty_invoiced', '&gt;', 0),('state','in',['sale','done'])]}</attribute>
+                </xpath>
+				 <xpath expr="//field[@name='order_line']/form/group/group/div[@name='discount']/field[@name='discount']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('state','in',['sale','done'])]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/form/group/group/field[@name='price_unit']" position="attributes">
+                    <attribute name="attrs">{'readonly': ['|',('qty_invoiced', '&gt;', 0),('state','in',['sale','done'])]}</attribute>
                 </xpath>
 
             </field>
