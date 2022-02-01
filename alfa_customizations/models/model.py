@@ -34,6 +34,15 @@ class SaleInherit(models.Model):
 
     order_type = fields.Selection([('local','Local'),('export','Export')], default='local')
 
+    @api.multi
+    def cancel_pending_quotations(self):
+        sale_rec = self.env['sale.order'].search([('state','in',['draft','sent','waiting'])])
+        for items in sale_rec:
+            if items.validity_date:
+                if items.validity_date == fields.Date.today():
+                    print(items)
+                    items.action_cancel()
+
 
 class InheritProduction(models.Model):
     _inherit = 'mrp.production'
@@ -169,3 +178,14 @@ class LoanInherit(models.Model):
                     remaining += line.remaining
                 if remaining == 0.0:
                     rec.write({'state': 'Loan Fully Paid'})
+
+
+class InheritQuant(models.Model):
+    _inherit = 'stock.quant'
+
+    avai_quantity = fields.Float(default=0.0, string='Available', compute='calculate_available',store=True)
+
+    @api.multi
+    def calculate_available(self):
+        for rec in self:
+            rec.avai_quantity = rec.quantity - rec.reserved_quantity

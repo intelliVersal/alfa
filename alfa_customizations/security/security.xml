@@ -27,7 +27,14 @@
             <field name="name">Can Confirm Sale Orders</field>
             <field name="users" eval="[(4, ref('base.user_root'))]"/>
         </record>
-
+		 <record id="group_can_create_so" model="res.groups">
+            <field name="name">Can Create Sale Orders</field>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+		<record id="group_can_create_product" model="res.groups">
+            <field name="name">Can Create Products</field>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
         <record id="group_validate_transfer_move" model="res.groups">
             <field name="name">Can Validate Transfer</field>
             <field name="users" eval="[(4, ref('base.user_root'))]"/>

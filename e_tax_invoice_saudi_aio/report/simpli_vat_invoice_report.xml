@@ -9,9 +9,22 @@
 					<t t-set="company" t-value="res_company"/>
 					<div class="font">
 						<table style="border:1pt solid grey;width:100%;color:black; margin-top:0pt;" class="table-condensed table-sm">
+							<t t-if="o.type == 'out_refund'">
 							<tr>
-								<td style="padding:4pt;margin:5pt;font-weight: bold;text-align:center;background-color:#DCDCDC;"><span class="text-right arabic">Simplified Tax Invoice / فاتورة ضريبية مبسطة</span></td> 
+								<td style="padding:4pt;margin:5pt;font-weight: bold;text-align:center;background-color:#DCDCDC;"><span class="text-right arabic">Credit Note Simplified Tax Invoice / إشعار دائن/ فاتورة ضريبية مبسطة </span></td>
 							</tr>
+						</t>
+						<t t-if="o.type == 'in_refund'">
+							<tr>
+								<td style="padding:4pt;margin:5pt;font-weight: bold;text-align:center;background-color:#DCDCDC;"><span class="text-right arabic">Debit Note Simplified Tax Invoice / إشعار مدين/ فاتورة ضريبية مبسطة </span></td>
+							</tr>
+						</t>
+							<t t-if="o.type in ['in_invoice','out_invoice']">
+
+							<tr>
+								<td style="padding:4pt;margin:5pt;font-weight: bold;text-align:center;background-color:#DCDCDC;"><span class="text-right arabic">Simplified Tax Invoice / فاتورة ضريبية مبسطة</span></td>
+							</tr>
+							</t>
 					    </table>
 
 						<div class="row mt32 mb32">
@@ -101,6 +114,11 @@
 								<td  style="font-weight: bold;text-align:left;padding:3pt">Total Amount Due</td>
 								<td class="arabic" style="text-align:right;padding:3pt">اجمالي المبلغ المستحق</td>
 								<td style="text-align:right;padding:3pt" class="text-right"><span t-esc="doc.residual" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+							</tr>
+							<tr>
+								<td  style="font-weight: bold;text-align:left;padding:3pt">Total Amount</td>
+								<td class="arabic" style="text-align:right;padding:3pt">اجمالي المبلغ</td>
+								<td style="text-align:right;padding:3pt" class="text-right"><span t-esc="doc.amount_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
 							</tr>
 						</thead>
 					</table>

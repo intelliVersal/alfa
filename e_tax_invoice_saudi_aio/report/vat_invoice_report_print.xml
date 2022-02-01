@@ -135,6 +135,13 @@
 									</td>
 									<td class="arabic" style="width:25%; text-align:right;">فترة الخدمة</td>
 								</tr>
+								<tr>
+									<td style="font-weight:bold; width:25%;">Source Document‬</td>
+									<td style="width:50%; text-align:center;">
+									<span t-field="o.origin"/>
+									</td>
+									<td class="arabic" style="width:25%; text-align:right;">مصدر وثائق</td>
+								</tr>
 							</table>
 							<br/>
 						</div>
@@ -160,6 +167,11 @@
 		            <div class="row mt32 mb32" style="color:black;">
 		                <div class="col-6" style="margin-top:-32pt;">
 							<table style="border:1pt solid grey;width:100%; " class="table table-bordered table-sm" >
+								<tr>
+									<td style="font-weight:bold;">Reference No.</td>
+									<td class="text-center"><span t-field="o.name"/></td>
+									<td  class="text-right arabic">رقم المرجع</td>
+								</tr>
 								<tr>
 									<td style="font-weight:bold;">Name</td>
 									<td class="text-center"><span t-field="o.partner_id.name"/></td>
@@ -321,6 +333,11 @@
 								<td class="text-center" style="font-weight: bold;border-right:1pt solid grey;text-align:left;padding:3pt">Total Amount Due</td>
 								<td class="text-center arabic" style="border-right:1pt solid grey;text-align:right;padding:3pt">إجمالي المبلغ المستحق</td>
 								<td style="border-right:1pt solid grey;text-align:right;padding:3pt" class="text-center"><span t-esc="doc.residual" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+							</tr>
+							<tr>
+								<td class="text-center" style="font-weight: bold;border-right:1pt solid grey;text-align:left;padding:3pt">Total Amount</td>
+								<td class="text-center arabic" style="border-right:1pt solid grey;text-align:right;padding:3pt">إجمالي المبلغ</td>
+								<td style="border-right:1pt solid grey;text-align:right;padding:3pt" class="text-center"><span t-esc="doc.amount_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
 							</tr>
 						</thead>
 					</table>
