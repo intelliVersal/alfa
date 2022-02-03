@@ -192,13 +192,13 @@ class LoanInherit(models.Model):
 class InheritQuant(models.Model):
     _inherit = 'stock.quant'
 
-    avai_quantity = fields.Float(default=0.0, string='Available', compute='calculate_available', store=True)
+    # avai_quantity = fields.Float(default=0.0, string='Available', compute='calculate_available', store=True)
+    quantity_avail = fields.Float(default=0.0, string='Available', compute='_cal_available_qty', store=True)
 
-    @api.multi
-    @api.depends('quantity','reserved_quantity')
-    def calculate_available(self):
+    @api.depends('quantity', 'reserved_quantity')
+    def _cal_available_qty(self):
         for rec in self:
-            rec.avai_quantity = rec.quantity - rec.reserved_quantity
+            rec.quantity_avail = rec.quantity - rec.reserved_quantity
 
 
 class StockScrapInherit(models.Model):
