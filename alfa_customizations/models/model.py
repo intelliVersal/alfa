@@ -195,6 +195,7 @@ class InheritQuant(models.Model):
     avai_quantity = fields.Float(default=0.0, string='Available', compute='calculate_available', store=True)
 
     @api.multi
+    @api.depends('quantity','reserved_quantity')
     def calculate_available(self):
         for rec in self:
             rec.avai_quantity = rec.quantity - rec.reserved_quantity
