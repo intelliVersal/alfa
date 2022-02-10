@@ -26,7 +26,7 @@ Report for Report Designer (XLSX, XLSM).
 #     'website': 'http://www.grimmette.com',
     'support': 'info@grimmette.com',
 #     'live_test_url': "http://68.183.4.193:8069",
-    'depends': ['delivery','product', 'account', 'mrp'],
+    'depends': ['product', 'account', 'mrp'],
 ##    'depends': ['delivery', 'account'],
     'images': ['static/description/banner_rep.png'],
     'data': [
