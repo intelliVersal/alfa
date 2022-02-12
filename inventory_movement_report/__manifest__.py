@@ -3,7 +3,7 @@
     'name': 'Stock Movement Report in Odoo',
     'version': '12.0.0.6',
     'category': 'Warehouse',
-    'summary': 'This modules helps to print inventory movement Report for particular date with Excel and PDF both option',
+    'summary': 'This modules helps to print inventory movement Report for particular date with Excel and PDF both option.',
     'description': """
     This modules helps to print inventory movement Report for particular date with Excel and PDF both options
     """,
