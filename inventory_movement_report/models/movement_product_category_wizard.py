@@ -39,7 +39,7 @@ class sale_day_book_wizard(models.TransientModel):
             'start_date': self.start_date,
             'end_date': self.end_date,
             'warehouse': self.warehouse,
-            'location': self.location_id,
+            'location_id': self.location_id,
             'company_id': self.company_id,
             'display_sum': self.display_sum,
         }
