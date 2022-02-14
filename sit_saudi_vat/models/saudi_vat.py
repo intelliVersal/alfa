@@ -698,10 +698,17 @@ class UaeVatReturn(models.Model):
             vat.ajman_tax_total = ajman_tax
             vat.ajman_sales_total = ajman_sales
 
+    # @api.depends('total_collected_on_sales','total_collected_on_purchase')
+    # def compute_total_payable(self):
+    #     for line in self:
+    #         line.total_payable = line.sales_tax_in_form - line.total_purchase_tax_in_form
+    #         if line.total_payable < 0:
+    #             line.total_minus = True
+    
     @api.depends('total_collected_on_sales','total_collected_on_purchase')
     def compute_total_payable(self):
         for line in self:
-            line.total_payable = line.sales_tax_in_form - line.total_purchase_tax_in_form
+            line.total_payable = line.total_collected_on_purchase - line.total_collected_on_sales
             if line.total_payable < 0:
                 line.total_minus = True
 
