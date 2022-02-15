@@ -63,9 +63,9 @@
                         </table>
                         <p style="page-break-after:always;"/>
                     </right>
-                    <div class="row" style="float:right; text-align:left">
+                    <!--<div class="row" style="float:right; text-align:left">
                         <h4>Total Valuation: <t t-esc="total" t-options='{"widget": "float", "precision": 2}'/></h4>
-                    </div>
+                    </div>-->
                 </div>
             </t>
         </t>
