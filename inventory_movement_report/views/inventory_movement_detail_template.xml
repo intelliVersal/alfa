@@ -13,7 +13,7 @@
                             </tr>
                             <tr>
                                 <th style="border: 1px solid black;" class="text-center">Location</th>
-                                <th style="border: 1px solid black;" class="text-center"><span t-esc="data['location_id']"/></th>
+                                <th style="border: 1px solid black;" class="text-center"><span t-esc="data['location_id'][1]"/></th>
                             </tr>
                         </table>
                         <br/>
@@ -52,12 +52,12 @@
                                 <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('outgoing')"/></td>
                                 <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('net_on_hand')"/></td>
                                 <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('total_value')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('total_value')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('total_value')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('total_value')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('total_value')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('total_value')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('total_value')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('outgoing')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('outgoing')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('outgoing')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('outgoing')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('outgoing')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('outgoing')"/></td>
                                 <t t-set="total" t-value="total+line.get('total_value')" />
                             </tr>
                         </table>

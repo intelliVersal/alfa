@@ -41,12 +41,12 @@
 		                    <field name="location_id"/>
 		                </group>
                         </group>
-                        <group string="Category"/>
+                       <!-- <group string="Category"/>
                             <field name="category">
                                     <tree>
                                         <field name="name"/>
                                     </tree>
-                                </field>
+                                </field>-->
                     <footer>
                         <button string="Print Pdf" name="print_report" type="object" class="oe_highlight"/>
                         or
