@@ -1,10 +1,11 @@
 import json
-from odoo import models, fields, api,_
+from odoo import models, fields, api, _
 from odoo.tools import email_re, email_split, email_escape_char, float_is_zero, float_compare, \
     pycompat, date_utils
 
 from datetime import date, datetime
 from odoo.exceptions import ValidationError
+from odoo.osv import expression
 
 
 class InheritWarehouse(models.Model):
@@ -12,11 +13,29 @@ class InheritWarehouse(models.Model):
 
     is_raw_location = fields.Boolean(default=False)
 
-
 class SaleInherit(models.Model):
     _inherit = 'sale.order'
 
     allow_min_price = fields.Boolean(default=False)
+    amount_payed = fields.Monetary(compute='_compute_pay_amount', string='Amount Payed', store=True)
+    payment_status = fields.Selection([('nothing','Nothing'),('partial','Partial Paid'),('full','Fully Paid')], default='')
+
+    @api.depends('amount_payed','invoice_ids.amount_total','invoice_ids.residual','invoice_ids.amount_untaxed','amount_total')
+    def _compute_pay_amount(self):
+        print('Enter')
+        for rec in self:
+            pay_amount = 0
+            for records in rec.invoice_ids:
+                if records.state in ['open','paid']:
+                    pay_amount += records.amount_total
+            rec.amount_payed = pay_amount
+            print(rec.amount_payed)
+            if rec.amount_payed == 0.0:
+                rec.payment_status = 'nothing'
+            elif rec.amount_payed > 0.0 and rec.amount_payed != rec.amount_total:
+                rec.payment_status = 'partial'
+            elif rec.amount_payed > 0.0 and rec.amount_payed == rec.amount_total:
+                rec.payment_status = 'full'
 
     @api.model
     def _default_warehouse_id(self):
@@ -24,19 +43,20 @@ class SaleInherit(models.Model):
             warehouse_ids = self.env['stock.warehouse'].search([('id', '=', 3)], limit=1)
         else:
             company = self.env.user.company_id.id
-            warehouse_ids = self.env['stock.warehouse'].search([('company_id','=', company)], limit=1)
+            warehouse_ids = self.env['stock.warehouse'].search([('company_id', '=', company)], limit=1)
         return warehouse_ids
 
     warehouse_id = fields.Many2one(
         'stock.warehouse', string='Warehouse',
-        required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, domain="[('is_raw_location','=',False)]",
+        required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+        domain="[('is_raw_location','=',False)]",
         default=_default_warehouse_id)
 
-    order_type = fields.Selection([('local','Local'),('export','Export')], default='local')
+    order_type = fields.Selection([('local', 'Local'), ('export', 'Export')], default='local')
 
     @api.multi
     def cancel_pending_quotations(self):
-        sale_rec = self.env['sale.order'].search([('state','in',['draft','sent','waiting'])])
+        sale_rec = self.env['sale.order'].search([('state', 'in', ['draft', 'sent', 'waiting'])])
         for items in sale_rec:
             if items.validity_date:
                 if items.validity_date == fields.Date.today():
@@ -61,6 +81,7 @@ class InheritProduction(models.Model):
                 'remain_quantity': qty.product_qty - produce_qty,
             })
 
+
 class InheritEmployee(models.Model):
     _inherit = 'hr.employee'
 
@@ -77,16 +98,19 @@ class PartnerInherit(models.Model):
 
     def get_payment_current_so(self):
 
-        payment_obj = self.env['account.payment'].search([('partner_id','=',self.partner_id.id),('state','=','posted'),('sale_order_id','=',self.id)])
+        payment_obj = self.env['account.payment'].search(
+            [('partner_id', '=', self.partner_id.id), ('state', '=', 'posted'), ('sale_order_id', '=', self.id)])
         if self.partner_id.allow_credit_sale == False:
             if not payment_obj:
-                raise ValidationError(_('Kindly, Enter the payment against this sale order, credit sale is not allowed to this customer'))
+                raise ValidationError(
+                    _('Kindly, Enter the payment against this sale order, credit sale is not allowed to this customer'))
         else:
             payment_amount = 0.0
             for rec in payment_obj:
                 payment_amount += rec.amount
-            if payment_amount < ((self.amount_total * 50)/100):
-                raise ValidationError(_('Payment amount should must be 50% of the total amount, kindly check the payment against this sale order'))
+            if payment_amount < ((self.amount_total * 50) / 100):
+                raise ValidationError(_(
+                    'Payment amount should must be 50% of the total amount, kindly check the payment against this sale order'))
 
     def to_submit(self):
         return self.write({'res_status': 'submitted'})
@@ -108,7 +132,9 @@ class InheritPayment(models.Model):
     def sale_domain(self):
         orders = []
         if self.partner_id:
-            order_ids = self.env['sale.order'].search([('partner_id','=',self.partner_id.id),('state','!=','cancel'),('invoice_status','!=','invoiced')])
+            order_ids = self.env['sale.order'].search(
+                [('partner_id', '=', self.partner_id.id), ('state', '!=', 'cancel'),
+                 ('invoice_status', '!=', 'invoiced')])
             for rec in order_ids:
                 orders.append(rec.id)
         return {'domain': {'so_reference_ids': [('id', 'in', orders)]}}
@@ -126,10 +152,11 @@ class InvoiceInherit(models.Model):
                       ('reconciled', '=', False),
                       ('move_id.state', '=', 'posted'),
                       '|',
-                        '&', ('amount_residual_currency', '!=', 0.0), ('currency_id','!=', None),
-                        '&', ('amount_residual_currency', '=', 0.0), '&', ('currency_id','=', None), ('amount_residual', '!=', 0.0)]
+                      '&', ('amount_residual_currency', '!=', 0.0), ('currency_id', '!=', None),
+                      '&', ('amount_residual_currency', '=', 0.0), '&', ('currency_id', '=', None),
+                      ('amount_residual', '!=', 0.0)]
             if self.type in ('out_invoice', 'in_refund'):
-                domain.extend([('credit', '>', 0), ('debit', '=', 0),('sale_reference','like',self.origin)])
+                domain.extend([('credit', '>', 0), ('debit', '=', 0), ('sale_reference', 'like', self.origin)])
                 type_payment = _('Outstanding credits')
             else:
                 domain.extend([('credit', '=', 0), ('debit', '>', 0)])
@@ -144,10 +171,11 @@ class InvoiceInherit(models.Model):
                         amount_to_show = abs(line.amount_residual_currency)
                     else:
                         currency = line.company_id.currency_id
-                        amount_to_show = currency._convert(abs(line.amount_residual), self.currency_id, self.company_id, line.date or fields.Date.today())
+                        amount_to_show = currency._convert(abs(line.amount_residual), self.currency_id, self.company_id,
+                                                           line.date or fields.Date.today())
                     if float_is_zero(amount_to_show, precision_rounding=self.currency_id.rounding):
                         continue
-                    if line.ref :
+                    if line.ref:
                         title = '%s : %s' % (line.move_id.name, line.ref)
                     else:
                         title = line.move_id.name
@@ -170,7 +198,7 @@ class LoanInherit(models.Model):
 
     @api.multi
     def check_loan_status(self):
-        loans = self.env['loan.advance.request'].search([('state','=','GM Approve')])
+        loans = self.env['loan.advance.request'].search([('state', '=', 'GM Approve')])
         for rec in loans:
             if rec.installment_ids:
                 remaining = 0.0
@@ -183,9 +211,38 @@ class LoanInherit(models.Model):
 class InheritQuant(models.Model):
     _inherit = 'stock.quant'
 
-    avai_quantity = fields.Float(default=0.0, string='Available', compute='calculate_available',store=True)
+    # avai_quantity = fields.Float(default=0.0, string='Available', compute='calculate_available', store=True)
+    quantity_avail = fields.Float(default=0.0, string='Available', compute='_cal_available_qty', store=True)
 
-    @api.multi
-    def calculate_available(self):
+    @api.depends('quantity', 'reserved_quantity')
+    def _cal_available_qty(self):
         for rec in self:
-            rec.avai_quantity = rec.quantity - rec.reserved_quantity
+            rec.quantity_avail = rec.quantity - rec.reserved_quantity
+
+
+class StockScrapInherit(models.Model):
+    _inherit = 'stock.scrap'
+
+    def _prepare_move_values(self):
+        self.ensure_one()
+        return {
+            'name': self.name,
+            'origin': self.origin or self.picking_id.name or self.name,
+            'product_id': self.product_id.id,
+            'product_uom': self.product_uom_id.id,
+            'price_unit': self.product_id.standard_price,
+            'product_uom_qty': self.scrap_qty,
+            'location_id': self.location_id.id,
+            'scrapped': True,
+            'location_dest_id': self.scrap_location_id.id,
+            'move_line_ids': [(0, 0, {'product_id': self.product_id.id,
+                                      'product_uom_id': self.product_uom_id.id,
+                                      'qty_done': self.scrap_qty,
+                                      'location_id': self.location_id.id,
+                                      'location_dest_id': self.scrap_location_id.id,
+                                      'package_id': self.package_id.id,
+                                      'owner_id': self.owner_id.id,
+                                      'lot_id': self.lot_id.id, })],
+            #             'restrict_partner_id': self.owner_id.id,
+            'picking_id': self.picking_id.id
+        }
