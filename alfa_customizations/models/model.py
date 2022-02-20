@@ -17,7 +17,21 @@ class InheritWarehouse(models.Model):
 class SaleInherit(models.Model):
     _inherit = 'sale.order'
 
-    @api.multi
+    allow_min_price = fields.Boolean(default=False)
+    amount_payed = fields.Monetary(compute='_compute_pay_amount', string='Amount Payed', store=True)
+    payment_status = fields.Selection([('nothing','Nothing'),('partial','Partial Paid'),('full','Fully Paid')], compute='_get_payment_status', store=True)
+
+    @api.depends('amount_payed','invoice_ids.amount_total','invoice_ids.residual','invoice_ids.amount_untaxed',
+                 'amount_total')
+    def _compute_pay_amount(self):
+        for rec in self:
+            pay_amount = 0
+            if rec.invoice_ids:
+                for records in rec.invoice_ids:
+                    if records.state in ['open','paid']:
+                        pay_amount += records.amount_total
+            rec.update({'amount_payed':pay_amount})
+            
     @api.depends('amount_payed', 'invoice_ids.amount_total', 'invoice_ids.residual', 'invoice_ids.amount_untaxed',
                  'amount_total')
     def _get_payment_status(self):
@@ -30,23 +44,6 @@ class SaleInherit(models.Model):
             elif xx.amount_payed > 0.0 and xx.amount_payed == xx.amount_total:
                 status = 'full'
             xx.update({'payment_status': status})
-
-    allow_min_price = fields.Boolean(default=False)
-    amount_payed = fields.Monetary(compute='_compute_pay_amount', string='Amount Payed', store=True)
-    payment_status = fields.Selection([('nothing','Nothing'),('partial','Partial Paid'),('full','Fully Paid')], compute='_get_payment_status', store=True)
-
-    @api.multi
-    @api.depends('amount_payed','invoice_ids.amount_total','invoice_ids.residual','invoice_ids.amount_untaxed',
-                 'amount_total')
-    def _compute_pay_amount(self):
-        for rec in self:
-            pay_amount = 0
-            if rec.invoice_ids:
-                for records in rec.invoice_ids:
-                    if records.state in ['open','paid']:
-                        pay_amount += records.amount_total
-                print(pay_amount)
-            rec.update({'amount_payed':pay_amount})
 
     @api.model
     def _default_warehouse_id(self):
