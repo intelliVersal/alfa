@@ -274,6 +274,58 @@
             </field>
         </record>
 
+        <record id="payable_amount_view_form" model="ir.ui.view">
+            <field name="name">sale.order.invoice.status</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='note']" position="before">
+                    <div>
+                        <label for="amount_payed" string="Received Amount"/>
+                        <field name="amount_payed" class="oe_inline"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
 
+        <record id="tree_view_sale_inh" model="ir.ui.view">
+            <field name="name">sale.order.tree.status</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_status']" position="replace">
+                    <field name="payment_status"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!--Wizard for multi update -->
+
+        <record id="wizard_multi_update_status" model="ir.ui.view">
+            <field name="name">wizard.multi.status.update</field>
+            <field name="model">wizard.status.update</field>
+            <field name="arch" type="xml">
+                <form string="Update Payment Status">
+                    <p >
+                        Attention !!!<br />
+                        Are you sure that you want to update status of sale orders.
+                    </p>
+                    <footer>
+                        <button string="Update" name="update_multi_status" type="object" default_focus="1" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="action_update_multi_status"
+                    multi="True"
+                    key2="client_action_multi"
+                    name="Update Status"
+                    res_model="wizard.status.update"
+                    src_model="sale.order"
+                    view_mode="form"
+                    target="new"
+                    view_type="form" />
     </data>
 </odoo>

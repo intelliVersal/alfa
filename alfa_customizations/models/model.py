@@ -5,6 +5,7 @@ from odoo.tools import email_re, email_split, email_escape_char, float_is_zero, 
 
 from datetime import date, datetime
 from odoo.exceptions import ValidationError
+from odoo.osv import expression
 
 
 class InheritWarehouse(models.Model):
@@ -17,6 +18,36 @@ class SaleInherit(models.Model):
     _inherit = 'sale.order'
 
     allow_min_price = fields.Boolean(default=False)
+    amount_payed = fields.Monetary(compute='_compute_pay_amount', string='Amount Payed', store=True)
+    payment_status = fields.Selection([('nothing','Nothing'),('partial','Partial Paid'),('full','Fully Paid')], compute='_get_payment_status', store=True)
+
+    @api.depends('amount_payed','invoice_ids.amount_total','invoice_ids.residual','invoice_ids.amount_untaxed',
+                 'amount_total')
+    def _compute_pay_amount(self):
+        for rec in self:
+            pay_amount = 0
+            if rec.invoice_ids:
+                for records in rec.invoice_ids:
+                    if records.state in ['open','paid']:
+                        pay_amount += records.amount_total
+            rec.update({'amount_payed':pay_amount})
+            
+    @api.depends('amount_payed', 'invoice_ids.amount_total', 'invoice_ids.residual', 'invoice_ids.amount_untaxed',
+                 'amount_total')
+    def _get_payment_status(self):
+        for xx in self:
+            status = ''
+            if xx.amount_payed == 0.0:
+                status = 'nothing'
+            elif xx.amount_payed > 0.0 and xx.amount_payed != xx.amount_total:
+                status = 'partial'
+            elif xx.amount_payed > 0.0 and xx.amount_payed == xx.amount_total:
+                status = 'full'
+            xx.update({'payment_status': status})
+
+    def status_update(self):
+        self._get_payment_status()
+        self._compute_pay_amount()
 
     @api.model
     def _default_warehouse_id(self):
@@ -227,3 +258,17 @@ class StockScrapInherit(models.Model):
             #             'restrict_partner_id': self.owner_id.id,
             'picking_id': self.picking_id.id
         }
+
+
+class MultiStatusUpdate(models.TransientModel):
+    _name = "wizard.status.update"
+
+    @api.multi
+    def update_multi_status(self):
+        context = dict(self._context or {})
+        active_ids = context.get('active_ids', []) or []
+
+        for record in self.env['sale.order'].browse(active_ids):
+            record.status_update()
+        return {'type': 'ir.actions.act_window_close'}
+
