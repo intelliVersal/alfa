@@ -13,29 +13,40 @@ class InheritWarehouse(models.Model):
 
     is_raw_location = fields.Boolean(default=False)
 
+
 class SaleInherit(models.Model):
     _inherit = 'sale.order'
 
+    @api.one
+    @api.depends('amount_payed', 'invoice_ids.amount_total', 'invoice_ids.residual', 'invoice_ids.amount_untaxed',
+                 'amount_total')
+    def _get_payment_status(self):
+        for xx in self:
+            status = ''
+            if xx.amount_payed == 0.0:
+                status = 'nothing'
+            elif xx.amount_payed > 0.0 and xx.amount_payed != xx.amount_total:
+                status = 'partial'
+            elif xx.amount_payed > 0.0 and xx.amount_payed == xx.amount_total:
+                status = 'full'
+            xx.update({'payment_status': status})
+
     allow_min_price = fields.Boolean(default=False)
     amount_payed = fields.Monetary(compute='_compute_pay_amount', string='Amount Payed', store=True)
-    payment_status = fields.Selection([('nothing','Nothing'),('partial','Partial Paid'),('full','Fully Paid')], default='')
+    payment_status = fields.Selection([('nothing','Nothing'),('partial','Partial Paid'),('full','Fully Paid')], compute='_get_payment_status', store=True)
 
-    @api.depends('amount_payed','invoice_ids.amount_total','invoice_ids.residual','invoice_ids.amount_untaxed','amount_total')
+    @api.one
+    @api.depends('amount_payed','invoice_ids.amount_total','invoice_ids.residual','invoice_ids.amount_untaxed',
+                 'amount_total')
     def _compute_pay_amount(self):
-        print('Enter')
         for rec in self:
             pay_amount = 0
-            for records in rec.invoice_ids:
-                if records.state in ['open','paid']:
-                    pay_amount += records.amount_total
-            rec.amount_payed = pay_amount
-            print(rec.amount_payed)
-            if rec.amount_payed == 0.0:
-                rec.payment_status = 'nothing'
-            elif rec.amount_payed > 0.0 and rec.amount_payed != rec.amount_total:
-                rec.payment_status = 'partial'
-            elif rec.amount_payed > 0.0 and rec.amount_payed == rec.amount_total:
-                rec.payment_status = 'full'
+            if rec.invoice_ids:
+                for records in rec.invoice_ids:
+                    if records.state in ['open','paid']:
+                        pay_amount += records.amount_total
+                print(pay_amount)
+            rec.update({'amount_payed':pay_amount})
 
     @api.model
     def _default_warehouse_id(self):
