@@ -22,10 +22,11 @@ class sale_day_book_wizard(models.TransientModel):
     start_date = fields.Date('Start Period', required=True)
     end_date = fields.Date('End Period', required=True)
     warehouse = fields.Many2many('stock.warehouse', 'wh_wiz_rel_inv_val', 'wh', 'wiz', string='Warehouse')
-    category = fields.Many2many('product.category', 'categ_wiz_rel', 'categ', 'wiz')
+    category = fields.Many2one('product.category',required=True, string='Item Category')
     location_id = fields.Many2one('stock.location', string='Location')
+    item = fields.Many2one('product.product')
     company_id = fields.Many2one('res.company', string='Company')
-    display_sum = fields.Boolean("Summary")
+    all_prod = fields.Boolean(default=True)
     net_sale = 0
     net_return = 0
     net_sale_amount = 0
@@ -41,10 +42,21 @@ class sale_day_book_wizard(models.TransientModel):
             'warehouse': self.warehouse,
             'location_id': self.location_id,
             'company_id': self.company_id,
-            'display_sum': self.display_sum,
+            'product_id': self.item.id or False,
+            'category':self.category.id or False,
+            'all_prod':self.all_prod
         }
         return self.env.ref('inventory_movement_report.inventory_product_category_template_pdf').report_action(
             self)
+
+    @api.onchange('category')
+    def set_products(self):
+        products = []
+        if self.category:
+            prods = self.env['product.product'].search([('categ_id','=',self.category.id),('qty_available', '!=', 0)])
+            for rec in prods:
+                products.append(rec.id)
+        return {'domain': {'item': [('id', 'in', products)]}}
 
     def get_warehouse(self):
         if self.warehouse:
@@ -69,7 +81,6 @@ class sale_day_book_wizard(models.TransientModel):
         return ''
 
     def get_company(self):
-
         if self.company_id:
             l1 = []
             l2 = []
@@ -120,23 +131,14 @@ class sale_day_book_wizard(models.TransientModel):
             ware_check_domain = [a.id for a in data['warehouse']]
             locations = []
             for i in ware_check_domain:
-
                 loc_ids = self.env['stock.warehouse'].search([('id', '=', i)])
-
                 locations.append(loc_ids.view_location_id.id)
                 for i in loc_ids.view_location_id.child_ids:
                     locations.append(i.id)
-
                 loc_list.append(loc_ids.lot_stock_id.id)
-
             custom_domain.append(('location_id', 'in', locations))
-
         domain_quant = [('product_id', 'in', product_obj.ids)] + domain_quant_loc + custom_domain
-        # print ("dddddddddddddddddddddddddddddddddddddddddd",domain_quant)
         dates_in_the_past = False
-        # only to_date as to_date will correspond to qty_available
-        # to_date = fields.Datetime.to_datetime(to_date)
-
         if to_date and to_date < date.today():
             dates_in_the_past = True
 
@@ -205,28 +207,21 @@ class sale_day_book_wizard(models.TransientModel):
             res[product_id]['virtual_available'] = float_round(
                 qty_available + res[product_id]['incoming_qty'] - res[product_id]['outgoing_qty'],
                 precision_rounding=rounding)
-
         return res
 
     def get_lines(self, data):
-
         product_res = self.env['product.product'].search([('type', '=', 'product')])
-
         category_lst = []
         if data['category']:
-
             for cate in data['category']:
                 if cate.id not in category_lst:
                     category_lst.append(cate.id)
-
                 for child in cate.child_id:
                     if child.id not in category_lst:
                         category_lst.append(child.id)
-
         if len(category_lst) > 0:
             product_res = self.env['product.product'].search(
                 [('categ_id', 'in', category_lst), ('type', '=', 'product')])
-
         lines = []
         net_sale = 0.0
         net_return = 0.0
@@ -234,7 +229,6 @@ class sale_day_book_wizard(models.TransientModel):
         net_return_amount = 0.0
         all_data = {}
         for product in product_res:
-
             sales_value = 0.0
             sales_return = 0.0
             sales_price = 0.0
@@ -243,6 +237,7 @@ class sale_day_book_wizard(models.TransientModel):
                                                                  self._context.get('owner_id'),
                                                                  self._context.get('package_id'), False,
                                                                  data['start_date'], product, data)
+
 
             # ending = self._compute_quantities_product_quant_dic(False,data['end_date'],product,data)
 
@@ -278,10 +273,8 @@ class sale_day_book_wizard(models.TransientModel):
                             sales_return = sales_return + move.product_uom_qty
                             net_return = net_return + move.product_uom_qty
                     else:
-
                         sales_value = sales_value + move.product_uom_qty
                         net_sale = net_sale + move.product_uom_qty
-
                 if move.picking_id.picking_type_id.code == "incoming":
                     if data['location_id']:
                         locations_lst = [data['location_id'].id]
@@ -289,12 +282,8 @@ class sale_day_book_wizard(models.TransientModel):
                             locations_lst.append(i.id)
                         if move.location_dest_id.id in locations_lst:
                             incoming = incoming + move.product_uom_qty
-
-
                     else:
-
                         incoming = incoming + move.product_uom_qty
-
             inventory_domain = [
                 ('date', '>=', data['start_date']),
                 ('date', "<=", data['end_date'])
@@ -313,7 +302,6 @@ class sale_day_book_wizard(models.TransientModel):
             total_adjust = 0
             min_picking = 0
             plus_min = 0
-
             if stock_pick_lines:
                 for invent in stock_pick_lines:
                     adjust += invent.product_uom_qty
@@ -340,10 +328,6 @@ class sale_day_book_wizard(models.TransientModel):
             net_sale_amount += sales_value * product.lst_price or 0
             net_return_amount += sales_return * product.lst_price or 0
 
-            # print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",opening)
-            # print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",stock_pick_lines)
-            # print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",stock_internal_lines_2)
-            # raise ValidationError("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
             vals = {
                 'sku': product.default_code or '',
                 'name': product.name or '',
@@ -379,6 +363,7 @@ class sale_day_book_wizard(models.TransientModel):
         return all_data
 
     def get_data(self, data):
+        print(222222222222222222)
         product_res = self.env['product.product'].search([('type', '=', 'product')])
         category_lst = []
         if data['category']:
@@ -461,7 +446,6 @@ class sale_day_book_wizard(models.TransientModel):
                         if move.location_dest_id.id in locations_lst:
                             incoming = incoming + move.product_uom_qty
 
-
                     else:
 
                         incoming = incoming + move.product_uom_qty
@@ -490,11 +474,8 @@ class sale_day_book_wizard(models.TransientModel):
             min_picking = 0
             if stock_internal_lines_2:
                 for inter in stock_internal_lines_2:
-                    # print("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",inter)
                     plus_min = inter.product_uom_qty
                     min_picking = inter.id
-
-                    # print("plus_min==================================",plus_min)
 
             if plus_picking > min_picking:
                 picking_id = self.env['stock.move'].browse(plus_picking)
@@ -521,7 +502,6 @@ class sale_day_book_wizard(models.TransientModel):
                     i['net_on_hand'] = i['net_on_hand'] + ending_bal
                     i['total_value'] = i['total_value'] + (ending_bal * product.standard_price)
                     flag = True
-
             if flag == False:
                 vals = {
                     'category': product.categ_id.name,
@@ -542,7 +522,6 @@ class sale_day_book_wizard(models.TransientModel):
                     'beginning': opening[product.id]['qty_available'] or 0,
                     'internal': internal or 0,
                 }
-
                 lines.append(vals)
 
         all_data = {
@@ -555,210 +534,6 @@ class sale_day_book_wizard(models.TransientModel):
 
         return all_data
 
-    @api.multi
-    def print_exl_report(self):
-
-        data = {'start_date': self.start_date,
-                'end_date': self.end_date, 'warehouse': self.warehouse,
-                'category': self.category,
-                'location_id': self.location_id,
-                'company_id': self.company_id.name,
-                'display_sum': self.display_sum,
-                'currency': self.company_id.currency_id.name,
-                }
-
-        if self.display_sum:
-            get_data = self.get_data(data)
-        else:
-            get_data = self.get_lines(data)
-
-        filename = 'Stock Valuation Report.xls'
-        get_warehouse = self.get_warehouse()
-        get_warehouse_name = self._get_warehouse_name()
-        l1 = []
-        get_company = self.get_company()
-        get_currency = self.get_currency()
-        workbook = xlwt.Workbook()
-        stylePC = xlwt.XFStyle()
-        alignment = xlwt.Alignment()
-        alignment.horz = xlwt.Alignment.HORZ_CENTER
-        fontP = xlwt.Font()
-        fontP.bold = True
-        fontP.height = 200
-        stylePC.font = fontP
-        stylePC.num_format_str = '@'
-        stylePC.alignment = alignment
-        style_title = xlwt.easyxf(
-            "font:height 300; font: name Liberation Sans, bold on,color black; align: horiz center")
-        style_table_header = xlwt.easyxf(
-            "font:height 200; font: name Liberation Sans, bold on,color black; align: horiz center")
-        style = xlwt.easyxf("font:height 200; font: name Liberation Sans,color black;")
-        worksheet = workbook.add_sheet('Sheet 1')
-        worksheet.write(3, 1, 'Start Date:', style_table_header)
-        worksheet.write(4, 1, str(self.start_date))
-        worksheet.write(3, 3, 'End Date', style_table_header)
-        worksheet.write(4, 3, str(self.end_date))
-        worksheet.write(3, 4, 'Company', style_table_header)
-        worksheet.write(4, 4, get_company and get_company[0] or '', )
-
-        worksheet.write(3, 5, 'Currency', style_table_header)
-        worksheet.write(4, 5, get_currency and get_currency[0] or '', )
-
-        worksheet.write(3, 6, 'Warehouse(s)', style_table_header)
-
-        worksheet.write(3, 8, 'Net Sale', style_table_header)
-        worksheet.write(4, 8, get_data['net_sale'] or 0, )
-
-        worksheet.write(3, 9, 'Net Sale Amount', style_table_header)
-        worksheet.write(4, 9, get_data['net_sale_amount'] or 0, )
-
-        worksheet.write(3, 10, 'Net Return', style_table_header)
-        worksheet.write(4, 10, get_data['net_return'] or 0, )
-
-        worksheet.write(3, 11, 'Net Return Amount', style_table_header)
-        worksheet.write(4, 11, get_data['net_return_amount'] or 0, )
-
-        worksheet.write(3, 12, 'Net Total', style_table_header)
-        worksheet.write(4, 12, (get_data['net_sale_amount'] - get_data['net_return_amount']) or 0, )
-
-        w_col_no = 7
-        w_col_no1 = 8
-        if get_warehouse_name:
-            # w_col_no = w_col_no + 8
-            worksheet.write(4, 6, get_warehouse_name, stylePC)
-            # w_col_no1 = w_col_no1 + 9
-        if self.display_sum:
-            worksheet.write_merge(0, 0, 0, 5, "Inventory Valuation Summary Report", style=style_title)
-            worksheet.write(6, 0, 'Category', style_table_header)
-            worksheet.write(6, 1, 'Beginning', style_table_header)
-            worksheet.write(6, 2, 'Internal', style_table_header)
-            worksheet.write(6, 3, 'Received', style_table_header)
-            worksheet.write(6, 4, 'Sales', style_table_header)
-            worksheet.write(6, 5, 'Adjustment', style_table_header)
-            worksheet.write(6, 6, 'Ending', style_table_header)
-            worksheet.write(6, 8, 'Valuation', style_table_header)
-            prod_row = 7
-            prod_col = 0
-
-            # get_line = self.get_data(data)
-            for each in get_data['data']:
-                worksheet.write(prod_row, prod_col, each['category'], style)
-                worksheet.write(prod_row, prod_col + 1, each['beginning'], style)
-                worksheet.write(prod_row, prod_col + 2, each['internal'], style)
-                worksheet.write(prod_row, prod_col + 3, each['incoming'], style)
-                worksheet.write(prod_row, prod_col + 4, each['sale_value'], style)
-                worksheet.write(prod_row, prod_col + 5, each['outgoing'], style)
-                worksheet.write(prod_row, prod_col + 6, each['net_on_hand'], style)
-                worksheet.write(prod_row, prod_col + 8, each['total_value'], style)
-                prod_row = prod_row + 1
-
-            prod_row = 6
-            prod_col = 7
-        else:
-            if self.env.user.has_group('cotton_customizations.group_can_access_only_admin_rights'):
-
-                worksheet.write_merge(0, 0, 0, 5, "Inventory Valuation Report", style=style_title)
-                worksheet.write(6, 0, 'Default Code', style_table_header)
-                worksheet.write(6, 1, 'Name', style_table_header)
-                worksheet.write(6, 2, 'Category', style_table_header)
-                worksheet.write(6, 3, 'Cost Price', style_table_header)
-                worksheet.write(6, 4, 'Sale Price', style_table_header)
-                worksheet.write(6, 5, 'Barcode', style_table_header)
-                worksheet.write(6, 6, 'Old Barcode', style_table_header)
-                worksheet.write(6, 7, 'Beginning', style_table_header)
-                worksheet.write(6, 8, 'Internal', style_table_header)
-                worksheet.write(6, 9, 'Received', style_table_header)
-                worksheet.write(6, 10, 'Sales', style_table_header)
-                worksheet.write(6, 11, 'Return', style_table_header)
-                worksheet.write(6, 12, 'Sales Amount', style_table_header)
-                # worksheet.write(6, 13, 'Zero Adjustment', style_table_header)
-                # worksheet.write(6, 14, 'Adjustment', style_table_header)
-                worksheet.write(6, 13, 'Total Adjustment', style_table_header)
-                worksheet.write(6, 14, 'Ending', style_table_header)
-                worksheet.write(6, 15, 'Valuation', style_table_header)
-                prod_row = 7
-                prod_col = 0
-
-                # get_line = self.get_lines(data)
-                for each in get_data['data']:
-                    worksheet.write(prod_row, prod_col, each['sku'], style)
-                    worksheet.write(prod_row, prod_col + 1, each['name'], style)
-                    worksheet.write(prod_row, prod_col + 2, each['category'], style)
-                    worksheet.write(prod_row, prod_col + 3, each['cost_price'], style)
-                    worksheet.write(prod_row, prod_col + 4, each['sale_price'], style)
-                    worksheet.write(prod_row, prod_col + 5, each['barcode'], style)
-                    worksheet.write(prod_row, prod_col + 6, each['old_barcode'], style)
-                    worksheet.write(prod_row, prod_col + 7, each['beginning'], style)
-                    worksheet.write(prod_row, prod_col + 8, each['internal'], style)
-                    worksheet.write(prod_row, prod_col + 9, each['incoming'], style)
-                    worksheet.write(prod_row, prod_col + 10, each['sale_value'], style)
-                    worksheet.write(prod_row, prod_col + 11, each['sale_return'], style)
-                    worksheet.write(prod_row, prod_col + 12, each['sale_value_price'], style)
-                    # worksheet.write(prod_row, prod_col+13, each['min_adjust'], style)
-                    # worksheet.write(prod_row, prod_col+14, each['adjust'], style)
-                    worksheet.write(prod_row, prod_col + 13, each['outgoing'], style)
-                    worksheet.write(prod_row, prod_col + 14, each['net_on_hand'], style)
-                    worksheet.write(prod_row, prod_col + 15, each['total_value'], style)
-                    prod_row = prod_row + 1
-
-                prod_row = 6
-                prod_col = 7
-            else:
-
-                worksheet.write_merge(0, 0, 0, 5, "Inventory Valuation Report", style=style_title)
-                worksheet.write(6, 0, 'Default Code', style_table_header)
-                worksheet.write(6, 1, 'Name', style_table_header)
-                worksheet.write(6, 2, 'Category', style_table_header)
-                worksheet.write(6, 3, 'Sale Price', style_table_header)
-                worksheet.write(6, 4, 'Barcode', style_table_header)
-                worksheet.write(6, 5, 'Old Barcode', style_table_header)
-                worksheet.write(6, 6, 'Beginning', style_table_header)
-                worksheet.write(6, 7, 'Internal', style_table_header)
-                worksheet.write(6, 8, 'Received', style_table_header)
-                worksheet.write(6, 9, 'Sales', style_table_header)
-                worksheet.write(6, 10, 'Return', style_table_header)
-                worksheet.write(6, 11, 'Sales Amount', style_table_header)
-                worksheet.write(6, 12, 'Adjustment', style_table_header)
-                worksheet.write(6, 13, 'Ending', style_table_header)
-                prod_row = 7
-                prod_col = 0
-
-                # get_line = self.get_lines(data)
-                for each in get_data['data']:
-                    worksheet.write(prod_row, prod_col, each['sku'], style)
-                    worksheet.write(prod_row, prod_col + 1, each['name'], style)
-                    worksheet.write(prod_row, prod_col + 2, each['category'], style)
-                    worksheet.write(prod_row, prod_col + 3, each['sale_price'], style)
-                    worksheet.write(prod_row, prod_col + 4, each['barcode'], style)
-                    worksheet.write(prod_row, prod_col + 5, each['old_barcode'], style)
-                    worksheet.write(prod_row, prod_col + 6, each['beginning'], style)
-                    worksheet.write(prod_row, prod_col + 7, each['internal'], style)
-                    worksheet.write(prod_row, prod_col + 8, each['incoming'], style)
-                    worksheet.write(prod_row, prod_col + 9, each['sale_value'], style)
-                    worksheet.write(prod_row, prod_col + 10, each['sale_return'], style)
-                    worksheet.write(prod_row, prod_col + 11, each['sale_value_price'], style)
-                    worksheet.write(prod_row, prod_col + 12, each['outgoing'], style)
-                    worksheet.write(prod_row, prod_col + 13, each['net_on_hand'], style)
-                    prod_row = prod_row + 1
-
-                prod_row = 6
-                prod_col = 7
-
-        fp = io.BytesIO()
-        workbook.save(fp)
-
-        export_id = self.env['sale.day.book.report.excel'].create(
-            {'excel_file': base64.encodestring(fp.getvalue()), 'file_name': filename})
-        res = {
-            'view_mode': 'form',
-            'res_id': export_id.id,
-            'res_model': 'sale.day.book.report.excel',
-            'view_type': 'form',
-            'type': 'ir.actions.act_window',
-            'target': 'new'
-        }
-        return res
-
 
 class sale_day_book_report_excel(models.TransientModel):
     _name = "sale.day.book.report.excel"
@@ -766,4 +541,3 @@ class sale_day_book_report_excel(models.TransientModel):
     excel_file = fields.Binary('Excel Report For Sale Book Day ')
     file_name = fields.Char('Excel File', size=64)
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

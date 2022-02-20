@@ -16,7 +16,8 @@ class sales_daybook_product_category_report(models.AbstractModel):
         docs = self.env['sale.day.book.wizard'].browse(docids)
         data = {'start_date': docs.start_date, 'end_date': docs.end_date, 'warehouse': docs.warehouse,
                 'category': docs.category, 'location_id': docs.location_id, 'company_id': docs.company_id.name,
-                'display_sum': docs.display_sum, 'currency': docs.company_id.currency_id.name}
+                'currency': docs.company_id.currency_id.name,'all_prod': docs.all_prod, 'item':docs.item,
+                'loc_name': docs.location_id.display_name, 'category_name':docs.category.name}
         return {
             'doc_model': 'sale.day.book.wizard',
             'data': data,
@@ -157,42 +158,36 @@ class sales_daybook_product_category_report(models.AbstractModel):
             res[product_id]['virtual_available'] = float_round(
                 qty_available + res[product_id]['incoming_qty'] - res[product_id]['outgoing_qty'],
                 precision_rounding=rounding)
-
         return res
 
     def _get_lines(self, data):
-        product_res = self.env['product.product'].search([('qty_available', '!=', 0),
-                                                          ('type', '=', 'product'),
-
-                                                          ])
+        if data['all_prod']:
+            product_res = self.env['product.product'].search([('qty_available', '!=', 0),('type', '=', 'product')])
+        else:
+            product_res = self.env['product.product'].search([('qty_available', '!=', 0), ('type', '=', 'product'),('id','=',data['item'].id)])
         category_lst = []
         if data['category']:
-
             for cate in data['category']:
                 if cate.id not in category_lst:
                     category_lst.append(cate.id)
-
                 for child in cate.child_id:
                     if child.id not in category_lst:
                         category_lst.append(child.id)
-
         if len(category_lst) > 0:
-            product_res = self.env['product.product'].search(
-                [('categ_id', 'in', category_lst), ('qty_available', '!=', 0), ('type', '=', 'product')])
-
+            if data['all_prod']:
+                product_res = self.env['product.product'].search([('categ_id', 'in', category_lst), ('qty_available', '!=', 0), ('type', '=', 'product')])
+            else:
+                product_res = self.env['product.product'].search([('categ_id', 'in', category_lst), ('qty_available', '!=', 0), ('type', '=', 'product'),('id','=',data['item'].id)])
         lines = []
         for product in product_res:
-
-            # if product.create_date.date() <= data['start_date'] :
-
             sales_value = 0.0
-
             incoming = 0.0
             opening = self._compute_quantities_product_quant_dic(self._context.get('lot_id'),
                                                                  self._context.get('owner_id'),
                                                                  self._context.get('package_id'), False,
                                                                  data['start_date'], product, data)
-
+            # print(opening)
+            # print(self.mm)
             # ending = self._compute_quantities_product_quant_dic(False,data['end_date'],product,data)
 
             # if opening[product.id]['qty_available'] > 0 :
@@ -213,7 +208,6 @@ class sales_daybook_product_category_report(models.AbstractModel):
                                                                 ('picking_id.date_done', "<=", data['end_date']),
                                                                 ('state', '=', 'done')
                                                             ] + custom_domain)
-
             for move in stock_move_line:
                 if move.picking_id.picking_type_id.code == "outgoing":
                     if data['location_id']:
@@ -222,11 +216,9 @@ class sales_daybook_product_category_report(models.AbstractModel):
                             locations_lst.append(i.id)
                         if move.location_id.id in locations_lst:
                             sales_value = sales_value + move.product_uom_qty
-
                     else:
-
                         sales_value = sales_value + move.product_uom_qty
-
+                print('Out',sales_value)
                 if move.picking_id.picking_type_id.code == "incoming":
                     if data['location_id']:
                         locations_lst = [data['location_id'].id]
@@ -234,12 +226,9 @@ class sales_daybook_product_category_report(models.AbstractModel):
                             locations_lst.append(i.id)
                         if move.location_dest_id.id in locations_lst:
                             incoming = incoming + move.product_uom_qty
-
-
                     else:
-
                         incoming = incoming + move.product_uom_qty
-
+                print('IN',incoming)
             inventory_domain = [
                 ('date', '>', data['start_date']),
                 ('date', "<", data['end_date'])
@@ -255,40 +244,31 @@ class sales_daybook_product_category_report(models.AbstractModel):
             adjust = 0
             internal = 0
             plus_picking = 0
-
             if stock_pick_lines:
                 for invent in stock_pick_lines:
                     adjust = invent.product_uom_qty
                     plus_picking = invent.id
-
             min_picking = 0
             if stock_internal_lines_2:
                 for inter in stock_internal_lines_2:
-                    # print("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",inter)
                     plus_min = inter.product_uom_qty
                     min_picking = inter.id
-
-                    # print("plus_min==================================",plus_min)
-
             if plus_picking > min_picking:
                 picking_id = self.env['stock.move'].browse(plus_picking)
                 adjust = picking_id.product_uom_qty
-
             else:
                 picking_id = self.env['stock.move'].browse(min_picking)
                 adjust = -int(picking_id.product_uom_qty)
             if stock_internal_lines:
-
                 for inter in stock_internal_lines:
                     internal = inter.product_uom_qty
-
             ending_bal = opening[product.id]['qty_available'] - sales_value + incoming + adjust
-
             if opening[product.id]['qty_available'] != 0:
                 vals = {
                     'sku': product.default_code or '',
                     'name': product.name or '',
                     'category': product.categ_id.name or '',
+                    'uom': product.uom_id.name or '',
                     'cost_price': product.standard_price or 0,
                     'available': 0,
                     'virtual': 0,
@@ -300,16 +280,15 @@ class sales_daybook_product_category_report(models.AbstractModel):
                     'purchase_value': 0,
                     'beginning': opening[product.id]['qty_available'] or 0,
                     'internal': internal,
+                    'test': 0
                 }
+                print(vals)
                 lines.append(vals)
 
         return lines
 
     def _get_data(self, data):
-        product_res = self.env['product.product'].search([('qty_available', '!=', 0),
-                                                          ('type', '=', 'product'),
-
-                                                          ])
+        product_res = self.env['product.product'].search([('qty_available', '!=', 0),('type', '=', 'product'),])
         category_lst = []
         if data['category']:
 

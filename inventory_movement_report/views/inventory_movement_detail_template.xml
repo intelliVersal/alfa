@@ -13,7 +13,11 @@
                             </tr>
                             <tr>
                                 <th style="border: 1px solid black;" class="text-center">Location</th>
-                                <th style="border: 1px solid black;" class="text-center"><span t-esc="data['location_id']"/></th>
+                                <th style="border: 1px solid black;" class="text-center"><span t-esc="data['loc_name']"/></th>
+                            </tr>
+                             <tr>
+                                <th style="border: 1px solid black;" class="text-center">Category</th>
+                                <th style="border: 1px solid black;" class="text-center"><span t-esc="data['category_name']"/></th>
                             </tr>
                         </table>
                         <br/>
@@ -25,6 +29,7 @@
                                 <th width="8%" style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center">Item Code</th>
                                 <th width="20%" style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center">Item Description</th>
                                 <th width="7%" style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center">Category</th>
+                                <th width="7%" style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center">UOM</th>
                                 <th width="5%" style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center">Opening Balance</th>
                                 <th width="5%" style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center">Production Inward</th>
                                 <th width="5%" style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center">Adjustment Inward</th>
@@ -44,28 +49,27 @@
                                 <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-esc="line.get('sku')"/></td>
                                 <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-esc="line.get('name')"/></td>
                                 <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-esc="line.get('category')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('cost_price')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-esc="line.get('uom')"/></td>
                                 <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('beginning')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('internal')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('incoming')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('incoming')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('incoming')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('incoming')"/></td>
                                 <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('incoming')"/></td>
                                 <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('sale_value')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('outgoing')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('net_on_hand')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('total_value')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('outgoing')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('outgoing')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('outgoing')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('outgoing')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('outgoing')"/></td>
-                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('outgoing')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('sale_value')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('sale_value')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('sale_value')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('sale_value')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('test')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('cost_price')"/></td>
+                                <td style="border-bottom: 2px solid black; border-top:2px solid black; border-left:2px solid black; border-right:2px solid black;" class="text-center"><span t-options='{"widget": "float", "precision": 2}' t-esc="line.get('test')"/></td>
                                 <t t-set="total" t-value="total+line.get('total_value')" />
                             </tr>
                         </table>
                         <p style="page-break-after:always;"/>
                     </right>
-                    <!--<div class="row" style="float:right; text-align:left">
-                        <h4>Total Valuation: <t t-esc="total" t-options='{"widget": "float", "precision": 2}'/></h4>
-                    </div>-->
+
                 </div>
             </t>
         </t>
