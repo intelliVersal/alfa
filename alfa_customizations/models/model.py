@@ -17,7 +17,6 @@ class InheritWarehouse(models.Model):
 class SaleInherit(models.Model):
     _inherit = 'sale.order'
 
-    @api.one
     @api.depends('amount_payed', 'invoice_ids.amount_total', 'invoice_ids.residual', 'invoice_ids.amount_untaxed',
                  'amount_total')
     def _get_payment_status(self):
@@ -35,7 +34,6 @@ class SaleInherit(models.Model):
     amount_payed = fields.Monetary(compute='_compute_pay_amount', string='Amount Payed', store=True)
     payment_status = fields.Selection([('nothing','Nothing'),('partial','Partial Paid'),('full','Fully Paid')], compute='_get_payment_status', store=True)
 
-    @api.one
     @api.depends('amount_payed','invoice_ids.amount_total','invoice_ids.residual','invoice_ids.amount_untaxed',
                  'amount_total')
     def _compute_pay_amount(self):
