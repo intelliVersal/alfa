@@ -19,6 +19,7 @@ class SaleInherit(models.Model):
 
     allow_min_price = fields.Boolean(default=False)
     amount_payed = fields.Monetary(compute='_compute_pay_amount', string='Amount Payed', store=True)
+    amount_remaining = fields.Monetary(compute='_compute_pay_amount', string='Amount Remaining', store=True)
     payment_status = fields.Selection([('nothing','Nothing'),('partial','Partial Paid'),('full','Fully Paid')], compute='_get_payment_status', store=True)
 
     @api.depends('amount_payed','invoice_ids.amount_total','invoice_ids.residual','invoice_ids.amount_untaxed',
@@ -30,7 +31,8 @@ class SaleInherit(models.Model):
                 for records in rec.invoice_ids:
                     if records.state in ['open','paid']:
                         pay_amount += records.amount_total
-            rec.update({'amount_payed':pay_amount})
+            rec.update({'amount_payed': pay_amount,
+                        'amount_remaining': rec.amount_total - pay_amount})
             
     @api.depends('amount_payed', 'invoice_ids.amount_total', 'invoice_ids.residual', 'invoice_ids.amount_untaxed',
                  'amount_total')

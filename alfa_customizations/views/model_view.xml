@@ -284,6 +284,10 @@
                         <label for="amount_payed" string="Received Amount"/>
                         <field name="amount_payed" class="oe_inline"/>
                     </div>
+                    <div>
+                        <label for="amount_remaining" string="Remaining Amount"/>
+                        <field name="amount_remaining" class="oe_inline"/>
+                    </div>
                 </xpath>
             </field>
         </record>
