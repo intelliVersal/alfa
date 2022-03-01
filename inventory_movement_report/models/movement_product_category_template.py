@@ -54,45 +54,31 @@ class sales_daybook_product_category_report(models.AbstractModel):
             return l1
         return ''
 
-    def _compute_quantities_product_quant_dic(self, lot_id, owner_id, package_id, from_date, to_date, product_obj,
-                                              data):
-
+    def _compute_quantities_product_quant_dic(self, lot_id, owner_id, package_id, from_date, to_date, product_obj,data):
         loc_list = []
-
         domain_quant_loc, domain_move_in_loc, domain_move_out_loc = product_obj._get_domain_locations()
         custom_domain = []
         if data['company_id']:
             obj = self.env['res.company'].search([('name', '=', data['company_id'])])
-
             custom_domain.append(('company_id', '=', obj.id))
-
         if data['location_id']:
             custom_domain.append(('location_id', '=', data['location_id'].id))
-
         if data['warehouse']:
             ware_check_domain = [a.id for a in data['warehouse']]
             locations = []
             for i in ware_check_domain:
-
                 loc_ids = self.env['stock.warehouse'].search([('id', '=', i)])
-
                 locations.append(loc_ids.view_location_id.id)
                 for i in loc_ids.view_location_id.child_ids:
                     locations.append(i.id)
-
                 loc_list.append(loc_ids.lot_stock_id.id)
-
             custom_domain.append(('location_id', 'in', locations))
-
         domain_quant = [('product_id', 'in', product_obj.ids)] + domain_quant_loc + custom_domain
-        # print ("dddddddddddddddddddddddddddddddddddddddddd",domain_quant)
         dates_in_the_past = False
         # only to_date as to_date will correspond to qty_available
         # to_date = fields.Datetime.to_datetime(to_date)
-
         if to_date and to_date < date.today():
             dates_in_the_past = True
-
         domain_move_in = [('product_id', 'in', product_obj.ids)] + domain_move_in_loc
         domain_move_out = [('product_id', 'in', product_obj.ids)] + domain_move_out_loc
         if lot_id is not None:
@@ -180,89 +166,62 @@ class sales_daybook_product_category_report(models.AbstractModel):
                 product_res = self.env['product.product'].search([('categ_id', 'in', category_lst), ('qty_available', '!=', 0), ('type', '=', 'product'),('id','=',data['item'].id)])
         lines = []
         for product in product_res:
-            sales_value = 0.0
-            incoming = 0.0
             opening = self._compute_quantities_product_quant_dic(self._context.get('lot_id'),
                                                                  self._context.get('owner_id'),
                                                                  self._context.get('package_id'), False,
                                                                  data['start_date'], product, data)
-            # print(opening)
-            # print(self.mm)
-            # ending = self._compute_quantities_product_quant_dic(False,data['end_date'],product,data)
-
-            # if opening[product.id]['qty_available'] > 0 :
-
             custom_domain = []
             if data['company_id']:
                 obj = self.env['res.company'].search([('name', '=', data['company_id'])])
-
                 custom_domain.append(('company_id', '=', obj.id))
-
             if data['warehouse']:
                 warehouse_lst = [a.id for a in data['warehouse']]
                 custom_domain.append(('picking_id.picking_type_id.warehouse_id', 'in', warehouse_lst))
-
-            stock_move_line = self.env['stock.move'].search([
-                                                                ('product_id', '=', product.id),
+            stock_move_line_in = self.env['stock.move'].search([('product_id', '=', product.id),
+                                                            ('picking_id.date_done', '>', data['start_date']),
+                                                            ('picking_id.date_done', "<=", data['end_date']),
+                                                            ('state', '=', 'done'),('location_dest_id','=',data['location_id'].id)] + custom_domain)
+            stock_move_line_out = self.env['stock.move'].search([('product_id', '=', product.id),
                                                                 ('picking_id.date_done', '>', data['start_date']),
                                                                 ('picking_id.date_done', "<=", data['end_date']),
-                                                                ('state', '=', 'done')
-                                                            ] + custom_domain)
-            for move in stock_move_line:
-                if move.picking_id.picking_type_id.code == "outgoing":
-                    if data['location_id']:
-                        locations_lst = [data['location_id'].id]
-                        for i in data['location_id'].child_ids:
-                            locations_lst.append(i.id)
-                        if move.location_id.id in locations_lst:
-                            sales_value = sales_value + move.product_uom_qty
-                    else:
-                        sales_value = sales_value + move.product_uom_qty
-                print('Out',sales_value)
-                if move.picking_id.picking_type_id.code == "incoming":
-                    if data['location_id']:
-                        locations_lst = [data['location_id'].id]
-                        for i in data['location_id'].child_ids:
-                            locations_lst.append(i.id)
-                        if move.location_dest_id.id in locations_lst:
-                            incoming = incoming + move.product_uom_qty
-                    else:
-                        incoming = incoming + move.product_uom_qty
-                print('IN',incoming)
-            inventory_domain = [
-                ('date', '>', data['start_date']),
-                ('date', "<", data['end_date'])
-            ]
-            stock_pick_lines = self.env['stock.move'].search(
-                [('location_id.usage', '=', 'inventory'), ('product_id.id', '=', product.id)] + inventory_domain)
-            stock_internal_lines = self.env['stock.move'].search(
-                [('location_id.usage', '=', 'internal'), ('location_dest_id.usage', '=', 'internal'),
-                 ('product_id.id', '=', product.id)] + inventory_domain)
-            stock_internal_lines_2 = self.env['stock.move'].search(
-                [('location_id.usage', '=', 'internal'), ('location_dest_id.usage', '=', 'inventory'),
-                 ('product_id.id', '=', product.id)] + inventory_domain)
-            adjust = 0
-            internal = 0
-            plus_picking = 0
-            if stock_pick_lines:
-                for invent in stock_pick_lines:
-                    adjust = invent.product_uom_qty
-                    plus_picking = invent.id
-            min_picking = 0
-            if stock_internal_lines_2:
-                for inter in stock_internal_lines_2:
-                    plus_min = inter.product_uom_qty
-                    min_picking = inter.id
-            if plus_picking > min_picking:
-                picking_id = self.env['stock.move'].browse(plus_picking)
-                adjust = picking_id.product_uom_qty
-            else:
-                picking_id = self.env['stock.move'].browse(min_picking)
-                adjust = -int(picking_id.product_uom_qty)
-            if stock_internal_lines:
-                for inter in stock_internal_lines:
-                    internal = inter.product_uom_qty
-            ending_bal = opening[product.id]['qty_available'] - sales_value + incoming + adjust
+                                                                ('state', '=', 'done'), ('location_id', '=', data['location_id'].id)] + custom_domain)
+
+            prod_in = 0.0
+            transfer_in = 0.0
+            sale_return = 0.0
+            adjust_in = 0.0
+            purchase = 0.0
+            for move in stock_move_line_in:
+                if move.location_id.usage == 'supplier':
+                    purchase += move.product_uom_qty
+                if move.location_id.usage == 'inventory':
+                    adjust_in += move.product_uom_qty
+                if move.location_id.usage == 'production':
+                    prod_in += move.product_uom_qty
+                if move.location_id.usage == 'customer':
+                    sale_return += move.product_uom_qty
+                if move.location_id.usage == 'internal':
+                    transfer_in += move.product_uom_qty
+
+            prod_out = 0.0
+            transfer_out = 0.0
+            purchase_return = 0.0
+            adjust_out = 0.0
+            sale = 0.0
+            for move in stock_move_line_out:
+                if move.location_dest_id.usage == 'supplier':
+                    purchase_return += move.product_uom_qty
+                if move.location_dest_id.usage == 'inventory':
+                    adjust_out += move.product_uom_qty
+                if move.location_dest_id.usage == 'production':
+                    prod_out += move.product_uom_qty
+                if move.location_dest_id.usage == 'customer':
+                    sale += move.product_uom_qty
+                if move.location_dest_id.usage == 'internal':
+                    transfer_out += move.product_uom_qty
+            inward = sale_return + purchase + adjust_in
+            outward = sale + purchase_return + adjust_out
+            ending_bal = (opening[product.id]['qty_available'] + inward) - outward
             if opening[product.id]['qty_available'] != 0:
                 vals = {
                     'sku': product.default_code or '',
@@ -270,67 +229,53 @@ class sales_daybook_product_category_report(models.AbstractModel):
                     'category': product.categ_id.name or '',
                     'uom': product.uom_id.name or '',
                     'cost_price': product.standard_price or 0,
-                    'available': 0,
-                    'virtual': 0,
-                    'incoming': incoming or 0,
-                    'outgoing': adjust,
-                    'net_on_hand': ending_bal,
-                    'total_value': ending_bal * product.standard_price or 0,
-                    'sale_value': sales_value or 0,
-                    'purchase_value': 0,
                     'beginning': opening[product.id]['qty_available'] or 0,
-                    'internal': internal,
-                    'test': 0
+                    'sale': sale or 0,
+                    'purchase': purchase or 0,
+                    'sale_return': sale_return or 0,
+                    'purchase_return': purchase_return or 0,
+                    'transfer_in': transfer_in or 0,
+                    'transfer_out': transfer_out or 0,
+                    'prod_in': prod_in or 0,
+                    'prod_out': prod_out or 0,
+                    'adjustment_in': adjust_in or 0,
+                    'adjustment_out': adjust_out or 0,
+                    'ending': ending_bal,
+                    'ending_cost': ending_bal * product.standard_price
                 }
-                print(vals)
                 lines.append(vals)
-
         return lines
 
     def _get_data(self, data):
         product_res = self.env['product.product'].search([('qty_available', '!=', 0),('type', '=', 'product'),])
         category_lst = []
         if data['category']:
-
             for cate in data['category']:
                 if cate.id not in category_lst:
                     category_lst.append(cate.id)
-
                 for child in cate.child_id:
                     if child.id not in category_lst:
                         category_lst.append(child.id)
-
         if len(category_lst) > 0:
             product_res = self.env['product.product'].search(
                 [('categ_id', 'in', category_lst), ('qty_available', '!=', 0), ('type', '=', 'product')])
-
         lines = []
         for product in product_res:
             # if product.create_date.date() <= data['start_date'] :
-
             sales_value = 0.0
-
             incoming = 0.0
             opening = self._compute_quantities_product_quant_dic(self._context.get('lot_id'),
                                                                  self._context.get('owner_id'),
                                                                  self._context.get('package_id'), False,
                                                                  data['start_date'], product, data)
-
-            # ending = self._compute_quantities_product_quant_dic(False,data['end_date'],product,data)
-
-            # if opening[product.id]['qty_available'] > 0 :
-
-            # print ("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",ending)
             custom_domain = []
             if data['company_id']:
                 obj = self.env['res.company'].search([('name', '=', data['company_id'])])
                 print("obj----------comp----------------------", obj.name)
                 custom_domain.append(('company_id', '=', obj.id))
-
             if data['warehouse']:
                 warehouse_lst = [a.id for a in data['warehouse']]
                 custom_domain.append(('picking_id.picking_type_id.warehouse_id', 'in', warehouse_lst))
-
             stock_move_line = self.env['stock.move'].search([
                                                                 ('product_id', '=', product.id),
                                                                 ('picking_id.date_done', '>', data['start_date']),
