@@ -29,7 +29,7 @@
                             <field name="end_date"/>
                         </group>
                         <group string="Location">
-                            <field name="location_id"/>
+                            <field name="location_id" required="1"/>
                         </group>
                     </group>
                     <group colspan="2" col="2">
