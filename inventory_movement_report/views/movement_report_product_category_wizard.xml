@@ -29,7 +29,7 @@
                             <field name="end_date"/>
                         </group>
                         <group string="Location">
-                            <field name="location_id" required="1"/>
+                            <field name="location_ft" required="1"/>
                         </group>
                     </group>
                     <group colspan="2" col="2">
@@ -66,7 +66,5 @@
                 action="action_sale_daybook_report_product_category"
                 groups="stock.group_stock_manager,stock.group_stock_user"
         />
-
-
     </data>
 </openerp>

@@ -15,9 +15,10 @@ class sales_daybook_product_category_report(models.AbstractModel):
         data = data if data is not None else {}
         docs = self.env['sale.day.book.wizard'].browse(docids)
         data = {'start_date': docs.start_date, 'end_date': docs.end_date, 'warehouse': docs.warehouse,
-                'category': docs.category, 'location_id': docs.location_id, 'company_id': docs.company_id.name,
+                'category': docs.category, 'location_id': docs.location_id,'location_ft': docs.location_ft,
+                'company_id': docs.company_id.name,
                 'currency': docs.company_id.currency_id.name,'all_prod': docs.all_prod, 'item':docs.item,
-                'loc_name': docs.location_id.display_name, 'category_name':docs.category.name}
+                'loc_name': docs.location_ft.display_name, 'category_name':docs.category.name}
         return {
             'doc_model': 'sale.day.book.wizard',
             'data': data,
@@ -180,11 +181,11 @@ class sales_daybook_product_category_report(models.AbstractModel):
             stock_move_line_in = self.env['stock.move'].search([('product_id', '=', product.id),
                                                             ('picking_id.date_done', '>', data['start_date']),
                                                             ('picking_id.date_done', "<=", data['end_date']),
-                                                            ('state', '=', 'done'),('location_dest_id','=',data['location_id'].id)] + custom_domain)
+                                                            ('state', '=', 'done'),('location_dest_id','=',data['location_ft'].id)] + custom_domain)
             stock_move_line_out = self.env['stock.move'].search([('product_id', '=', product.id),
                                                                 ('picking_id.date_done', '>', data['start_date']),
                                                                 ('picking_id.date_done', "<=", data['end_date']),
-                                                                ('state', '=', 'done'), ('location_id', '=', data['location_id'].id)] + custom_domain)
+                                                                ('state', '=', 'done'), ('location_id', '=', data['location_ft'].id)] + custom_domain)
 
             prod_in = 0.0
             transfer_in = 0.0

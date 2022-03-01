@@ -24,6 +24,7 @@ class sale_day_book_wizard(models.TransientModel):
     warehouse = fields.Many2many('stock.warehouse', 'wh_wiz_rel_inv_val', 'wh', 'wiz', string='Warehouse')
     category = fields.Many2one('product.category',required=True, string='Item Category')
     location_id = fields.Many2one('stock.location', string='Location')
+    location_ft = fields.Many2one('stock.location', string='From/To Location')
     item = fields.Many2one('product.product')
     company_id = fields.Many2one('res.company', string='Company')
     all_prod = fields.Boolean(default=True)
@@ -41,6 +42,7 @@ class sale_day_book_wizard(models.TransientModel):
             'end_date': self.end_date,
             'warehouse': self.warehouse,
             'location_id': self.location_id,
+            'location_ft':self.location_ft,
             'company_id': self.company_id,
             'product_id': self.item.id or False,
             'category':self.category.id or False,
