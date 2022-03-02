@@ -178,13 +178,13 @@ class sales_daybook_product_category_report(models.AbstractModel):
             if data['warehouse']:
                 warehouse_lst = [a.id for a in data['warehouse']]
                 custom_domain.append(('picking_id.picking_type_id.warehouse_id', 'in', warehouse_lst))
-            stock_move_line_in = self.env['stock.move'].search([('product_id', '=', product.id),
-                                                            ('picking_id.date_done', '>', data['start_date']),
-                                                            ('picking_id.date_done', "<=", data['end_date']),
+            stock_move_line_in = self.env['stock.move.line'].search([('product_id', '=', product.id),
+                                                            ('date', '>=', data['start_date']),
+                                                            ('date', '<=', data['end_date']),
                                                             ('state', '=', 'done'),('location_dest_id','=',data['location_ft'].id)] + custom_domain)
-            stock_move_line_out = self.env['stock.move'].search([('product_id', '=', product.id),
-                                                                ('picking_id.date_done', '>', data['start_date']),
-                                                                ('picking_id.date_done', "<=", data['end_date']),
+            stock_move_line_out = self.env['stock.move.line'].search([('product_id', '=', product.id),
+                                                                ('date', '>=', data['start_date']),
+                                                                ('date', '<=', data['end_date']),
                                                                 ('state', '=', 'done'), ('location_id', '=', data['location_ft'].id)] + custom_domain)
 
             prod_in = 0.0
@@ -194,15 +194,15 @@ class sales_daybook_product_category_report(models.AbstractModel):
             purchase = 0.0
             for move in stock_move_line_in:
                 if move.location_id.usage == 'supplier':
-                    purchase += move.product_uom_qty
+                    purchase += move.qty_done
                 if move.location_id.usage == 'inventory':
-                    adjust_in += move.product_uom_qty
+                    adjust_in += move.qty_done
                 if move.location_id.usage == 'production':
-                    prod_in += move.product_uom_qty
+                    prod_in += move.qty_done
                 if move.location_id.usage == 'customer':
-                    sale_return += move.product_uom_qty
+                    sale_return += move.qty_done
                 if move.location_id.usage == 'internal':
-                    transfer_in += move.product_uom_qty
+                    transfer_in += move.qty_done
 
             prod_out = 0.0
             transfer_out = 0.0
@@ -211,17 +211,17 @@ class sales_daybook_product_category_report(models.AbstractModel):
             sale = 0.0
             for move in stock_move_line_out:
                 if move.location_dest_id.usage == 'supplier':
-                    purchase_return += move.product_uom_qty
+                    purchase_return += move.qty_done
                 if move.location_dest_id.usage == 'inventory':
-                    adjust_out += move.product_uom_qty
+                    adjust_out += move.qty_done
                 if move.location_dest_id.usage == 'production':
-                    prod_out += move.product_uom_qty
+                    prod_out += move.qty_done
                 if move.location_dest_id.usage == 'customer':
-                    sale += move.product_uom_qty
+                    sale += move.qty_done
                 if move.location_dest_id.usage == 'internal':
-                    transfer_out += move.product_uom_qty
-            inward = sale_return + purchase + adjust_in
-            outward = sale + purchase_return + adjust_out
+                    transfer_out += move.qty_done
+            inward = sale_return + purchase + adjust_in + prod_in
+            outward = sale + purchase_return + adjust_out + prod_out
             ending_bal = (opening[product.id]['qty_available'] + inward) - outward
             if opening[product.id]['qty_available'] != 0:
                 vals = {
