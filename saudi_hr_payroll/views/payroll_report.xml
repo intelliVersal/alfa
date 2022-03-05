@@ -76,6 +76,7 @@
                                         <td>بدل السكن</td>
                                         <td>بدل النقل</td>
                                         <td>بدل الاعاشه</td>
+										<td>بدل الهاتف</td>
                                         <td>العمل الاضافى</td>
                                         <td>اخرى</td>
                                         <td>تأمينات اجتماعية</td>
@@ -90,6 +91,7 @@
                                 <t t-set="rule_house_allowance" t-value="0"/>
                                 <t t-set="rule_transportation_allowance" t-value="0"/>
                                 <t t-set="rule_food_allowance" t-value="0"/>
+								<t t-set="rule_phone_allowance" t-value="0"/>
                                 <t t-set="rule_overtime" t-value="0"/>
                                 <t t-set="rule_other_llowance" t-value="0"/>
                                 <t t-set="rule_gross" t-value="0"/>
@@ -111,6 +113,7 @@
                                             <td><span t-field="slip.rule_house_allowance"/></td>
                                             <td><span t-field="slip.rule_transportation_allowance"/></td>
                                             <td><span t-field="slip.rule_food_allowance"/></td>
+											<td><span t-field="slip.rule_phone_allowance"/></td>
                                             <td><span t-field="slip.rule_overtime"/></td>
                                             <td><span t-field="slip.rule_other_llowance"/></td>
                                             <td><span t-field="slip.rule_gross"/></td>
@@ -130,6 +133,7 @@
 <!--                                            <t t-set="rule_trans_ded" t-value="rule_trans_ded + slip.rule_trans_ded"/>-->
 <!--                                            <t t-set="rule_house_ded" t-value="rule_house_ded + slip.rule_house_ded"/>-->
                                             <t t-set="rule_food_allowance" t-value="rule_food_allowance + slip.rule_food_allowance"/>
+											<t t-set="rule_phone_allowance" t-value="rule_phone_allowance + slip.rule_phone_allowance"/>
                                             <t t-set="rule_overtime" t-value="rule_overtime + slip.rule_overtime"/>
                                             <t t-set="rule_other_llowance" t-value="rule_other_llowance + slip.rule_other_llowance"/>
                                             <t t-set="rule_gross" t-value="rule_gross + slip.rule_gross"/>
@@ -147,6 +151,7 @@
                                         <td><span t-esc="rule_house_allowance"/> </td>
                                         <td><span t-esc="rule_transportation_allowance"/> </td>
                                         <td><span t-esc="rule_food_allowance"/> </td>
+										<td><span t-esc="rule_phone_allowance"/> </td>
                                         <td><span t-esc="rule_overtime"/> </td>
                                         <td><span t-esc="rule_other_llowance"/> </td>
                                         <td><span t-esc="rule_gross"/> </td>
