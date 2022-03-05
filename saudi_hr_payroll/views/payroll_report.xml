@@ -49,6 +49,7 @@
                                 <t t-set="rule_house_allowance" t-value="0"/>
                                 <t t-set="rule_transportation_allowance" t-value="0"/>
                                 <t t-set="rule_food_allowance" t-value="0"/>
+								<t t-set="rule_phone_allowance" t-value="0"/>
                                 <t t-set="rule_overtime" t-value="0"/>
                                 <t t-set="rule_other_llowance" t-value="0"/>
                                 <t t-set="rule_gross" t-value="0"/>
@@ -65,7 +66,7 @@
                                         <td rowspan="2">#</td>
                                         <td rowspan="2">الرقم <br/>الوظيفى</td>
                                         <td rowspan="2"> اسم الموظف </td>
-                                        <td colspan="6">الاستحقاقات </td>
+                                        <td colspan="7">الاستحقاقات </td>
                                         <td rowspan="2">اجمالى <br/> الاستحقاقات</td>
                                         <td colspan="4">الخصومات </td>
                                         <td rowspan="2">اجمالى <br/>الخصومات</td>
