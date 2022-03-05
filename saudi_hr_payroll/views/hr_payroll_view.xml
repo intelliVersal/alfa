@@ -380,8 +380,8 @@
                                     <field name="rule_basic" string="Basic" sum='Total'/>
                                     <field name="rule_house_allowance" string="House" sum='Total'/>
                                     <field name="rule_transportation_allowance" sum='Total'/>
-                                    <field name="rule_phone_allowance" string="phone" sum='Total' />
-                                    <field name="rule_food_allowance" string="phone" sum='Total' />
+                                    <field name="rule_phone_allowance" string="Phone" sum='Total' />
+                                    <field name="rule_food_allowance" string="Food" sum='Total' />
                                     <field name="rule_other_llowance" string="Other" sum='Total'/>
                                     <field name="rule_gross" sum='Total'/>
                                     <field name="rule_loan_deducted" sum='Total'/>
