@@ -265,7 +265,7 @@
                                                 <span t-field="doc.amount_total"/>
                                             </td>
                                         </tr>
-										 <tr class="border-black o_total">
+                                        <tr class="border-black o_total">
                                             <td><strong>Amount Received</strong></td>
                                             <td style="font-weight:bold;" class="text-right">
                                                 <span t-field="doc.amount_payed"/>
