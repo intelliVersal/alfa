@@ -265,6 +265,18 @@
                                                 <span t-field="doc.amount_total"/>
                                             </td>
                                         </tr>
+										 <tr class="border-black o_total">
+                                            <td><strong>Amount Received</strong></td>
+                                            <td style="font-weight:bold;" class="text-right">
+                                                <span t-field="doc.amount_payed"/>
+                                            </td>
+                                        </tr>
+                                        <tr class="border-black o_total">
+                                            <td><strong>Amount Remaining</strong></td>
+                                            <td style="font-weight:bold;" class="text-right">
+                                                <span t-field="doc.amount_remaining"/>
+                                            </td>
+                                        </tr>
                                     </table>
                                 </div>
                             </div>
