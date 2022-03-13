@@ -1024,7 +1024,7 @@ class Holidays(models.Model):
 
     @api.one
     def write(self, vals):
-        self.check_valid_period(vals.get('date_from', False), vals.get('date_to', False))
+        # self.check_valid_period(vals.get('date_from', False), vals.get('date_to', False))
         res = super(Holidays, self).write(vals)
         days = self.env['working.days'].search(
             [('employee_id', '=', self.employee_id.id), ('date', '>=', __(self.date_from)), ('date', '<=', __(self.date_to))])
