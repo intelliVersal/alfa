@@ -275,14 +275,14 @@ class MultiStatusUpdate(models.TransientModel):
             record.status_update()
         return {'type': 'ir.actions.act_window_close'}
 
-# 
-# class MrpWorkOrderInherit(models.Model):
-#     _inherit = 'mrp.workorder'
-# 
-#     @api.multi
-#     def write(self, values):
-#         print(values)
-#         # if list(values.keys()) != ['time_ids'] and any(workorder.state == 'done' for workorder in self):
-#         #     raise UserError(_('You can not change the finished work order.'))
-#         return super(MrpWorkOrderInherit, self)
-# 
+
+class MrpWorkOrderInherit(models.Model):
+    _inherit = 'mrp.workorder'
+
+    @api.multi
+    def write(self, values):
+        print(values)
+        # if list(values.keys()) != ['time_ids'] and any(workorder.state == 'done' for workorder in self):
+        #     raise UserError(_('You can not change the finished work order.'))
+        return super(MrpWorkOrderInherit, self)
+
