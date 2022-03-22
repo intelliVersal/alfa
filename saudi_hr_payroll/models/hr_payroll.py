@@ -109,6 +109,7 @@ class hr_payslip(models.Model):
     payment_method = fields.Selection(related='employee_id.salary_paid', store=True)
     reviewed = fields.Boolean('Reviewed')
     join_date = fields.Date(related='contract_id.start_work')
+    is_variance = fields.Boolean(default=False)
 
     def _check_dates(self):
         return True
@@ -306,9 +307,12 @@ class hr_payslip(models.Model):
                     periods_by_month[-1]['from'], periods_by_month[-1]['to']) + ((len(periods_by_month) - 2) * 30)
             else:
                 number_of_days = 0
-
-        self.number_of_days = number_of_days
+        if self.is_variance == True:
+            self.number_of_days = number_of_days + 2
+        else:
+            self.number_of_days = number_of_days
         self.days_in_payslip = self.number_of_days - self.total_excluded_days
+
 
     @api.one
     @api.depends('date_from', 'date_to', 'employee_id')

@@ -198,6 +198,7 @@
                                     <field name="payslip_run_id" domain="[('state','=','draft')]" options="{'no_create': True}" />
                                     <field name="branch_id" readonly="1" />
                                     <field name="department_id" readonly="1" />
+                                    <field name="is_variance" attrs="{'readonly':[('state','not in',['draft','Reviewed'])]}" string="Is Variance?"/>
                                 </group>
                                 <!--<group name="accounting" string="Accounting">-->
                                     <!--<field name="paid" readonly="1"/>-->
