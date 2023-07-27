@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Hr Loans",
+    'name': "Hr Loans", # Faisal for test
     'summary': ' Hr Loans',
     'description': " Hr Loans ",
     'author': "OserGroup",
