@@ -1,6 +1,5 @@
 <odoo>
     <data>
-
         <record model="ir.ui.view" id="view_view_form_inherit">
             <field name="name">ir.ui.view form.inherit</field>
             <field name="model">ir.ui.view</field>
